@@ -1,0 +1,4302 @@
+[
+  {
+    "id": "STU001",
+    "name": "Aarav Chopra",
+    "email": "aarav.chopra1@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Information Technology",
+    "batch": "2021-2025",
+    "class": "IT-B",
+    "persona": "High Academic / Low Placement",
+    "categories": {
+      "academic": {
+        "cgpa": 9.5,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 88,
+          "endsem": 94
+        }
+      },
+      "attendance": {
+        "overall": 90.2,
+        "classes": 92,
+        "events": 84.4,
+        "remedial": 93.9,
+        "extracurricular": 82.8,
+        "overallPercentage": 90.2,
+        "status": "Excellent Attendance"
+      },
+      "lms": {
+        "loginFrequency": "Daily (5-7 days/week)",
+        "weeklyHours": 19.2,
+        "assignmentsSubmittedOnTimePercentage": 96
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Math Olympiad Club"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 42,
+        "technicalRoundScore": 61,
+        "hrRoundScore": 35,
+        "readinessStatus": "Needs Intensive Soft-Skill & Practical Training"
+      },
+      "skills": {
+        "codingAssessmentScore": 52,
+        "primaryLanguages": [
+          "C++",
+          "Java"
+        ],
+        "leetcodeProblemsSolved": 66,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Advanced Data Structures & Algorithms (Coursera/UCSD)",
+            "completion_status": "Completed",
+            "score": 88
+          },
+          {
+            "course_name": "Database Systems & SQL Specialist (Oracle)",
+            "completion_status": "Completed",
+            "score": 88
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Exceptional in exams, theory, and homework submissions. Highly disciplined in lectures.",
+        "mentorFeedback": "Freezes under timed live coding tests; struggles with communication and behavioral questions in mock HR rounds.",
+        "strengths": [
+          "Strong theoretical concepts",
+          "Discipline & punctuality",
+          "Consistent academic score"
+        ],
+        "areasForImprovement": [
+          "Live problem articulation",
+          "Confidence in HR interviews",
+          "Practical project exposure"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU002",
+    "name": "Ananya Kulkarni",
+    "email": "ananya.kulkarni2@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Electronics & Communication Engineering",
+    "batch": "2021-2025",
+    "class": "ECE-A",
+    "persona": "High Academic / Low Placement",
+    "categories": {
+      "academic": {
+        "cgpa": 9.45,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 96,
+          "endsem": 94
+        }
+      },
+      "attendance": {
+        "overall": 93.3,
+        "classes": 93.8,
+        "events": 92.5,
+        "remedial": 94.1,
+        "extracurricular": 89.9,
+        "overallPercentage": 93.3,
+        "status": "Excellent Attendance"
+      },
+      "lms": {
+        "loginFrequency": "Daily (5-7 days/week)",
+        "weeklyHours": 20.2,
+        "assignmentsSubmittedOnTimePercentage": 100
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Academic Peer Tutor",
+          "Literary Society"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 37,
+        "technicalRoundScore": 63,
+        "hrRoundScore": 47,
+        "readinessStatus": "Needs Intensive Soft-Skill & Practical Training"
+      },
+      "skills": {
+        "codingAssessmentScore": 59,
+        "primaryLanguages": [
+          "Java",
+          "SQL"
+        ],
+        "leetcodeProblemsSolved": 61,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Advanced Data Structures & Algorithms (Coursera/UCSD)",
+            "completion_status": "Completed",
+            "score": 92
+          },
+          {
+            "course_name": "Database Systems & SQL Specialist (Oracle)",
+            "completion_status": "Completed",
+            "score": 85
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Exceptional in exams, theory, and homework submissions. Highly disciplined in lectures.",
+        "mentorFeedback": "Freezes under timed live coding tests; struggles with communication and behavioral questions in mock HR rounds.",
+        "strengths": [
+          "Strong theoretical concepts",
+          "Discipline & punctuality",
+          "Consistent academic score"
+        ],
+        "areasForImprovement": [
+          "Live problem articulation",
+          "Confidence in HR interviews",
+          "Practical project exposure"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU003",
+    "name": "Rohan Mishra",
+    "email": "rohan.mishra3@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Data Science & AI",
+    "batch": "2021-2025",
+    "class": "DSAI-B",
+    "persona": "High Academic / Low Placement",
+    "categories": {
+      "academic": {
+        "cgpa": 9.42,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 90,
+          "endsem": 96
+        }
+      },
+      "attendance": {
+        "overall": 91.1,
+        "classes": 92.1,
+        "events": 89.3,
+        "remedial": 95.8,
+        "extracurricular": 80.9,
+        "overallPercentage": 91.1,
+        "status": "Excellent Attendance"
+      },
+      "lms": {
+        "loginFrequency": "Daily (6-7 days/week)",
+        "weeklyHours": 21.9,
+        "assignmentsSubmittedOnTimePercentage": 99
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Math Olympiad Club"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 45,
+        "technicalRoundScore": 62,
+        "hrRoundScore": 35,
+        "readinessStatus": "Needs Intensive Soft-Skill & Practical Training"
+      },
+      "skills": {
+        "codingAssessmentScore": 64,
+        "primaryLanguages": [
+          "C++",
+          "Java"
+        ],
+        "leetcodeProblemsSolved": 60,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Advanced Data Structures & Algorithms (Coursera/UCSD)",
+            "completion_status": "Completed",
+            "score": 92
+          },
+          {
+            "course_name": "Database Systems & SQL Specialist (Oracle)",
+            "completion_status": "Completed",
+            "score": 94
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Exceptional in exams, theory, and homework submissions. Highly disciplined in lectures.",
+        "mentorFeedback": "Freezes under timed live coding tests; struggles with communication and behavioral questions in mock HR rounds.",
+        "strengths": [
+          "Strong theoretical concepts",
+          "Discipline & punctuality",
+          "Consistent academic score"
+        ],
+        "areasForImprovement": [
+          "Live problem articulation",
+          "Confidence in HR interviews",
+          "Practical project exposure"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU004",
+    "name": "Priya Chatterjee",
+    "email": "priya.chatterjee4@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Computer Science & Engineering",
+    "batch": "2021-2025",
+    "class": "CSE-A",
+    "persona": "High Academic / Low Placement",
+    "categories": {
+      "academic": {
+        "cgpa": 9.69,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 96,
+          "endsem": 94
+        }
+      },
+      "attendance": {
+        "overall": 91.2,
+        "classes": 93.8,
+        "events": 85.8,
+        "remedial": 91.4,
+        "extracurricular": 83.8,
+        "overallPercentage": 91.2,
+        "status": "Excellent Attendance"
+      },
+      "lms": {
+        "loginFrequency": "Daily (5-7 days/week)",
+        "weeklyHours": 20.7,
+        "assignmentsSubmittedOnTimePercentage": 98
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Math Olympiad Club"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 35,
+        "technicalRoundScore": 48,
+        "hrRoundScore": 32,
+        "readinessStatus": "Needs Intensive Soft-Skill & Practical Training"
+      },
+      "skills": {
+        "codingAssessmentScore": 61,
+        "primaryLanguages": [
+          "C++",
+          "Java"
+        ],
+        "leetcodeProblemsSolved": 39,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Advanced Data Structures & Algorithms (Coursera/UCSD)",
+            "completion_status": "Completed",
+            "score": 91
+          },
+          {
+            "course_name": "Database Systems & SQL Specialist (Oracle)",
+            "completion_status": "Completed",
+            "score": 93
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Exceptional in exams, theory, and homework submissions. Highly disciplined in lectures.",
+        "mentorFeedback": "Freezes under timed live coding tests; struggles with communication and behavioral questions in mock HR rounds.",
+        "strengths": [
+          "Strong theoretical concepts",
+          "Discipline & punctuality",
+          "Consistent academic score"
+        ],
+        "areasForImprovement": [
+          "Live problem articulation",
+          "Confidence in HR interviews",
+          "Practical project exposure"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU005",
+    "name": "Aditya Menon",
+    "email": "aditya.menon5@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Information Technology",
+    "batch": "2022-2026",
+    "class": "IT-B",
+    "persona": "High Academic / Low Placement",
+    "categories": {
+      "academic": {
+        "cgpa": 8.95,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 89,
+          "endsem": 93
+        }
+      },
+      "attendance": {
+        "overall": 91.6,
+        "classes": 91.5,
+        "events": 92.5,
+        "remedial": 97.1,
+        "extracurricular": 82.7,
+        "overallPercentage": 91.6,
+        "status": "Excellent Attendance"
+      },
+      "lms": {
+        "loginFrequency": "Daily (5-7 days/week)",
+        "weeklyHours": 15.8,
+        "assignmentsSubmittedOnTimePercentage": 96
+      },
+      "engagement": {
+        "hackathonsParticipated": 0,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Math Olympiad Club"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 34,
+        "technicalRoundScore": 65,
+        "hrRoundScore": 54,
+        "readinessStatus": "Needs Intensive Soft-Skill & Practical Training"
+      },
+      "skills": {
+        "codingAssessmentScore": 58,
+        "primaryLanguages": [
+          "C++",
+          "Java"
+        ],
+        "leetcodeProblemsSolved": 60,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Advanced Data Structures & Algorithms (Coursera/UCSD)",
+            "completion_status": "Completed",
+            "score": 90
+          },
+          {
+            "course_name": "Database Systems & SQL Specialist (Oracle)",
+            "completion_status": "Completed",
+            "score": 86
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Exceptional in exams, theory, and homework submissions. Highly disciplined in lectures.",
+        "mentorFeedback": "Freezes under timed live coding tests; struggles with communication and behavioral questions in mock HR rounds.",
+        "strengths": [
+          "Strong theoretical concepts",
+          "Discipline & punctuality",
+          "Consistent academic score"
+        ],
+        "areasForImprovement": [
+          "Live problem articulation",
+          "Confidence in HR interviews",
+          "Practical project exposure"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU006",
+    "name": "Sneha Pandey",
+    "email": "sneha.pandey6@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Electronics & Communication Engineering",
+    "batch": "2021-2025",
+    "class": "ECE-A",
+    "persona": "High Academic / Low Placement",
+    "categories": {
+      "academic": {
+        "cgpa": 9.79,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 94,
+          "endsem": 97
+        }
+      },
+      "attendance": {
+        "overall": 92.9,
+        "classes": 95.5,
+        "events": 90.4,
+        "remedial": 92,
+        "extracurricular": 82.3,
+        "overallPercentage": 92.9,
+        "status": "Excellent Attendance"
+      },
+      "lms": {
+        "loginFrequency": "Daily (5-7 days/week)",
+        "weeklyHours": 16.9,
+        "assignmentsSubmittedOnTimePercentage": 96
+      },
+      "engagement": {
+        "hackathonsParticipated": 0,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Academic Peer Tutor",
+          "Literary Society"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 46,
+        "technicalRoundScore": 48,
+        "hrRoundScore": 44,
+        "readinessStatus": "Needs Intensive Soft-Skill & Practical Training"
+      },
+      "skills": {
+        "codingAssessmentScore": 62,
+        "primaryLanguages": [
+          "Python",
+          "C"
+        ],
+        "leetcodeProblemsSolved": 66,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Advanced Data Structures & Algorithms (Coursera/UCSD)",
+            "completion_status": "Completed",
+            "score": 90
+          },
+          {
+            "course_name": "Database Systems & SQL Specialist (Oracle)",
+            "completion_status": "Completed",
+            "score": 85
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Exceptional in exams, theory, and homework submissions. Highly disciplined in lectures.",
+        "mentorFeedback": "Freezes under timed live coding tests; struggles with communication and behavioral questions in mock HR rounds.",
+        "strengths": [
+          "Strong theoretical concepts",
+          "Discipline & punctuality",
+          "Consistent academic score"
+        ],
+        "areasForImprovement": [
+          "Live problem articulation",
+          "Confidence in HR interviews",
+          "Practical project exposure"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU007",
+    "name": "Vikram Venkatesh",
+    "email": "vikram.venkatesh7@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Data Science & AI",
+    "batch": "2021-2025",
+    "class": "DSAI-B",
+    "persona": "High Academic / Low Placement",
+    "categories": {
+      "academic": {
+        "cgpa": 9.13,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 93,
+          "endsem": 96
+        }
+      },
+      "attendance": {
+        "overall": 90.8,
+        "classes": 89.5,
+        "events": 93.1,
+        "remedial": 94.8,
+        "extracurricular": 88.8,
+        "overallPercentage": 90.8,
+        "status": "Excellent Attendance"
+      },
+      "lms": {
+        "loginFrequency": "Daily (6-7 days/week)",
+        "weeklyHours": 18.3,
+        "assignmentsSubmittedOnTimePercentage": 98
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Math Olympiad Club"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 46,
+        "technicalRoundScore": 67,
+        "hrRoundScore": 36,
+        "readinessStatus": "Needs Intensive Soft-Skill & Practical Training"
+      },
+      "skills": {
+        "codingAssessmentScore": 53,
+        "primaryLanguages": [
+          "Java",
+          "SQL"
+        ],
+        "leetcodeProblemsSolved": 53,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Advanced Data Structures & Algorithms (Coursera/UCSD)",
+            "completion_status": "Completed",
+            "score": 92
+          },
+          {
+            "course_name": "Database Systems & SQL Specialist (Oracle)",
+            "completion_status": "Completed",
+            "score": 89
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Exceptional in exams, theory, and homework submissions. Highly disciplined in lectures.",
+        "mentorFeedback": "Freezes under timed live coding tests; struggles with communication and behavioral questions in mock HR rounds.",
+        "strengths": [
+          "Strong theoretical concepts",
+          "Discipline & punctuality",
+          "Consistent academic score"
+        ],
+        "areasForImprovement": [
+          "Live problem articulation",
+          "Confidence in HR interviews",
+          "Practical project exposure"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU008",
+    "name": "Isha Verma",
+    "email": "isha.verma8@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Computer Science & Engineering",
+    "batch": "2021-2025",
+    "class": "CSE-A",
+    "persona": "High Academic / Low Placement",
+    "categories": {
+      "academic": {
+        "cgpa": 9.44,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 88,
+          "endsem": 93
+        }
+      },
+      "attendance": {
+        "overall": 89.6,
+        "classes": 91.3,
+        "events": 85.5,
+        "remedial": 92.6,
+        "extracurricular": 81.1,
+        "overallPercentage": 89.6,
+        "status": "Excellent Attendance"
+      },
+      "lms": {
+        "loginFrequency": "Daily (5-7 days/week)",
+        "weeklyHours": 21.2,
+        "assignmentsSubmittedOnTimePercentage": 100
+      },
+      "engagement": {
+        "hackathonsParticipated": 0,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Math Olympiad Club"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 51,
+        "technicalRoundScore": 58,
+        "hrRoundScore": 52,
+        "readinessStatus": "Needs Intensive Soft-Skill & Practical Training"
+      },
+      "skills": {
+        "codingAssessmentScore": 64,
+        "primaryLanguages": [
+          "C++",
+          "Java"
+        ],
+        "leetcodeProblemsSolved": 42,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Advanced Data Structures & Algorithms (Coursera/UCSD)",
+            "completion_status": "Completed",
+            "score": 90
+          },
+          {
+            "course_name": "Database Systems & SQL Specialist (Oracle)",
+            "completion_status": "Completed",
+            "score": 87
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Exceptional in exams, theory, and homework submissions. Highly disciplined in lectures.",
+        "mentorFeedback": "Freezes under timed live coding tests; struggles with communication and behavioral questions in mock HR rounds.",
+        "strengths": [
+          "Strong theoretical concepts",
+          "Discipline & punctuality",
+          "Consistent academic score"
+        ],
+        "areasForImprovement": [
+          "Live problem articulation",
+          "Confidence in HR interviews",
+          "Practical project exposure"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU009",
+    "name": "Kunal Gupta",
+    "email": "kunal.gupta9@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Information Technology",
+    "batch": "2021-2025",
+    "class": "IT-B",
+    "persona": "High Academic / Low Placement",
+    "categories": {
+      "academic": {
+        "cgpa": 9.59,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 95,
+          "endsem": 99
+        }
+      },
+      "attendance": {
+        "overall": 89.2,
+        "classes": 88.8,
+        "events": 86.1,
+        "remedial": 97.8,
+        "extracurricular": 83.7,
+        "overallPercentage": 89.2,
+        "status": "Excellent Attendance"
+      },
+      "lms": {
+        "loginFrequency": "Daily (6-7 days/week)",
+        "weeklyHours": 17.3,
+        "assignmentsSubmittedOnTimePercentage": 97
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Class Representative",
+          "Debate Society"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 53,
+        "technicalRoundScore": 68,
+        "hrRoundScore": 28,
+        "readinessStatus": "Needs Intensive Soft-Skill & Practical Training"
+      },
+      "skills": {
+        "codingAssessmentScore": 58,
+        "primaryLanguages": [
+          "C++",
+          "Java"
+        ],
+        "leetcodeProblemsSolved": 63,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Advanced Data Structures & Algorithms (Coursera/UCSD)",
+            "completion_status": "Completed",
+            "score": 94
+          },
+          {
+            "course_name": "Database Systems & SQL Specialist (Oracle)",
+            "completion_status": "Completed",
+            "score": 86
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Exceptional in exams, theory, and homework submissions. Highly disciplined in lectures.",
+        "mentorFeedback": "Freezes under timed live coding tests; struggles with communication and behavioral questions in mock HR rounds.",
+        "strengths": [
+          "Strong theoretical concepts",
+          "Discipline & punctuality",
+          "Consistent academic score"
+        ],
+        "areasForImprovement": [
+          "Live problem articulation",
+          "Confidence in HR interviews",
+          "Practical project exposure"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU010",
+    "name": "Neha Mehta",
+    "email": "neha.mehta10@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Electronics & Communication Engineering",
+    "batch": "2022-2026",
+    "class": "ECE-A",
+    "persona": "High Academic / Low Placement",
+    "categories": {
+      "academic": {
+        "cgpa": 9.59,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 93,
+          "endsem": 99
+        }
+      },
+      "attendance": {
+        "overall": 92.3,
+        "classes": 94.7,
+        "events": 86.4,
+        "remedial": 92.2,
+        "extracurricular": 87.3,
+        "overallPercentage": 92.3,
+        "status": "Excellent Attendance"
+      },
+      "lms": {
+        "loginFrequency": "Daily (6-7 days/week)",
+        "weeklyHours": 16.4,
+        "assignmentsSubmittedOnTimePercentage": 99
+      },
+      "engagement": {
+        "hackathonsParticipated": 0,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Academic Peer Tutor",
+          "Literary Society"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 45,
+        "technicalRoundScore": 45,
+        "hrRoundScore": 49,
+        "readinessStatus": "Needs Intensive Soft-Skill & Practical Training"
+      },
+      "skills": {
+        "codingAssessmentScore": 55,
+        "primaryLanguages": [
+          "Java",
+          "SQL"
+        ],
+        "leetcodeProblemsSolved": 80,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Advanced Data Structures & Algorithms (Coursera/UCSD)",
+            "completion_status": "Completed",
+            "score": 96
+          },
+          {
+            "course_name": "Database Systems & SQL Specialist (Oracle)",
+            "completion_status": "Completed",
+            "score": 87
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Exceptional in exams, theory, and homework submissions. Highly disciplined in lectures.",
+        "mentorFeedback": "Freezes under timed live coding tests; struggles with communication and behavioral questions in mock HR rounds.",
+        "strengths": [
+          "Strong theoretical concepts",
+          "Discipline & punctuality",
+          "Consistent academic score"
+        ],
+        "areasForImprovement": [
+          "Live problem articulation",
+          "Confidence in HR interviews",
+          "Practical project exposure"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU011",
+    "name": "Kabir Chopra",
+    "email": "kabir.chopra11@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Data Science & AI",
+    "batch": "2021-2025",
+    "class": "DSAI-B",
+    "persona": "High Academic / Low Placement",
+    "categories": {
+      "academic": {
+        "cgpa": 9.23,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 93,
+          "endsem": 99
+        }
+      },
+      "attendance": {
+        "overall": 91.8,
+        "classes": 91.8,
+        "events": 93.5,
+        "remedial": 97.2,
+        "extracurricular": 81.2,
+        "overallPercentage": 91.8,
+        "status": "Excellent Attendance"
+      },
+      "lms": {
+        "loginFrequency": "Daily (6-7 days/week)",
+        "weeklyHours": 16.3,
+        "assignmentsSubmittedOnTimePercentage": 99
+      },
+      "engagement": {
+        "hackathonsParticipated": 0,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Academic Peer Tutor",
+          "Literary Society"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 50,
+        "technicalRoundScore": 53,
+        "hrRoundScore": 42,
+        "readinessStatus": "Needs Intensive Soft-Skill & Practical Training"
+      },
+      "skills": {
+        "codingAssessmentScore": 66,
+        "primaryLanguages": [
+          "Python",
+          "C"
+        ],
+        "leetcodeProblemsSolved": 46,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Advanced Data Structures & Algorithms (Coursera/UCSD)",
+            "completion_status": "Completed",
+            "score": 95
+          },
+          {
+            "course_name": "Database Systems & SQL Specialist (Oracle)",
+            "completion_status": "Completed",
+            "score": 85
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Exceptional in exams, theory, and homework submissions. Highly disciplined in lectures.",
+        "mentorFeedback": "Freezes under timed live coding tests; struggles with communication and behavioral questions in mock HR rounds.",
+        "strengths": [
+          "Strong theoretical concepts",
+          "Discipline & punctuality",
+          "Consistent academic score"
+        ],
+        "areasForImprovement": [
+          "Live problem articulation",
+          "Confidence in HR interviews",
+          "Practical project exposure"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU012",
+    "name": "Riya Kulkarni",
+    "email": "riya.kulkarni12@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Computer Science & Engineering",
+    "batch": "2021-2025",
+    "class": "CSE-A",
+    "persona": "High Academic / Low Placement",
+    "categories": {
+      "academic": {
+        "cgpa": 9.36,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 91,
+          "endsem": 99
+        }
+      },
+      "attendance": {
+        "overall": 92.7,
+        "classes": 95.6,
+        "events": 85.8,
+        "remedial": 94,
+        "extracurricular": 84.1,
+        "overallPercentage": 92.7,
+        "status": "Excellent Attendance"
+      },
+      "lms": {
+        "loginFrequency": "Daily (5-7 days/week)",
+        "weeklyHours": 20.9,
+        "assignmentsSubmittedOnTimePercentage": 99
+      },
+      "engagement": {
+        "hackathonsParticipated": 0,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Academic Peer Tutor",
+          "Literary Society"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 33,
+        "technicalRoundScore": 49,
+        "hrRoundScore": 53,
+        "readinessStatus": "Needs Intensive Soft-Skill & Practical Training"
+      },
+      "skills": {
+        "codingAssessmentScore": 64,
+        "primaryLanguages": [
+          "Java",
+          "SQL"
+        ],
+        "leetcodeProblemsSolved": 64,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Advanced Data Structures & Algorithms (Coursera/UCSD)",
+            "completion_status": "Completed",
+            "score": 88
+          },
+          {
+            "course_name": "Database Systems & SQL Specialist (Oracle)",
+            "completion_status": "Completed",
+            "score": 85
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Exceptional in exams, theory, and homework submissions. Highly disciplined in lectures.",
+        "mentorFeedback": "Freezes under timed live coding tests; struggles with communication and behavioral questions in mock HR rounds.",
+        "strengths": [
+          "Strong theoretical concepts",
+          "Discipline & punctuality",
+          "Consistent academic score"
+        ],
+        "areasForImprovement": [
+          "Live problem articulation",
+          "Confidence in HR interviews",
+          "Practical project exposure"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU013",
+    "name": "Arjun Mishra",
+    "email": "arjun.mishra13@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Information Technology",
+    "batch": "2021-2025",
+    "class": "IT-B",
+    "persona": "High Academic / Low Placement",
+    "categories": {
+      "academic": {
+        "cgpa": 8.85,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 92,
+          "endsem": 95
+        }
+      },
+      "attendance": {
+        "overall": 89.3,
+        "classes": 88.8,
+        "events": 87.9,
+        "remedial": 97.1,
+        "extracurricular": 82.9,
+        "overallPercentage": 89.3,
+        "status": "Excellent Attendance"
+      },
+      "lms": {
+        "loginFrequency": "Daily (5-7 days/week)",
+        "weeklyHours": 21.5,
+        "assignmentsSubmittedOnTimePercentage": 96
+      },
+      "engagement": {
+        "hackathonsParticipated": 0,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Class Representative",
+          "Debate Society"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 36,
+        "technicalRoundScore": 57,
+        "hrRoundScore": 37,
+        "readinessStatus": "Needs Intensive Soft-Skill & Practical Training"
+      },
+      "skills": {
+        "codingAssessmentScore": 57,
+        "primaryLanguages": [
+          "Python",
+          "C"
+        ],
+        "leetcodeProblemsSolved": 37,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Advanced Data Structures & Algorithms (Coursera/UCSD)",
+            "completion_status": "Completed",
+            "score": 96
+          },
+          {
+            "course_name": "Database Systems & SQL Specialist (Oracle)",
+            "completion_status": "Completed",
+            "score": 92
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Exceptional in exams, theory, and homework submissions. Highly disciplined in lectures.",
+        "mentorFeedback": "Freezes under timed live coding tests; struggles with communication and behavioral questions in mock HR rounds.",
+        "strengths": [
+          "Strong theoretical concepts",
+          "Discipline & punctuality",
+          "Consistent academic score"
+        ],
+        "areasForImprovement": [
+          "Live problem articulation",
+          "Confidence in HR interviews",
+          "Practical project exposure"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU014",
+    "name": "Meera Chatterjee",
+    "email": "meera.chatterjee14@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Electronics & Communication Engineering",
+    "batch": "2021-2025",
+    "class": "ECE-A",
+    "persona": "High Academic / Low Placement",
+    "categories": {
+      "academic": {
+        "cgpa": 9.74,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 90,
+          "endsem": 90
+        }
+      },
+      "attendance": {
+        "overall": 90.4,
+        "classes": 89.6,
+        "events": 90.9,
+        "remedial": 93.9,
+        "extracurricular": 89.6,
+        "overallPercentage": 90.4,
+        "status": "Excellent Attendance"
+      },
+      "lms": {
+        "loginFrequency": "Daily (6-7 days/week)",
+        "weeklyHours": 19.7,
+        "assignmentsSubmittedOnTimePercentage": 98
+      },
+      "engagement": {
+        "hackathonsParticipated": 0,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Math Olympiad Club"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 54,
+        "technicalRoundScore": 62,
+        "hrRoundScore": 28,
+        "readinessStatus": "Needs Intensive Soft-Skill & Practical Training"
+      },
+      "skills": {
+        "codingAssessmentScore": 64,
+        "primaryLanguages": [
+          "Python",
+          "C"
+        ],
+        "leetcodeProblemsSolved": 64,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Advanced Data Structures & Algorithms (Coursera/UCSD)",
+            "completion_status": "Completed",
+            "score": 96
+          },
+          {
+            "course_name": "Database Systems & SQL Specialist (Oracle)",
+            "completion_status": "Completed",
+            "score": 88
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Exceptional in exams, theory, and homework submissions. Highly disciplined in lectures.",
+        "mentorFeedback": "Freezes under timed live coding tests; struggles with communication and behavioral questions in mock HR rounds.",
+        "strengths": [
+          "Strong theoretical concepts",
+          "Discipline & punctuality",
+          "Consistent academic score"
+        ],
+        "areasForImprovement": [
+          "Live problem articulation",
+          "Confidence in HR interviews",
+          "Practical project exposure"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU015",
+    "name": "Dev Menon",
+    "email": "dev.menon15@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Data Science & AI",
+    "batch": "2022-2026",
+    "class": "DSAI-B",
+    "persona": "High Academic / Low Placement",
+    "categories": {
+      "academic": {
+        "cgpa": 9.58,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 98,
+          "endsem": 91
+        }
+      },
+      "attendance": {
+        "overall": 88.8,
+        "classes": 88.3,
+        "events": 89.4,
+        "remedial": 93.6,
+        "extracurricular": 83.5,
+        "overallPercentage": 88.8,
+        "status": "Excellent Attendance"
+      },
+      "lms": {
+        "loginFrequency": "Daily (6-7 days/week)",
+        "weeklyHours": 14.9,
+        "assignmentsSubmittedOnTimePercentage": 98
+      },
+      "engagement": {
+        "hackathonsParticipated": 0,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Academic Peer Tutor",
+          "Literary Society"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 38,
+        "technicalRoundScore": 53,
+        "hrRoundScore": 36,
+        "readinessStatus": "Needs Intensive Soft-Skill & Practical Training"
+      },
+      "skills": {
+        "codingAssessmentScore": 60,
+        "primaryLanguages": [
+          "C++",
+          "Java"
+        ],
+        "leetcodeProblemsSolved": 75,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Advanced Data Structures & Algorithms (Coursera/UCSD)",
+            "completion_status": "Completed",
+            "score": 90
+          },
+          {
+            "course_name": "Database Systems & SQL Specialist (Oracle)",
+            "completion_status": "Completed",
+            "score": 87
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Exceptional in exams, theory, and homework submissions. Highly disciplined in lectures.",
+        "mentorFeedback": "Freezes under timed live coding tests; struggles with communication and behavioral questions in mock HR rounds.",
+        "strengths": [
+          "Strong theoretical concepts",
+          "Discipline & punctuality",
+          "Consistent academic score"
+        ],
+        "areasForImprovement": [
+          "Live problem articulation",
+          "Confidence in HR interviews",
+          "Practical project exposure"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU016",
+    "name": "Pooja Pandey",
+    "email": "pooja.pandey16@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Computer Science & Engineering",
+    "batch": "2021-2025",
+    "class": "CSE-A",
+    "persona": "High Academic / Low Placement",
+    "categories": {
+      "academic": {
+        "cgpa": 9.01,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 97,
+          "endsem": 92
+        }
+      },
+      "attendance": {
+        "overall": 92.8,
+        "classes": 94.6,
+        "events": 86.6,
+        "remedial": 97.1,
+        "extracurricular": 84.9,
+        "overallPercentage": 92.8,
+        "status": "Excellent Attendance"
+      },
+      "lms": {
+        "loginFrequency": "Daily (6-7 days/week)",
+        "weeklyHours": 16.1,
+        "assignmentsSubmittedOnTimePercentage": 99
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Math Olympiad Club"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 38,
+        "technicalRoundScore": 58,
+        "hrRoundScore": 43,
+        "readinessStatus": "Needs Intensive Soft-Skill & Practical Training"
+      },
+      "skills": {
+        "codingAssessmentScore": 57,
+        "primaryLanguages": [
+          "Python",
+          "C"
+        ],
+        "leetcodeProblemsSolved": 60,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Advanced Data Structures & Algorithms (Coursera/UCSD)",
+            "completion_status": "Completed",
+            "score": 94
+          },
+          {
+            "course_name": "Database Systems & SQL Specialist (Oracle)",
+            "completion_status": "Completed",
+            "score": 94
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Exceptional in exams, theory, and homework submissions. Highly disciplined in lectures.",
+        "mentorFeedback": "Freezes under timed live coding tests; struggles with communication and behavioral questions in mock HR rounds.",
+        "strengths": [
+          "Strong theoretical concepts",
+          "Discipline & punctuality",
+          "Consistent academic score"
+        ],
+        "areasForImprovement": [
+          "Live problem articulation",
+          "Confidence in HR interviews",
+          "Practical project exposure"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU017",
+    "name": "Siddharth Venkatesh",
+    "email": "siddharth.venkatesh17@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Information Technology",
+    "batch": "2021-2025",
+    "class": "IT-B",
+    "persona": "High Academic / Low Placement",
+    "categories": {
+      "academic": {
+        "cgpa": 9.66,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 90,
+          "endsem": 95
+        }
+      },
+      "attendance": {
+        "overall": 90.3,
+        "classes": 89.8,
+        "events": 89.6,
+        "remedial": 93.4,
+        "extracurricular": 89.7,
+        "overallPercentage": 90.3,
+        "status": "Excellent Attendance"
+      },
+      "lms": {
+        "loginFrequency": "Daily (5-7 days/week)",
+        "weeklyHours": 14.5,
+        "assignmentsSubmittedOnTimePercentage": 98
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Math Olympiad Club"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 48,
+        "technicalRoundScore": 62,
+        "hrRoundScore": 55,
+        "readinessStatus": "Needs Intensive Soft-Skill & Practical Training"
+      },
+      "skills": {
+        "codingAssessmentScore": 58,
+        "primaryLanguages": [
+          "C++",
+          "Java"
+        ],
+        "leetcodeProblemsSolved": 57,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Advanced Data Structures & Algorithms (Coursera/UCSD)",
+            "completion_status": "Completed",
+            "score": 93
+          },
+          {
+            "course_name": "Database Systems & SQL Specialist (Oracle)",
+            "completion_status": "Completed",
+            "score": 88
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Exceptional in exams, theory, and homework submissions. Highly disciplined in lectures.",
+        "mentorFeedback": "Freezes under timed live coding tests; struggles with communication and behavioral questions in mock HR rounds.",
+        "strengths": [
+          "Strong theoretical concepts",
+          "Discipline & punctuality",
+          "Consistent academic score"
+        ],
+        "areasForImprovement": [
+          "Live problem articulation",
+          "Confidence in HR interviews",
+          "Practical project exposure"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU018",
+    "name": "Kavya Verma",
+    "email": "kavya.verma18@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Electronics & Communication Engineering",
+    "batch": "2021-2025",
+    "class": "ECE-A",
+    "persona": "Low Attendance / High Skills",
+    "categories": {
+      "academic": {
+        "cgpa": 7.33,
+        "backlogs": 2,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 74,
+          "endsem": 82
+        }
+      },
+      "attendance": {
+        "overall": 65.4,
+        "classes": 57.4,
+        "events": 90.5,
+        "remedial": 56.4,
+        "extracurricular": 88.8,
+        "overallPercentage": 65.4,
+        "status": "Attendance Warning (<75%)"
+      },
+      "lms": {
+        "loginFrequency": "Rarely (mostly before deadlines)",
+        "weeklyHours": 5.9,
+        "assignmentsSubmittedOnTimePercentage": 70
+      },
+      "engagement": {
+        "hackathonsParticipated": 3,
+        "hackathonWins": 3,
+        "clubsOrActivities": [
+          "Open Source Club Lead",
+          "Competitive Programming Cell"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 95,
+        "technicalRoundScore": 88,
+        "hrRoundScore": 88,
+        "readinessStatus": "Industry Ready (High Product Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 95,
+        "primaryLanguages": [
+          "Kotlin",
+          "Go",
+          "Docker",
+          "React"
+        ],
+        "leetcodeProblemsSolved": 285,
+        "certificationsCount": 3,
+        "certifications": [
+          {
+            "course_name": "AWS Certified Solutions Architect - Associate",
+            "completion_status": "Completed",
+            "score": 95
+          },
+          {
+            "course_name": "Certified Kubernetes Administrator (CKA)",
+            "completion_status": "Completed",
+            "score": 90
+          },
+          {
+            "course_name": "Meta Full-Stack Developer Professional Certificate",
+            "completion_status": "Completed",
+            "score": 96
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Frequently absents from early morning classes and lab lectures. Needs to meet statutory 75% class attendance threshold.",
+        "mentorFeedback": "Top-tier problem solver with rich production-grade projects on GitHub. Crushes live technical rounds with optimal time complexities.",
+        "strengths": [
+          "System design knowledge",
+          "Advanced data structures & algorithms",
+          "Hackathon winner & builder"
+        ],
+        "areasForImprovement": [
+          "Classroom attendance compliance (<75%)",
+          "Timely submission of academic assignments",
+          "Semester exam preparation"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU019",
+    "name": "Rahul Gupta",
+    "email": "rahul.gupta19@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Data Science & AI",
+    "batch": "2021-2025",
+    "class": "DSAI-B",
+    "persona": "Low Attendance / High Skills",
+    "categories": {
+      "academic": {
+        "cgpa": 7.38,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 73,
+          "endsem": 80
+        }
+      },
+      "attendance": {
+        "overall": 68,
+        "classes": 60.3,
+        "events": 91,
+        "remedial": 64.1,
+        "extracurricular": 85.6,
+        "overallPercentage": 68,
+        "status": "Attendance Warning (<75%)"
+      },
+      "lms": {
+        "loginFrequency": "Rarely (mostly before deadlines)",
+        "weeklyHours": 3.5,
+        "assignmentsSubmittedOnTimePercentage": 71
+      },
+      "engagement": {
+        "hackathonsParticipated": 4,
+        "hackathonWins": 1,
+        "clubsOrActivities": [
+          "Hackathon Core Team",
+          "Robotics Society"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 96,
+        "technicalRoundScore": 96,
+        "hrRoundScore": 86,
+        "readinessStatus": "Industry Ready (High Product Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 89,
+        "primaryLanguages": [
+          "Python",
+          "JavaScript",
+          "C++"
+        ],
+        "leetcodeProblemsSolved": 454,
+        "certificationsCount": 3,
+        "certifications": [
+          {
+            "course_name": "AWS Certified Solutions Architect - Associate",
+            "completion_status": "Completed",
+            "score": 93
+          },
+          {
+            "course_name": "Certified Kubernetes Administrator (CKA)",
+            "completion_status": "Completed",
+            "score": 88
+          },
+          {
+            "course_name": "Meta Full-Stack Developer Professional Certificate",
+            "completion_status": "Completed",
+            "score": 96
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Frequently absents from early morning classes and lab lectures. Needs to meet statutory 75% class attendance threshold.",
+        "mentorFeedback": "Top-tier problem solver with rich production-grade projects on GitHub. Crushes live technical rounds with optimal time complexities.",
+        "strengths": [
+          "System design knowledge",
+          "Advanced data structures & algorithms",
+          "Hackathon winner & builder"
+        ],
+        "areasForImprovement": [
+          "Classroom attendance compliance (<75%)",
+          "Timely submission of academic assignments",
+          "Semester exam preparation"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU020",
+    "name": "Tanvi Mehta",
+    "email": "tanvi.mehta20@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Computer Science & Engineering",
+    "batch": "2022-2026",
+    "class": "CSE-A",
+    "persona": "Low Attendance / High Skills",
+    "categories": {
+      "academic": {
+        "cgpa": 6.88,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 77,
+          "endsem": 79
+        }
+      },
+      "attendance": {
+        "overall": 72.3,
+        "classes": 67.8,
+        "events": 87.9,
+        "remedial": 62.8,
+        "extracurricular": 89.8,
+        "overallPercentage": 72.3,
+        "status": "Attendance Warning (<75%)"
+      },
+      "lms": {
+        "loginFrequency": "1-2 times a week",
+        "weeklyHours": 5.2,
+        "assignmentsSubmittedOnTimePercentage": 71
+      },
+      "engagement": {
+        "hackathonsParticipated": 7,
+        "hackathonWins": 3,
+        "clubsOrActivities": [
+          "Hackathon Core Team",
+          "Robotics Society"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 84,
+        "technicalRoundScore": 96,
+        "hrRoundScore": 82,
+        "readinessStatus": "Industry Ready (High Product Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 88,
+        "primaryLanguages": [
+          "Kotlin",
+          "Go",
+          "Docker",
+          "React"
+        ],
+        "leetcodeProblemsSolved": 478,
+        "certificationsCount": 3,
+        "certifications": [
+          {
+            "course_name": "AWS Certified Solutions Architect - Associate",
+            "completion_status": "Completed",
+            "score": 94
+          },
+          {
+            "course_name": "Certified Kubernetes Administrator (CKA)",
+            "completion_status": "Completed",
+            "score": 89
+          },
+          {
+            "course_name": "Meta Full-Stack Developer Professional Certificate",
+            "completion_status": "Completed",
+            "score": 94
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Frequently absents from early morning classes and lab lectures. Needs to meet statutory 75% class attendance threshold.",
+        "mentorFeedback": "Top-tier problem solver with rich production-grade projects on GitHub. Crushes live technical rounds with optimal time complexities.",
+        "strengths": [
+          "System design knowledge",
+          "Advanced data structures & algorithms",
+          "Hackathon winner & builder"
+        ],
+        "areasForImprovement": [
+          "Classroom attendance compliance (<75%)",
+          "Timely submission of academic assignments",
+          "Semester exam preparation"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU021",
+    "name": "Ayush Chopra",
+    "email": "ayush.chopra21@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Information Technology",
+    "batch": "2021-2025",
+    "class": "IT-B",
+    "persona": "Low Attendance / High Skills",
+    "categories": {
+      "academic": {
+        "cgpa": 7.22,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 76,
+          "endsem": 78
+        }
+      },
+      "attendance": {
+        "overall": 68.3,
+        "classes": 66.4,
+        "events": 82.6,
+        "remedial": 48.5,
+        "extracurricular": 88.3,
+        "overallPercentage": 68.3,
+        "status": "Attendance Warning (<75%)"
+      },
+      "lms": {
+        "loginFrequency": "1-2 times a week",
+        "weeklyHours": 3.2,
+        "assignmentsSubmittedOnTimePercentage": 76
+      },
+      "engagement": {
+        "hackathonsParticipated": 4,
+        "hackathonWins": 1,
+        "clubsOrActivities": [
+          "Open Source Club Lead",
+          "Competitive Programming Cell"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 89,
+        "technicalRoundScore": 89,
+        "hrRoundScore": 79,
+        "readinessStatus": "Industry Ready (High Product Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 93,
+        "primaryLanguages": [
+          "Kotlin",
+          "Go",
+          "Docker",
+          "React"
+        ],
+        "leetcodeProblemsSolved": 428,
+        "certificationsCount": 3,
+        "certifications": [
+          {
+            "course_name": "AWS Certified Solutions Architect - Associate",
+            "completion_status": "Completed",
+            "score": 96
+          },
+          {
+            "course_name": "Certified Kubernetes Administrator (CKA)",
+            "completion_status": "Completed",
+            "score": 91
+          },
+          {
+            "course_name": "Meta Full-Stack Developer Professional Certificate",
+            "completion_status": "Completed",
+            "score": 99
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Frequently absents from early morning classes and lab lectures. Needs to meet statutory 75% class attendance threshold.",
+        "mentorFeedback": "Top-tier problem solver with rich production-grade projects on GitHub. Crushes live technical rounds with optimal time complexities.",
+        "strengths": [
+          "System design knowledge",
+          "Advanced data structures & algorithms",
+          "Hackathon winner & builder"
+        ],
+        "areasForImprovement": [
+          "Classroom attendance compliance (<75%)",
+          "Timely submission of academic assignments",
+          "Semester exam preparation"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU022",
+    "name": "Diya Kulkarni",
+    "email": "diya.kulkarni22@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Electronics & Communication Engineering",
+    "batch": "2021-2025",
+    "class": "ECE-A",
+    "persona": "Low Attendance / High Skills",
+    "categories": {
+      "academic": {
+        "cgpa": 6.6,
+        "backlogs": 2,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 72,
+          "endsem": 74
+        }
+      },
+      "attendance": {
+        "overall": 67.4,
+        "classes": 64.4,
+        "events": 85.7,
+        "remedial": 47.1,
+        "extracurricular": 88.3,
+        "overallPercentage": 67.4,
+        "status": "Attendance Warning (<75%)"
+      },
+      "lms": {
+        "loginFrequency": "Rarely (mostly before deadlines)",
+        "weeklyHours": 5.5,
+        "assignmentsSubmittedOnTimePercentage": 75
+      },
+      "engagement": {
+        "hackathonsParticipated": 3,
+        "hackathonWins": 1,
+        "clubsOrActivities": [
+          "DevOps Community",
+          "AI Research Group"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 87,
+        "technicalRoundScore": 93,
+        "hrRoundScore": 76,
+        "readinessStatus": "Industry Ready (High Product Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 94,
+        "primaryLanguages": [
+          "TypeScript",
+          "Rust",
+          "Python",
+          "Go"
+        ],
+        "leetcodeProblemsSolved": 463,
+        "certificationsCount": 3,
+        "certifications": [
+          {
+            "course_name": "AWS Certified Solutions Architect - Associate",
+            "completion_status": "Completed",
+            "score": 95
+          },
+          {
+            "course_name": "Certified Kubernetes Administrator (CKA)",
+            "completion_status": "Completed",
+            "score": 93
+          },
+          {
+            "course_name": "Meta Full-Stack Developer Professional Certificate",
+            "completion_status": "Completed",
+            "score": 99
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Frequently absents from early morning classes and lab lectures. Needs to meet statutory 75% class attendance threshold.",
+        "mentorFeedback": "Top-tier problem solver with rich production-grade projects on GitHub. Crushes live technical rounds with optimal time complexities.",
+        "strengths": [
+          "System design knowledge",
+          "Advanced data structures & algorithms",
+          "Hackathon winner & builder"
+        ],
+        "areasForImprovement": [
+          "Classroom attendance compliance (<75%)",
+          "Timely submission of academic assignments",
+          "Semester exam preparation"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU023",
+    "name": "Manish Mishra",
+    "email": "manish.mishra23@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Data Science & AI",
+    "batch": "2021-2025",
+    "class": "DSAI-B",
+    "persona": "Low Attendance / High Skills",
+    "categories": {
+      "academic": {
+        "cgpa": 6.4,
+        "backlogs": 2,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 79,
+          "endsem": 81
+        }
+      },
+      "attendance": {
+        "overall": 73.1,
+        "classes": 67.7,
+        "events": 92.3,
+        "remedial": 64.4,
+        "extracurricular": 90,
+        "overallPercentage": 73.1,
+        "status": "Attendance Warning (<75%)"
+      },
+      "lms": {
+        "loginFrequency": "Irregular",
+        "weeklyHours": 4.9,
+        "assignmentsSubmittedOnTimePercentage": 69
+      },
+      "engagement": {
+        "hackathonsParticipated": 4,
+        "hackathonWins": 3,
+        "clubsOrActivities": [
+          "Hackathon Core Team",
+          "Robotics Society"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 96,
+        "technicalRoundScore": 96,
+        "hrRoundScore": 75,
+        "readinessStatus": "Industry Ready (High Product Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 93,
+        "primaryLanguages": [
+          "Kotlin",
+          "Go",
+          "Docker",
+          "React"
+        ],
+        "leetcodeProblemsSolved": 491,
+        "certificationsCount": 3,
+        "certifications": [
+          {
+            "course_name": "AWS Certified Solutions Architect - Associate",
+            "completion_status": "Completed",
+            "score": 90
+          },
+          {
+            "course_name": "Certified Kubernetes Administrator (CKA)",
+            "completion_status": "Completed",
+            "score": 93
+          },
+          {
+            "course_name": "Meta Full-Stack Developer Professional Certificate",
+            "completion_status": "Completed",
+            "score": 98
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Frequently absents from early morning classes and lab lectures. Needs to meet statutory 75% class attendance threshold.",
+        "mentorFeedback": "Top-tier problem solver with rich production-grade projects on GitHub. Crushes live technical rounds with optimal time complexities.",
+        "strengths": [
+          "System design knowledge",
+          "Advanced data structures & algorithms",
+          "Hackathon winner & builder"
+        ],
+        "areasForImprovement": [
+          "Classroom attendance compliance (<75%)",
+          "Timely submission of academic assignments",
+          "Semester exam preparation"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU024",
+    "name": "Shreya Chatterjee",
+    "email": "shreya.chatterjee24@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Computer Science & Engineering",
+    "batch": "2021-2025",
+    "class": "CSE-A",
+    "persona": "Low Attendance / High Skills",
+    "categories": {
+      "academic": {
+        "cgpa": 6.33,
+        "backlogs": 2,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 74,
+          "endsem": 70
+        }
+      },
+      "attendance": {
+        "overall": 72.5,
+        "classes": 69.9,
+        "events": 88.2,
+        "remedial": 54.4,
+        "extracurricular": 91.2,
+        "overallPercentage": 72.5,
+        "status": "Attendance Warning (<75%)"
+      },
+      "lms": {
+        "loginFrequency": "Rarely (mostly before deadlines)",
+        "weeklyHours": 3,
+        "assignmentsSubmittedOnTimePercentage": 82
+      },
+      "engagement": {
+        "hackathonsParticipated": 5,
+        "hackathonWins": 2,
+        "clubsOrActivities": [
+          "DevOps Community",
+          "AI Research Group"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 93,
+        "technicalRoundScore": 92,
+        "hrRoundScore": 80,
+        "readinessStatus": "Industry Ready (High Product Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 97,
+        "primaryLanguages": [
+          "Python",
+          "JavaScript",
+          "C++"
+        ],
+        "leetcodeProblemsSolved": 419,
+        "certificationsCount": 3,
+        "certifications": [
+          {
+            "course_name": "AWS Certified Solutions Architect - Associate",
+            "completion_status": "Completed",
+            "score": 94
+          },
+          {
+            "course_name": "Certified Kubernetes Administrator (CKA)",
+            "completion_status": "Completed",
+            "score": 91
+          },
+          {
+            "course_name": "Meta Full-Stack Developer Professional Certificate",
+            "completion_status": "Completed",
+            "score": 99
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Frequently absents from early morning classes and lab lectures. Needs to meet statutory 75% class attendance threshold.",
+        "mentorFeedback": "Top-tier problem solver with rich production-grade projects on GitHub. Crushes live technical rounds with optimal time complexities.",
+        "strengths": [
+          "System design knowledge",
+          "Advanced data structures & algorithms",
+          "Hackathon winner & builder"
+        ],
+        "areasForImprovement": [
+          "Classroom attendance compliance (<75%)",
+          "Timely submission of academic assignments",
+          "Semester exam preparation"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU025",
+    "name": "Nikhil Menon",
+    "email": "nikhil.menon25@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Information Technology",
+    "batch": "2022-2026",
+    "class": "IT-B",
+    "persona": "Low Attendance / High Skills",
+    "categories": {
+      "academic": {
+        "cgpa": 7.15,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 75,
+          "endsem": 82
+        }
+      },
+      "attendance": {
+        "overall": 65.9,
+        "classes": 55.2,
+        "events": 91.7,
+        "remedial": 63,
+        "extracurricular": 95.7,
+        "overallPercentage": 65.9,
+        "status": "Attendance Warning (<75%)"
+      },
+      "lms": {
+        "loginFrequency": "1-2 times a week",
+        "weeklyHours": 5.7,
+        "assignmentsSubmittedOnTimePercentage": 72
+      },
+      "engagement": {
+        "hackathonsParticipated": 6,
+        "hackathonWins": 3,
+        "clubsOrActivities": [
+          "Open Source Club Lead",
+          "Competitive Programming Cell"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 95,
+        "technicalRoundScore": 89,
+        "hrRoundScore": 80,
+        "readinessStatus": "Industry Ready (High Product Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 87,
+        "primaryLanguages": [
+          "Python",
+          "JavaScript",
+          "C++"
+        ],
+        "leetcodeProblemsSolved": 288,
+        "certificationsCount": 3,
+        "certifications": [
+          {
+            "course_name": "AWS Certified Solutions Architect - Associate",
+            "completion_status": "Completed",
+            "score": 92
+          },
+          {
+            "course_name": "Certified Kubernetes Administrator (CKA)",
+            "completion_status": "Completed",
+            "score": 90
+          },
+          {
+            "course_name": "Meta Full-Stack Developer Professional Certificate",
+            "completion_status": "Completed",
+            "score": 98
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Frequently absents from early morning classes and lab lectures. Needs to meet statutory 75% class attendance threshold.",
+        "mentorFeedback": "Top-tier problem solver with rich production-grade projects on GitHub. Crushes live technical rounds with optimal time complexities.",
+        "strengths": [
+          "System design knowledge",
+          "Advanced data structures & algorithms",
+          "Hackathon winner & builder"
+        ],
+        "areasForImprovement": [
+          "Classroom attendance compliance (<75%)",
+          "Timely submission of academic assignments",
+          "Semester exam preparation"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU026",
+    "name": "Simran Pandey",
+    "email": "simran.pandey26@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Electronics & Communication Engineering",
+    "batch": "2021-2025",
+    "class": "ECE-A",
+    "persona": "Low Attendance / High Skills",
+    "categories": {
+      "academic": {
+        "cgpa": 6.31,
+        "backlogs": 1,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 70,
+          "endsem": 70
+        }
+      },
+      "attendance": {
+        "overall": 69.4,
+        "classes": 65.1,
+        "events": 86.6,
+        "remedial": 53.5,
+        "extracurricular": 93,
+        "overallPercentage": 69.4,
+        "status": "Attendance Warning (<75%)"
+      },
+      "lms": {
+        "loginFrequency": "Rarely (mostly before deadlines)",
+        "weeklyHours": 3.5,
+        "assignmentsSubmittedOnTimePercentage": 65
+      },
+      "engagement": {
+        "hackathonsParticipated": 4,
+        "hackathonWins": 3,
+        "clubsOrActivities": [
+          "DevOps Community",
+          "AI Research Group"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 90,
+        "technicalRoundScore": 88,
+        "hrRoundScore": 81,
+        "readinessStatus": "Industry Ready (High Product Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 90,
+        "primaryLanguages": [
+          "Kotlin",
+          "Go",
+          "Docker",
+          "React"
+        ],
+        "leetcodeProblemsSolved": 432,
+        "certificationsCount": 3,
+        "certifications": [
+          {
+            "course_name": "AWS Certified Solutions Architect - Associate",
+            "completion_status": "Completed",
+            "score": 91
+          },
+          {
+            "course_name": "Certified Kubernetes Administrator (CKA)",
+            "completion_status": "Completed",
+            "score": 92
+          },
+          {
+            "course_name": "Meta Full-Stack Developer Professional Certificate",
+            "completion_status": "Completed",
+            "score": 94
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Frequently absents from early morning classes and lab lectures. Needs to meet statutory 75% class attendance threshold.",
+        "mentorFeedback": "Top-tier problem solver with rich production-grade projects on GitHub. Crushes live technical rounds with optimal time complexities.",
+        "strengths": [
+          "System design knowledge",
+          "Advanced data structures & algorithms",
+          "Hackathon winner & builder"
+        ],
+        "areasForImprovement": [
+          "Classroom attendance compliance (<75%)",
+          "Timely submission of academic assignments",
+          "Semester exam preparation"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU027",
+    "name": "Varun Venkatesh",
+    "email": "varun.venkatesh27@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Data Science & AI",
+    "batch": "2021-2025",
+    "class": "DSAI-B",
+    "persona": "Low Attendance / High Skills",
+    "categories": {
+      "academic": {
+        "cgpa": 6.63,
+        "backlogs": 1,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 75,
+          "endsem": 70
+        }
+      },
+      "attendance": {
+        "overall": 63.3,
+        "classes": 56,
+        "events": 92,
+        "remedial": 46.2,
+        "extracurricular": 89.8,
+        "overallPercentage": 63.3,
+        "status": "Attendance Warning (<75%)"
+      },
+      "lms": {
+        "loginFrequency": "Irregular",
+        "weeklyHours": 3.7,
+        "assignmentsSubmittedOnTimePercentage": 72
+      },
+      "engagement": {
+        "hackathonsParticipated": 6,
+        "hackathonWins": 1,
+        "clubsOrActivities": [
+          "Hackathon Core Team",
+          "Robotics Society"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 94,
+        "technicalRoundScore": 91,
+        "hrRoundScore": 76,
+        "readinessStatus": "Industry Ready (High Product Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 99,
+        "primaryLanguages": [
+          "Kotlin",
+          "Go",
+          "Docker",
+          "React"
+        ],
+        "leetcodeProblemsSolved": 487,
+        "certificationsCount": 3,
+        "certifications": [
+          {
+            "course_name": "AWS Certified Solutions Architect - Associate",
+            "completion_status": "Completed",
+            "score": 91
+          },
+          {
+            "course_name": "Certified Kubernetes Administrator (CKA)",
+            "completion_status": "Completed",
+            "score": 88
+          },
+          {
+            "course_name": "Meta Full-Stack Developer Professional Certificate",
+            "completion_status": "Completed",
+            "score": 99
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Frequently absents from early morning classes and lab lectures. Needs to meet statutory 75% class attendance threshold.",
+        "mentorFeedback": "Top-tier problem solver with rich production-grade projects on GitHub. Crushes live technical rounds with optimal time complexities.",
+        "strengths": [
+          "System design knowledge",
+          "Advanced data structures & algorithms",
+          "Hackathon winner & builder"
+        ],
+        "areasForImprovement": [
+          "Classroom attendance compliance (<75%)",
+          "Timely submission of academic assignments",
+          "Semester exam preparation"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU028",
+    "name": "Anushka Verma",
+    "email": "anushka.verma28@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Computer Science & Engineering",
+    "batch": "2021-2025",
+    "class": "CSE-A",
+    "persona": "Low Attendance / High Skills",
+    "categories": {
+      "academic": {
+        "cgpa": 6.47,
+        "backlogs": 1,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 79,
+          "endsem": 82
+        }
+      },
+      "attendance": {
+        "overall": 68.3,
+        "classes": 61.9,
+        "events": 86.4,
+        "remedial": 63.4,
+        "extracurricular": 87.4,
+        "overallPercentage": 68.3,
+        "status": "Attendance Warning (<75%)"
+      },
+      "lms": {
+        "loginFrequency": "1-2 times a week",
+        "weeklyHours": 4.2,
+        "assignmentsSubmittedOnTimePercentage": 68
+      },
+      "engagement": {
+        "hackathonsParticipated": 5,
+        "hackathonWins": 3,
+        "clubsOrActivities": [
+          "Open Source Club Lead",
+          "Competitive Programming Cell"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 92,
+        "technicalRoundScore": 95,
+        "hrRoundScore": 84,
+        "readinessStatus": "Industry Ready (High Product Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 94,
+        "primaryLanguages": [
+          "Kotlin",
+          "Go",
+          "Docker",
+          "React"
+        ],
+        "leetcodeProblemsSolved": 386,
+        "certificationsCount": 3,
+        "certifications": [
+          {
+            "course_name": "AWS Certified Solutions Architect - Associate",
+            "completion_status": "Completed",
+            "score": 94
+          },
+          {
+            "course_name": "Certified Kubernetes Administrator (CKA)",
+            "completion_status": "Completed",
+            "score": 93
+          },
+          {
+            "course_name": "Meta Full-Stack Developer Professional Certificate",
+            "completion_status": "Completed",
+            "score": 99
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Frequently absents from early morning classes and lab lectures. Needs to meet statutory 75% class attendance threshold.",
+        "mentorFeedback": "Top-tier problem solver with rich production-grade projects on GitHub. Crushes live technical rounds with optimal time complexities.",
+        "strengths": [
+          "System design knowledge",
+          "Advanced data structures & algorithms",
+          "Hackathon winner & builder"
+        ],
+        "areasForImprovement": [
+          "Classroom attendance compliance (<75%)",
+          "Timely submission of academic assignments",
+          "Semester exam preparation"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU029",
+    "name": "Harsh Gupta",
+    "email": "harsh.gupta29@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Information Technology",
+    "batch": "2021-2025",
+    "class": "IT-B",
+    "persona": "Low Attendance / High Skills",
+    "categories": {
+      "academic": {
+        "cgpa": 6.77,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 77,
+          "endsem": 75
+        }
+      },
+      "attendance": {
+        "overall": 68.5,
+        "classes": 60.7,
+        "events": 88.2,
+        "remedial": 62.6,
+        "extracurricular": 94.2,
+        "overallPercentage": 68.5,
+        "status": "Attendance Warning (<75%)"
+      },
+      "lms": {
+        "loginFrequency": "Irregular",
+        "weeklyHours": 5.4,
+        "assignmentsSubmittedOnTimePercentage": 66
+      },
+      "engagement": {
+        "hackathonsParticipated": 7,
+        "hackathonWins": 3,
+        "clubsOrActivities": [
+          "DevOps Community",
+          "AI Research Group"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 88,
+        "technicalRoundScore": 91,
+        "hrRoundScore": 83,
+        "readinessStatus": "Industry Ready (High Product Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 86,
+        "primaryLanguages": [
+          "Python",
+          "JavaScript",
+          "C++"
+        ],
+        "leetcodeProblemsSolved": 480,
+        "certificationsCount": 3,
+        "certifications": [
+          {
+            "course_name": "AWS Certified Solutions Architect - Associate",
+            "completion_status": "Completed",
+            "score": 92
+          },
+          {
+            "course_name": "Certified Kubernetes Administrator (CKA)",
+            "completion_status": "Completed",
+            "score": 95
+          },
+          {
+            "course_name": "Meta Full-Stack Developer Professional Certificate",
+            "completion_status": "Completed",
+            "score": 92
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Frequently absents from early morning classes and lab lectures. Needs to meet statutory 75% class attendance threshold.",
+        "mentorFeedback": "Top-tier problem solver with rich production-grade projects on GitHub. Crushes live technical rounds with optimal time complexities.",
+        "strengths": [
+          "System design knowledge",
+          "Advanced data structures & algorithms",
+          "Hackathon winner & builder"
+        ],
+        "areasForImprovement": [
+          "Classroom attendance compliance (<75%)",
+          "Timely submission of academic assignments",
+          "Semester exam preparation"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU030",
+    "name": "Tara Mehta",
+    "email": "tara.mehta30@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Electronics & Communication Engineering",
+    "batch": "2022-2026",
+    "class": "ECE-A",
+    "persona": "Low Attendance / High Skills",
+    "categories": {
+      "academic": {
+        "cgpa": 7.17,
+        "backlogs": 1,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 70,
+          "endsem": 73
+        }
+      },
+      "attendance": {
+        "overall": 64.5,
+        "classes": 57.5,
+        "events": 82.9,
+        "remedial": 59.7,
+        "extracurricular": 86,
+        "overallPercentage": 64.5,
+        "status": "Attendance Warning (<75%)"
+      },
+      "lms": {
+        "loginFrequency": "Irregular",
+        "weeklyHours": 4.9,
+        "assignmentsSubmittedOnTimePercentage": 65
+      },
+      "engagement": {
+        "hackathonsParticipated": 3,
+        "hackathonWins": 3,
+        "clubsOrActivities": [
+          "Hackathon Core Team",
+          "Robotics Society"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 90,
+        "technicalRoundScore": 88,
+        "hrRoundScore": 89,
+        "readinessStatus": "Industry Ready (High Product Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 99,
+        "primaryLanguages": [
+          "TypeScript",
+          "Rust",
+          "Python",
+          "Go"
+        ],
+        "leetcodeProblemsSolved": 430,
+        "certificationsCount": 3,
+        "certifications": [
+          {
+            "course_name": "AWS Certified Solutions Architect - Associate",
+            "completion_status": "Completed",
+            "score": 96
+          },
+          {
+            "course_name": "Certified Kubernetes Administrator (CKA)",
+            "completion_status": "Completed",
+            "score": 92
+          },
+          {
+            "course_name": "Meta Full-Stack Developer Professional Certificate",
+            "completion_status": "Completed",
+            "score": 93
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Frequently absents from early morning classes and lab lectures. Needs to meet statutory 75% class attendance threshold.",
+        "mentorFeedback": "Top-tier problem solver with rich production-grade projects on GitHub. Crushes live technical rounds with optimal time complexities.",
+        "strengths": [
+          "System design knowledge",
+          "Advanced data structures & algorithms",
+          "Hackathon winner & builder"
+        ],
+        "areasForImprovement": [
+          "Classroom attendance compliance (<75%)",
+          "Timely submission of academic assignments",
+          "Semester exam preparation"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU031",
+    "name": "Rishi Chopra",
+    "email": "rishi.chopra31@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Data Science & AI",
+    "batch": "2021-2025",
+    "class": "DSAI-B",
+    "persona": "Low Attendance / High Skills",
+    "categories": {
+      "academic": {
+        "cgpa": 6.82,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 78,
+          "endsem": 70
+        }
+      },
+      "attendance": {
+        "overall": 69.5,
+        "classes": 66.9,
+        "events": 88.7,
+        "remedial": 50.3,
+        "extracurricular": 85.6,
+        "overallPercentage": 69.5,
+        "status": "Attendance Warning (<75%)"
+      },
+      "lms": {
+        "loginFrequency": "Irregular",
+        "weeklyHours": 4.8,
+        "assignmentsSubmittedOnTimePercentage": 78
+      },
+      "engagement": {
+        "hackathonsParticipated": 5,
+        "hackathonWins": 2,
+        "clubsOrActivities": [
+          "Hackathon Core Team",
+          "Robotics Society"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 95,
+        "technicalRoundScore": 89,
+        "hrRoundScore": 88,
+        "readinessStatus": "Industry Ready (High Product Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 86,
+        "primaryLanguages": [
+          "TypeScript",
+          "Rust",
+          "Python",
+          "Go"
+        ],
+        "leetcodeProblemsSolved": 416,
+        "certificationsCount": 3,
+        "certifications": [
+          {
+            "course_name": "AWS Certified Solutions Architect - Associate",
+            "completion_status": "Completed",
+            "score": 96
+          },
+          {
+            "course_name": "Certified Kubernetes Administrator (CKA)",
+            "completion_status": "Completed",
+            "score": 93
+          },
+          {
+            "course_name": "Meta Full-Stack Developer Professional Certificate",
+            "completion_status": "Completed",
+            "score": 92
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Frequently absents from early morning classes and lab lectures. Needs to meet statutory 75% class attendance threshold.",
+        "mentorFeedback": "Top-tier problem solver with rich production-grade projects on GitHub. Crushes live technical rounds with optimal time complexities.",
+        "strengths": [
+          "System design knowledge",
+          "Advanced data structures & algorithms",
+          "Hackathon winner & builder"
+        ],
+        "areasForImprovement": [
+          "Classroom attendance compliance (<75%)",
+          "Timely submission of academic assignments",
+          "Semester exam preparation"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU032",
+    "name": "Kritika Kulkarni",
+    "email": "kritika.kulkarni32@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Computer Science & Engineering",
+    "batch": "2021-2025",
+    "class": "CSE-A",
+    "persona": "Low Attendance / High Skills",
+    "categories": {
+      "academic": {
+        "cgpa": 6.53,
+        "backlogs": 1,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 79,
+          "endsem": 82
+        }
+      },
+      "attendance": {
+        "overall": 69.2,
+        "classes": 66.5,
+        "events": 86.9,
+        "remedial": 50.7,
+        "extracurricular": 86.1,
+        "overallPercentage": 69.2,
+        "status": "Attendance Warning (<75%)"
+      },
+      "lms": {
+        "loginFrequency": "1-2 times a week",
+        "weeklyHours": 4.5,
+        "assignmentsSubmittedOnTimePercentage": 70
+      },
+      "engagement": {
+        "hackathonsParticipated": 4,
+        "hackathonWins": 1,
+        "clubsOrActivities": [
+          "Open Source Club Lead",
+          "Competitive Programming Cell"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 85,
+        "technicalRoundScore": 95,
+        "hrRoundScore": 87,
+        "readinessStatus": "Industry Ready (High Product Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 92,
+        "primaryLanguages": [
+          "Kotlin",
+          "Go",
+          "Docker",
+          "React"
+        ],
+        "leetcodeProblemsSolved": 392,
+        "certificationsCount": 3,
+        "certifications": [
+          {
+            "course_name": "AWS Certified Solutions Architect - Associate",
+            "completion_status": "Completed",
+            "score": 95
+          },
+          {
+            "course_name": "Certified Kubernetes Administrator (CKA)",
+            "completion_status": "Completed",
+            "score": 94
+          },
+          {
+            "course_name": "Meta Full-Stack Developer Professional Certificate",
+            "completion_status": "Completed",
+            "score": 97
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Frequently absents from early morning classes and lab lectures. Needs to meet statutory 75% class attendance threshold.",
+        "mentorFeedback": "Top-tier problem solver with rich production-grade projects on GitHub. Crushes live technical rounds with optimal time complexities.",
+        "strengths": [
+          "System design knowledge",
+          "Advanced data structures & algorithms",
+          "Hackathon winner & builder"
+        ],
+        "areasForImprovement": [
+          "Classroom attendance compliance (<75%)",
+          "Timely submission of academic assignments",
+          "Semester exam preparation"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU033",
+    "name": "Abhishek Mishra",
+    "email": "abhishek.mishra33@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Information Technology",
+    "batch": "2021-2025",
+    "class": "IT-B",
+    "persona": "Low Attendance / High Skills",
+    "categories": {
+      "academic": {
+        "cgpa": 5.45,
+        "backlogs": 2,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 55,
+          "endsem": 55
+        }
+      },
+      "attendance": {
+        "overall": 63,
+        "classes": 53.6,
+        "events": 90.8,
+        "remedial": 57.3,
+        "extracurricular": 85.9,
+        "overallPercentage": 63,
+        "status": "Critical Attendance Shortage (<50%)"
+      },
+      "lms": {
+        "loginFrequency": "Irregular",
+        "weeklyHours": 2.1,
+        "assignmentsSubmittedOnTimePercentage": 45
+      },
+      "engagement": {
+        "hackathonsParticipated": 3,
+        "hackathonWins": 3,
+        "clubsOrActivities": [
+          "DevOps Community",
+          "AI Research Group"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 77,
+        "technicalRoundScore": 93,
+        "hrRoundScore": 79,
+        "readinessStatus": "Industry Ready (High Product Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 87,
+        "primaryLanguages": [
+          "Python",
+          "JavaScript",
+          "C++"
+        ],
+        "leetcodeProblemsSolved": 324,
+        "certificationsCount": 3,
+        "certifications": [
+          {
+            "course_name": "AWS Certified Solutions Architect - Associate",
+            "completion_status": "Completed",
+            "score": 97
+          },
+          {
+            "course_name": "Certified Kubernetes Administrator (CKA)",
+            "completion_status": "Completed",
+            "score": 95
+          },
+          {
+            "course_name": "Meta Full-Stack Developer Professional Certificate",
+            "completion_status": "Completed",
+            "score": 95
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Frequently absents from early morning classes and lab lectures. Needs to meet statutory 75% class attendance threshold.",
+        "mentorFeedback": "Top-tier problem solver with rich production-grade projects on GitHub. Crushes live technical rounds with optimal time complexities.",
+        "strengths": [
+          "System design knowledge",
+          "Advanced data structures & algorithms",
+          "Hackathon winner & builder"
+        ],
+        "areasForImprovement": [
+          "Classroom attendance compliance (<75%)",
+          "Timely submission of academic assignments",
+          "Semester exam preparation"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU034",
+    "name": "Swati Chatterjee",
+    "email": "swati.chatterjee34@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Electronics & Communication Engineering",
+    "batch": "2021-2025",
+    "class": "ECE-A",
+    "persona": "Low Attendance / High Skills",
+    "categories": {
+      "academic": {
+        "cgpa": 5.89,
+        "backlogs": 3,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 56,
+          "endsem": 64
+        }
+      },
+      "attendance": {
+        "overall": 56.9,
+        "classes": 44.6,
+        "events": 89.6,
+        "remedial": 50,
+        "extracurricular": 91.9,
+        "overallPercentage": 56.9,
+        "status": "Critical Attendance Shortage (<50%)"
+      },
+      "lms": {
+        "loginFrequency": "1-2 times a week",
+        "weeklyHours": 1.5,
+        "assignmentsSubmittedOnTimePercentage": 36
+      },
+      "engagement": {
+        "hackathonsParticipated": 6,
+        "hackathonWins": 3,
+        "clubsOrActivities": [
+          "Hackathon Core Team",
+          "Robotics Society"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 79,
+        "technicalRoundScore": 89,
+        "hrRoundScore": 78,
+        "readinessStatus": "Industry Ready (High Product Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 91,
+        "primaryLanguages": [
+          "Python",
+          "JavaScript",
+          "C++"
+        ],
+        "leetcodeProblemsSolved": 441,
+        "certificationsCount": 3,
+        "certifications": [
+          {
+            "course_name": "AWS Certified Solutions Architect - Associate",
+            "completion_status": "Completed",
+            "score": 93
+          },
+          {
+            "course_name": "Certified Kubernetes Administrator (CKA)",
+            "completion_status": "Completed",
+            "score": 91
+          },
+          {
+            "course_name": "Meta Full-Stack Developer Professional Certificate",
+            "completion_status": "Completed",
+            "score": 94
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Frequently absents from early morning classes and lab lectures. Needs to meet statutory 75% class attendance threshold.",
+        "mentorFeedback": "Top-tier problem solver with rich production-grade projects on GitHub. Crushes live technical rounds with optimal time complexities.",
+        "strengths": [
+          "System design knowledge",
+          "Advanced data structures & algorithms",
+          "Hackathon winner & builder"
+        ],
+        "areasForImprovement": [
+          "Classroom attendance compliance (<75%)",
+          "Timely submission of academic assignments",
+          "Semester exam preparation"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU035",
+    "name": "Gaurav Menon",
+    "email": "gaurav.menon35@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Data Science & AI",
+    "batch": "2022-2026",
+    "class": "DSAI-B",
+    "persona": "Average All-Rounders",
+    "categories": {
+      "academic": {
+        "cgpa": 7.65,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 80,
+          "endsem": 87
+        }
+      },
+      "attendance": {
+        "overall": 83.1,
+        "classes": 85.8,
+        "events": 77.8,
+        "remedial": 81.5,
+        "extracurricular": 76.8,
+        "overallPercentage": 83.1,
+        "status": "Good Standing"
+      },
+      "lms": {
+        "loginFrequency": "Regular (4-5 days/week)",
+        "weeklyHours": 9.3,
+        "assignmentsSubmittedOnTimePercentage": 90
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Sports Club",
+          "Tech Fest Organizer"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 73,
+        "technicalRoundScore": 76,
+        "hrRoundScore": 71,
+        "readinessStatus": "On Track (Balanced Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 73,
+        "primaryLanguages": [
+          "C++",
+          "Python",
+          "React"
+        ],
+        "leetcodeProblemsSolved": 190,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Python for Applied Data Science & AI (IBM)",
+            "completion_status": "Completed",
+            "score": 80
+          },
+          {
+            "course_name": "Google Cloud Digital Leader Certification",
+            "completion_status": "Completed",
+            "score": 85
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Consistent student with steady academic and lab performance. Cooperative and dependable in team projects.",
+        "mentorFeedback": "Solid fundamentals with well-rounded communication. Can crack product companies with slightly more advanced DSA practice.",
+        "strengths": [
+          "Balanced profile",
+          "Team collaboration",
+          "Reliable work ethic"
+        ],
+        "areasForImprovement": [
+          "Deep-dive into advanced system design",
+          "Complex graph/DP algorithms"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU036",
+    "name": "Aditi Pandey",
+    "email": "aditi.pandey36@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Computer Science & Engineering",
+    "batch": "2021-2025",
+    "class": "CSE-A",
+    "persona": "Average All-Rounders",
+    "categories": {
+      "academic": {
+        "cgpa": 7.73,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 76,
+          "endsem": 87
+        }
+      },
+      "attendance": {
+        "overall": 78.7,
+        "classes": 77.3,
+        "events": 77.4,
+        "remedial": 86.1,
+        "extracurricular": 77.9,
+        "overallPercentage": 78.7,
+        "status": "Good Standing"
+      },
+      "lms": {
+        "loginFrequency": "3-4 times a week",
+        "weeklyHours": 10.1,
+        "assignmentsSubmittedOnTimePercentage": 92
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Placement Cell Student Volunteer"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 74,
+        "technicalRoundScore": 80,
+        "hrRoundScore": 81,
+        "readinessStatus": "On Track (Balanced Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 73,
+        "primaryLanguages": [
+          "C++",
+          "Python",
+          "React"
+        ],
+        "leetcodeProblemsSolved": 125,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Python for Applied Data Science & AI (IBM)",
+            "completion_status": "Completed",
+            "score": 83
+          },
+          {
+            "course_name": "Google Cloud Digital Leader Certification",
+            "completion_status": "Completed",
+            "score": 85
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Consistent student with steady academic and lab performance. Cooperative and dependable in team projects.",
+        "mentorFeedback": "Solid fundamentals with well-rounded communication. Can crack product companies with slightly more advanced DSA practice.",
+        "strengths": [
+          "Balanced profile",
+          "Team collaboration",
+          "Reliable work ethic"
+        ],
+        "areasForImprovement": [
+          "Deep-dive into advanced system design",
+          "Complex graph/DP algorithms"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU037",
+    "name": "Pranav Venkatesh",
+    "email": "pranav.venkatesh37@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Information Technology",
+    "batch": "2021-2025",
+    "class": "IT-B",
+    "persona": "Average All-Rounders",
+    "categories": {
+      "academic": {
+        "cgpa": 7.77,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 77,
+          "endsem": 84
+        }
+      },
+      "attendance": {
+        "overall": 82.4,
+        "classes": 83.3,
+        "events": 77.6,
+        "remedial": 87.4,
+        "extracurricular": 76.8,
+        "overallPercentage": 82.4,
+        "status": "Good Standing"
+      },
+      "lms": {
+        "loginFrequency": "3-4 times a week",
+        "weeklyHours": 12.2,
+        "assignmentsSubmittedOnTimePercentage": 86
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Cultural Committee",
+          "Web Development Club"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 77,
+        "technicalRoundScore": 70,
+        "hrRoundScore": 72,
+        "readinessStatus": "On Track (Balanced Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 69,
+        "primaryLanguages": [
+          "C++",
+          "Python",
+          "React"
+        ],
+        "leetcodeProblemsSolved": 215,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Python for Applied Data Science & AI (IBM)",
+            "completion_status": "Completed",
+            "score": 87
+          },
+          {
+            "course_name": "Google Cloud Digital Leader Certification",
+            "completion_status": "Completed",
+            "score": 83
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Consistent student with steady academic and lab performance. Cooperative and dependable in team projects.",
+        "mentorFeedback": "Solid fundamentals with well-rounded communication. Can crack product companies with slightly more advanced DSA practice.",
+        "strengths": [
+          "Balanced profile",
+          "Team collaboration",
+          "Reliable work ethic"
+        ],
+        "areasForImprovement": [
+          "Deep-dive into advanced system design",
+          "Complex graph/DP algorithms"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU038",
+    "name": "Nandini Verma",
+    "email": "nandini.verma38@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Electronics & Communication Engineering",
+    "batch": "2021-2025",
+    "class": "ECE-A",
+    "persona": "Average All-Rounders",
+    "categories": {
+      "academic": {
+        "cgpa": 7.99,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 80,
+          "endsem": 85
+        }
+      },
+      "attendance": {
+        "overall": 83.3,
+        "classes": 84.1,
+        "events": 83.9,
+        "remedial": 80.7,
+        "extracurricular": 81.2,
+        "overallPercentage": 83.3,
+        "status": "Good Standing"
+      },
+      "lms": {
+        "loginFrequency": "3-4 times a week",
+        "weeklyHours": 11.9,
+        "assignmentsSubmittedOnTimePercentage": 88
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 1,
+        "clubsOrActivities": [
+          "Cultural Committee",
+          "Web Development Club"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 74,
+        "technicalRoundScore": 78,
+        "hrRoundScore": 75,
+        "readinessStatus": "On Track (Balanced Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 76,
+        "primaryLanguages": [
+          "C++",
+          "Python",
+          "React"
+        ],
+        "leetcodeProblemsSolved": 194,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Python for Applied Data Science & AI (IBM)",
+            "completion_status": "Completed",
+            "score": 86
+          },
+          {
+            "course_name": "Google Cloud Digital Leader Certification",
+            "completion_status": "Completed",
+            "score": 84
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Consistent student with steady academic and lab performance. Cooperative and dependable in team projects.",
+        "mentorFeedback": "Solid fundamentals with well-rounded communication. Can crack product companies with slightly more advanced DSA practice.",
+        "strengths": [
+          "Balanced profile",
+          "Team collaboration",
+          "Reliable work ethic"
+        ],
+        "areasForImprovement": [
+          "Deep-dive into advanced system design",
+          "Complex graph/DP algorithms"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU039",
+    "name": "Karan Gupta",
+    "email": "karan.gupta39@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Data Science & AI",
+    "batch": "2021-2025",
+    "class": "DSAI-B",
+    "persona": "Average All-Rounders",
+    "categories": {
+      "academic": {
+        "cgpa": 7.97,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 80,
+          "endsem": 87
+        }
+      },
+      "attendance": {
+        "overall": 81.9,
+        "classes": 82.3,
+        "events": 81.8,
+        "remedial": 79.6,
+        "extracurricular": 83.6,
+        "overallPercentage": 81.9,
+        "status": "Good Standing"
+      },
+      "lms": {
+        "loginFrequency": "Regular (4-5 days/week)",
+        "weeklyHours": 11.9,
+        "assignmentsSubmittedOnTimePercentage": 93
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 1,
+        "clubsOrActivities": [
+          "Sports Club",
+          "Tech Fest Organizer"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 77,
+        "technicalRoundScore": 74,
+        "hrRoundScore": 69,
+        "readinessStatus": "On Track (Balanced Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 70,
+        "primaryLanguages": [
+          "Java",
+          "SQL",
+          "JavaScript"
+        ],
+        "leetcodeProblemsSolved": 173,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Python for Applied Data Science & AI (IBM)",
+            "completion_status": "Completed",
+            "score": 80
+          },
+          {
+            "course_name": "Google Cloud Digital Leader Certification",
+            "completion_status": "Completed",
+            "score": 79
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Consistent student with steady academic and lab performance. Cooperative and dependable in team projects.",
+        "mentorFeedback": "Solid fundamentals with well-rounded communication. Can crack product companies with slightly more advanced DSA practice.",
+        "strengths": [
+          "Balanced profile",
+          "Team collaboration",
+          "Reliable work ethic"
+        ],
+        "areasForImprovement": [
+          "Deep-dive into advanced system design",
+          "Complex graph/DP algorithms"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU040",
+    "name": "Sanjana Mehta",
+    "email": "sanjana.mehta40@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Computer Science & Engineering",
+    "batch": "2022-2026",
+    "class": "CSE-A",
+    "persona": "Average All-Rounders",
+    "categories": {
+      "academic": {
+        "cgpa": 8.32,
+        "backlogs": 1,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 83,
+          "endsem": 80
+        }
+      },
+      "attendance": {
+        "overall": 80.3,
+        "classes": 80.4,
+        "events": 83.2,
+        "remedial": 78.4,
+        "extracurricular": 78.2,
+        "overallPercentage": 80.3,
+        "status": "Good Standing"
+      },
+      "lms": {
+        "loginFrequency": "3-4 times a week",
+        "weeklyHours": 9.6,
+        "assignmentsSubmittedOnTimePercentage": 89
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 1,
+        "clubsOrActivities": [
+          "Sports Club",
+          "Tech Fest Organizer"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 69,
+        "technicalRoundScore": 76,
+        "hrRoundScore": 81,
+        "readinessStatus": "On Track (Balanced Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 72,
+        "primaryLanguages": [
+          "Java",
+          "SQL",
+          "JavaScript"
+        ],
+        "leetcodeProblemsSolved": 187,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Python for Applied Data Science & AI (IBM)",
+            "completion_status": "Completed",
+            "score": 83
+          },
+          {
+            "course_name": "Google Cloud Digital Leader Certification",
+            "completion_status": "Completed",
+            "score": 81
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Consistent student with steady academic and lab performance. Cooperative and dependable in team projects.",
+        "mentorFeedback": "Solid fundamentals with well-rounded communication. Can crack product companies with slightly more advanced DSA practice.",
+        "strengths": [
+          "Balanced profile",
+          "Team collaboration",
+          "Reliable work ethic"
+        ],
+        "areasForImprovement": [
+          "Deep-dive into advanced system design",
+          "Complex graph/DP algorithms"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU041",
+    "name": "Yash Chopra",
+    "email": "yash.chopra41@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Information Technology",
+    "batch": "2021-2025",
+    "class": "IT-B",
+    "persona": "Average All-Rounders",
+    "categories": {
+      "academic": {
+        "cgpa": 7.57,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 82,
+          "endsem": 82
+        }
+      },
+      "attendance": {
+        "overall": 77.4,
+        "classes": 76.3,
+        "events": 77.2,
+        "remedial": 80.3,
+        "extracurricular": 79.8,
+        "overallPercentage": 77.4,
+        "status": "Good Standing"
+      },
+      "lms": {
+        "loginFrequency": "3-4 times a week",
+        "weeklyHours": 8.1,
+        "assignmentsSubmittedOnTimePercentage": 91
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Placement Cell Student Volunteer"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 73,
+        "technicalRoundScore": 72,
+        "hrRoundScore": 81,
+        "readinessStatus": "On Track (Balanced Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 70,
+        "primaryLanguages": [
+          "Java",
+          "SQL",
+          "JavaScript"
+        ],
+        "leetcodeProblemsSolved": 150,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Python for Applied Data Science & AI (IBM)",
+            "completion_status": "Completed",
+            "score": 83
+          },
+          {
+            "course_name": "Google Cloud Digital Leader Certification",
+            "completion_status": "Completed",
+            "score": 78
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Consistent student with steady academic and lab performance. Cooperative and dependable in team projects.",
+        "mentorFeedback": "Solid fundamentals with well-rounded communication. Can crack product companies with slightly more advanced DSA practice.",
+        "strengths": [
+          "Balanced profile",
+          "Team collaboration",
+          "Reliable work ethic"
+        ],
+        "areasForImprovement": [
+          "Deep-dive into advanced system design",
+          "Complex graph/DP algorithms"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU042",
+    "name": "Bhavna Kulkarni",
+    "email": "bhavna.kulkarni42@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Electronics & Communication Engineering",
+    "batch": "2021-2025",
+    "class": "ECE-A",
+    "persona": "Average All-Rounders",
+    "categories": {
+      "academic": {
+        "cgpa": 8.19,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 81,
+          "endsem": 83
+        }
+      },
+      "attendance": {
+        "overall": 83.7,
+        "classes": 84,
+        "events": 80.5,
+        "remedial": 86.8,
+        "extracurricular": 82.2,
+        "overallPercentage": 83.7,
+        "status": "Good Standing"
+      },
+      "lms": {
+        "loginFrequency": "3-4 times a week",
+        "weeklyHours": 8.4,
+        "assignmentsSubmittedOnTimePercentage": 91
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Placement Cell Student Volunteer"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 79,
+        "technicalRoundScore": 77,
+        "hrRoundScore": 70,
+        "readinessStatus": "On Track (Balanced Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 75,
+        "primaryLanguages": [
+          "Python",
+          "HTML/CSS",
+          "MySQL"
+        ],
+        "leetcodeProblemsSolved": 154,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Python for Applied Data Science & AI (IBM)",
+            "completion_status": "Completed",
+            "score": 83
+          },
+          {
+            "course_name": "Google Cloud Digital Leader Certification",
+            "completion_status": "Completed",
+            "score": 81
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Consistent student with steady academic and lab performance. Cooperative and dependable in team projects.",
+        "mentorFeedback": "Solid fundamentals with well-rounded communication. Can crack product companies with slightly more advanced DSA practice.",
+        "strengths": [
+          "Balanced profile",
+          "Team collaboration",
+          "Reliable work ethic"
+        ],
+        "areasForImprovement": [
+          "Deep-dive into advanced system design",
+          "Complex graph/DP algorithms"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU043",
+    "name": "Akash Mishra",
+    "email": "akash.mishra43@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Data Science & AI",
+    "batch": "2021-2025",
+    "class": "DSAI-B",
+    "persona": "Average All-Rounders",
+    "categories": {
+      "academic": {
+        "cgpa": 8.21,
+        "backlogs": 1,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 75,
+          "endsem": 80
+        }
+      },
+      "attendance": {
+        "overall": 78.5,
+        "classes": 77.5,
+        "events": 83,
+        "remedial": 78.4,
+        "extracurricular": 77.4,
+        "overallPercentage": 78.5,
+        "status": "Good Standing"
+      },
+      "lms": {
+        "loginFrequency": "3-4 times a week",
+        "weeklyHours": 12.4,
+        "assignmentsSubmittedOnTimePercentage": 85
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Cultural Committee",
+          "Web Development Club"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 77,
+        "technicalRoundScore": 80,
+        "hrRoundScore": 78,
+        "readinessStatus": "On Track (Balanced Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 74,
+        "primaryLanguages": [
+          "Java",
+          "SQL",
+          "JavaScript"
+        ],
+        "leetcodeProblemsSolved": 123,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Python for Applied Data Science & AI (IBM)",
+            "completion_status": "Completed",
+            "score": 84
+          },
+          {
+            "course_name": "Google Cloud Digital Leader Certification",
+            "completion_status": "Completed",
+            "score": 82
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Consistent student with steady academic and lab performance. Cooperative and dependable in team projects.",
+        "mentorFeedback": "Solid fundamentals with well-rounded communication. Can crack product companies with slightly more advanced DSA practice.",
+        "strengths": [
+          "Balanced profile",
+          "Team collaboration",
+          "Reliable work ethic"
+        ],
+        "areasForImprovement": [
+          "Deep-dive into advanced system design",
+          "Complex graph/DP algorithms"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU044",
+    "name": "Shruti Chatterjee",
+    "email": "shruti.chatterjee44@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Computer Science & Engineering",
+    "batch": "2021-2025",
+    "class": "CSE-A",
+    "persona": "Average All-Rounders",
+    "categories": {
+      "academic": {
+        "cgpa": 8.06,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 75,
+          "endsem": 86
+        }
+      },
+      "attendance": {
+        "overall": 81.6,
+        "classes": 80.3,
+        "events": 82.5,
+        "remedial": 83.2,
+        "extracurricular": 85.3,
+        "overallPercentage": 81.6,
+        "status": "Good Standing"
+      },
+      "lms": {
+        "loginFrequency": "Regular (4-5 days/week)",
+        "weeklyHours": 9,
+        "assignmentsSubmittedOnTimePercentage": 91
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Cultural Committee",
+          "Web Development Club"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 77,
+        "technicalRoundScore": 70,
+        "hrRoundScore": 69,
+        "readinessStatus": "On Track (Balanced Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 70,
+        "primaryLanguages": [
+          "Python",
+          "HTML/CSS",
+          "MySQL"
+        ],
+        "leetcodeProblemsSolved": 157,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Python for Applied Data Science & AI (IBM)",
+            "completion_status": "Completed",
+            "score": 82
+          },
+          {
+            "course_name": "Google Cloud Digital Leader Certification",
+            "completion_status": "Completed",
+            "score": 86
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Consistent student with steady academic and lab performance. Cooperative and dependable in team projects.",
+        "mentorFeedback": "Solid fundamentals with well-rounded communication. Can crack product companies with slightly more advanced DSA practice.",
+        "strengths": [
+          "Balanced profile",
+          "Team collaboration",
+          "Reliable work ethic"
+        ],
+        "areasForImprovement": [
+          "Deep-dive into advanced system design",
+          "Complex graph/DP algorithms"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU045",
+    "name": "Deepak Menon",
+    "email": "deepak.menon45@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Information Technology",
+    "batch": "2022-2026",
+    "class": "IT-B",
+    "persona": "Average All-Rounders",
+    "categories": {
+      "academic": {
+        "cgpa": 7.78,
+        "backlogs": 1,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 78,
+          "endsem": 81
+        }
+      },
+      "attendance": {
+        "overall": 82.5,
+        "classes": 82.7,
+        "events": 81.3,
+        "remedial": 85.8,
+        "extracurricular": 78.5,
+        "overallPercentage": 82.5,
+        "status": "Good Standing"
+      },
+      "lms": {
+        "loginFrequency": "Regular (4-5 days/week)",
+        "weeklyHours": 12.7,
+        "assignmentsSubmittedOnTimePercentage": 90
+      },
+      "engagement": {
+        "hackathonsParticipated": 2,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Cultural Committee",
+          "Web Development Club"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 71,
+        "technicalRoundScore": 75,
+        "hrRoundScore": 78,
+        "readinessStatus": "On Track (Balanced Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 79,
+        "primaryLanguages": [
+          "C++",
+          "Python",
+          "React"
+        ],
+        "leetcodeProblemsSolved": 126,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Python for Applied Data Science & AI (IBM)",
+            "completion_status": "Completed",
+            "score": 80
+          },
+          {
+            "course_name": "Google Cloud Digital Leader Certification",
+            "completion_status": "Completed",
+            "score": 83
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Consistent student with steady academic and lab performance. Cooperative and dependable in team projects.",
+        "mentorFeedback": "Solid fundamentals with well-rounded communication. Can crack product companies with slightly more advanced DSA practice.",
+        "strengths": [
+          "Balanced profile",
+          "Team collaboration",
+          "Reliable work ethic"
+        ],
+        "areasForImprovement": [
+          "Deep-dive into advanced system design",
+          "Complex graph/DP algorithms"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU046",
+    "name": "Payal Pandey",
+    "email": "payal.pandey46@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Electronics & Communication Engineering",
+    "batch": "2021-2025",
+    "class": "ECE-A",
+    "persona": "Average All-Rounders",
+    "categories": {
+      "academic": {
+        "cgpa": 8.34,
+        "backlogs": 1,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 79,
+          "endsem": 86
+        }
+      },
+      "attendance": {
+        "overall": 79.8,
+        "classes": 80.2,
+        "events": 80.3,
+        "remedial": 79.8,
+        "extracurricular": 76.4,
+        "overallPercentage": 79.8,
+        "status": "Good Standing"
+      },
+      "lms": {
+        "loginFrequency": "3-4 times a week",
+        "weeklyHours": 12.9,
+        "assignmentsSubmittedOnTimePercentage": 93
+      },
+      "engagement": {
+        "hackathonsParticipated": 2,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Placement Cell Student Volunteer"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 70,
+        "technicalRoundScore": 70,
+        "hrRoundScore": 72,
+        "readinessStatus": "On Track (Balanced Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 77,
+        "primaryLanguages": [
+          "Python",
+          "HTML/CSS",
+          "MySQL"
+        ],
+        "leetcodeProblemsSolved": 212,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Python for Applied Data Science & AI (IBM)",
+            "completion_status": "Completed",
+            "score": 78
+          },
+          {
+            "course_name": "Google Cloud Digital Leader Certification",
+            "completion_status": "Completed",
+            "score": 84
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Consistent student with steady academic and lab performance. Cooperative and dependable in team projects.",
+        "mentorFeedback": "Solid fundamentals with well-rounded communication. Can crack product companies with slightly more advanced DSA practice.",
+        "strengths": [
+          "Balanced profile",
+          "Team collaboration",
+          "Reliable work ethic"
+        ],
+        "areasForImprovement": [
+          "Deep-dive into advanced system design",
+          "Complex graph/DP algorithms"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU047",
+    "name": "Tushar Venkatesh",
+    "email": "tushar.venkatesh47@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Data Science & AI",
+    "batch": "2021-2025",
+    "class": "DSAI-B",
+    "persona": "Average All-Rounders",
+    "categories": {
+      "academic": {
+        "cgpa": 7.58,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 83,
+          "endsem": 88
+        }
+      },
+      "attendance": {
+        "overall": 81.2,
+        "classes": 79.5,
+        "events": 84.2,
+        "remedial": 85.3,
+        "extracurricular": 81.1,
+        "overallPercentage": 81.2,
+        "status": "Good Standing"
+      },
+      "lms": {
+        "loginFrequency": "3-4 times a week",
+        "weeklyHours": 9.3,
+        "assignmentsSubmittedOnTimePercentage": 92
+      },
+      "engagement": {
+        "hackathonsParticipated": 2,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Cultural Committee",
+          "Web Development Club"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 72,
+        "technicalRoundScore": 76,
+        "hrRoundScore": 76,
+        "readinessStatus": "On Track (Balanced Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 68,
+        "primaryLanguages": [
+          "C++",
+          "Python",
+          "React"
+        ],
+        "leetcodeProblemsSolved": 133,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Python for Applied Data Science & AI (IBM)",
+            "completion_status": "Completed",
+            "score": 86
+          },
+          {
+            "course_name": "Google Cloud Digital Leader Certification",
+            "completion_status": "Completed",
+            "score": 77
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Consistent student with steady academic and lab performance. Cooperative and dependable in team projects.",
+        "mentorFeedback": "Solid fundamentals with well-rounded communication. Can crack product companies with slightly more advanced DSA practice.",
+        "strengths": [
+          "Balanced profile",
+          "Team collaboration",
+          "Reliable work ethic"
+        ],
+        "areasForImprovement": [
+          "Deep-dive into advanced system design",
+          "Complex graph/DP algorithms"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU048",
+    "name": "Vidya Verma",
+    "email": "vidya.verma48@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Computer Science & Engineering",
+    "batch": "2021-2025",
+    "class": "CSE-A",
+    "persona": "Average All-Rounders",
+    "categories": {
+      "academic": {
+        "cgpa": 7.74,
+        "backlogs": 1,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 80,
+          "endsem": 88
+        }
+      },
+      "attendance": {
+        "overall": 82,
+        "classes": 81.8,
+        "events": 81,
+        "remedial": 87.1,
+        "extracurricular": 77,
+        "overallPercentage": 82,
+        "status": "Good Standing"
+      },
+      "lms": {
+        "loginFrequency": "Regular (4-5 days/week)",
+        "weeklyHours": 9.4,
+        "assignmentsSubmittedOnTimePercentage": 94
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 1,
+        "clubsOrActivities": [
+          "Sports Club",
+          "Tech Fest Organizer"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 79,
+        "technicalRoundScore": 75,
+        "hrRoundScore": 82,
+        "readinessStatus": "On Track (Balanced Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 78,
+        "primaryLanguages": [
+          "Python",
+          "HTML/CSS",
+          "MySQL"
+        ],
+        "leetcodeProblemsSolved": 129,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Python for Applied Data Science & AI (IBM)",
+            "completion_status": "Completed",
+            "score": 78
+          },
+          {
+            "course_name": "Google Cloud Digital Leader Certification",
+            "completion_status": "Completed",
+            "score": 85
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Consistent student with steady academic and lab performance. Cooperative and dependable in team projects.",
+        "mentorFeedback": "Solid fundamentals with well-rounded communication. Can crack product companies with slightly more advanced DSA practice.",
+        "strengths": [
+          "Balanced profile",
+          "Team collaboration",
+          "Reliable work ethic"
+        ],
+        "areasForImprovement": [
+          "Deep-dive into advanced system design",
+          "Complex graph/DP algorithms"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU049",
+    "name": "Suresh Gupta",
+    "email": "suresh.gupta49@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Information Technology",
+    "batch": "2021-2025",
+    "class": "IT-B",
+    "persona": "Average All-Rounders",
+    "categories": {
+      "academic": {
+        "cgpa": 8.25,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 76,
+          "endsem": 78
+        }
+      },
+      "attendance": {
+        "overall": 81,
+        "classes": 80,
+        "events": 83.8,
+        "remedial": 81.5,
+        "extracurricular": 82,
+        "overallPercentage": 81,
+        "status": "Good Standing"
+      },
+      "lms": {
+        "loginFrequency": "Regular (4-5 days/week)",
+        "weeklyHours": 10.6,
+        "assignmentsSubmittedOnTimePercentage": 93
+      },
+      "engagement": {
+        "hackathonsParticipated": 2,
+        "hackathonWins": 1,
+        "clubsOrActivities": [
+          "Cultural Committee",
+          "Web Development Club"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 76,
+        "technicalRoundScore": 78,
+        "hrRoundScore": 78,
+        "readinessStatus": "On Track (Balanced Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 73,
+        "primaryLanguages": [
+          "C++",
+          "Python",
+          "React"
+        ],
+        "leetcodeProblemsSolved": 161,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Python for Applied Data Science & AI (IBM)",
+            "completion_status": "Completed",
+            "score": 86
+          },
+          {
+            "course_name": "Google Cloud Digital Leader Certification",
+            "completion_status": "Completed",
+            "score": 78
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Consistent student with steady academic and lab performance. Cooperative and dependable in team projects.",
+        "mentorFeedback": "Solid fundamentals with well-rounded communication. Can crack product companies with slightly more advanced DSA practice.",
+        "strengths": [
+          "Balanced profile",
+          "Team collaboration",
+          "Reliable work ethic"
+        ],
+        "areasForImprovement": [
+          "Deep-dive into advanced system design",
+          "Complex graph/DP algorithms"
+        ]
+      }
+    }
+  },
+  {
+    "id": "STU050",
+    "name": "Mallika Mehta",
+    "email": "mallika.mehta50@university.edu",
+    "school": "School of Engineering & Computing",
+    "department": "Electronics & Communication Engineering",
+    "batch": "2022-2026",
+    "class": "ECE-A",
+    "persona": "Average All-Rounders",
+    "categories": {
+      "academic": {
+        "cgpa": 7.86,
+        "backlogs": 0,
+        "semester": 7,
+        "exam_scores": {
+          "midsem": 82,
+          "endsem": 81
+        }
+      },
+      "attendance": {
+        "overall": 81.9,
+        "classes": 81.1,
+        "events": 83.1,
+        "remedial": 83.4,
+        "extracurricular": 82.7,
+        "overallPercentage": 81.9,
+        "status": "Good Standing"
+      },
+      "lms": {
+        "loginFrequency": "Regular (4-5 days/week)",
+        "weeklyHours": 9.5,
+        "assignmentsSubmittedOnTimePercentage": 88
+      },
+      "engagement": {
+        "hackathonsParticipated": 1,
+        "hackathonWins": 0,
+        "clubsOrActivities": [
+          "Sports Club",
+          "Tech Fest Organizer"
+        ]
+      },
+      "placement": {
+        "mockInterviewScore": 78,
+        "technicalRoundScore": 76,
+        "hrRoundScore": 81,
+        "readinessStatus": "On Track (Balanced Potential)"
+      },
+      "skills": {
+        "codingAssessmentScore": 78,
+        "primaryLanguages": [
+          "Python",
+          "HTML/CSS",
+          "MySQL"
+        ],
+        "leetcodeProblemsSolved": 127,
+        "certificationsCount": 2,
+        "certifications": [
+          {
+            "course_name": "Python for Applied Data Science & AI (IBM)",
+            "completion_status": "Completed",
+            "score": 80
+          },
+          {
+            "course_name": "Google Cloud Digital Leader Certification",
+            "completion_status": "Completed",
+            "score": 82
+          }
+        ]
+      },
+      "feedback": {
+        "facultyFeedback": "Consistent student with steady academic and lab performance. Cooperative and dependable in team projects.",
+        "mentorFeedback": "Solid fundamentals with well-rounded communication. Can crack product companies with slightly more advanced DSA practice.",
+        "strengths": [
+          "Balanced profile",
+          "Team collaboration",
+          "Reliable work ethic"
+        ],
+        "areasForImprovement": [
+          "Deep-dive into advanced system design",
+          "Complex graph/DP algorithms"
+        ]
+      }
+    }
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "name": "student-analytics-backend",
+  "version": "1.0.0",
+  "description": "Simple Node.js and Express backend with mock database of 50 students across 3 personas and 7 categories",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "generate-data": "node data/generate-students.js"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "mock-database",
+    "student-data"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}

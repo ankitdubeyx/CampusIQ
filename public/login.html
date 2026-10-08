@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>OmniGrad Intelligence - Role-Based Campus Portal Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#004ac6",
+            "primary-container": "#2563eb",
+            "on-primary": "#ffffff",
+            "surface": "#f8f9ff",
+            "surface-dim": "#cbdbf5",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#eff4ff",
+            "surface-container": "#e5eeff",
+            "surface-container-high": "#dce9ff",
+            "on-surface": "#0b1c30",
+            "secondary": "#565e74",
+            "outline-variant": "#c3c6d7",
+            "tertiary": "#006242",
+            "error": "#ba1a1a",
+            "error-container": "#ffdad6"
+          },
+          fontFamily: {
+            sans: ["Inter", "sans-serif"],
+            display: ["Plus Jakarta Sans", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col justify-between selection:bg-primary selection:text-white">
+
+  <!-- Header -->
+  <header class="w-full bg-surface-container-lowest/80 backdrop-blur-md border-b border-outline-variant/30 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center font-bold text-xl shadow-sm">Ω</div>
+        <div>
+          <span class="font-display font-bold text-base text-on-surface leading-tight block">OmniGrad Intelligence</span>
+          <span class="text-[11px] text-secondary font-medium tracking-wide">Unified Student Success & Retention Ecosystem</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 bg-tertiary/10 text-tertiary px-3 py-1 rounded-full text-xs font-semibold">
+        <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+        <span>Secure RBAC Gateway</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Content & Role Selector -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-6 py-10 flex flex-col items-center justify-center">
+    
+    <!-- Title Tagline -->
+    <div class="text-center max-w-2xl mb-10">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold mb-3 uppercase tracking-wider">
+        <span class="material-symbols-outlined text-sm">lock_person</span>
+        Role-Based Access Control (RBAC)
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-display font-extrabold text-on-surface tracking-tight leading-tight">
+        Sign in to your Institutional Workspace
+      </h1>
+      <p class="text-sm text-secondary mt-2 leading-relaxed">
+        Select your designated campus role below. Each portal provides tailor-made telemetry, risk triggers, granular attendance allocations, and confidential performance records.
+      </p>
+    </div>
+
+    <!-- Role Selection Cards Grid (5 Roles) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
+
+      <!-- CARD 1: DEAN / ADMINISTRATOR -->
+      <div class="bg-surface-container-lowest rounded-2xl p-6 border border-outline-variant/30 hover:border-primary hover:shadow-lg transition-all duration-200 flex flex-col justify-between group">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+            <span class="material-symbols-outlined text-2xl">account_balance</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-display font-bold text-on-surface">Dean / Provost</h2>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-primary/10 text-primary">All School</span>
+          </div>
+          <p class="text-xs text-secondary mt-2 leading-relaxed">
+            Full institutional governance across all 50 undergraduate students, cross-departmental retention analytics, accreditation benchmarks, and dataset upload control.
+          </p>
+          <div class="mt-4 pt-3 border-t border-outline-variant/20 text-[11px] text-secondary space-y-1">
+            <div class="flex items-center gap-1.5"><span class="text-primary font-bold">•</span> School of Engineering & Computing</div>
+            <div class="flex items-center gap-1.5"><span class="text-primary font-bold">•</span> Institutional Radar / Spider Chart</div>
+          </div>
+        </div>
+        <div class="mt-6">
+          <a href="/dashboard?role=dean" class="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all">
+            <span>Enter as Dean</span>
+            <span class="material-symbols-outlined text-base">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- CARD 2: HEAD OF DEPARTMENT (HOD) -->
+      <div class="bg-surface-container-lowest rounded-2xl p-6 border border-outline-variant/30 hover:border-primary hover:shadow-lg transition-all duration-200 flex flex-col justify-between group">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+            <span class="material-symbols-outlined text-2xl">domain</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-display font-bold text-on-surface">Head of Department (HOD)</h2>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-surface-container text-secondary">Department Scope</span>
+          </div>
+          <p class="text-xs text-secondary mt-2 leading-relaxed">
+            Restricted departmental telemetry. Exam performance tracking, backlog audits, and student attendance benchmarking strictly within your branch.
+          </p>
+          
+          <!-- Quick Department Selector -->
+          <div class="mt-4 pt-3 border-t border-outline-variant/20">
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-secondary mb-1">Select Department</label>
+            <select id="hodDeptSelect" class="w-full bg-surface-container-low text-xs rounded-lg px-2.5 py-1.5 border border-outline-variant/30 text-on-surface font-semibold focus:ring-1 focus:ring-primary outline-none">
+              <option value="CSE">Computer Science & Engineering (CSE)</option>
+              <option value="IT">Information Technology (IT)</option>
+              <option value="ECE">Electronics & Communication (ECE)</option>
+              <option value="DSAI">Data Science & AI (DSAI)</option>
+            </select>
+          </div>
+        </div>
+        <div class="mt-6">
+          <button onclick="loginAsHod()" class="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all">
+            <span>Enter as HOD</span>
+            <span class="material-symbols-outlined text-base">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- CARD 3: BATCH HEAD -->
+      <div class="bg-surface-container-lowest rounded-2xl p-6 border border-outline-variant/30 hover:border-primary hover:shadow-lg transition-all duration-200 flex flex-col justify-between group">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+            <span class="material-symbols-outlined text-2xl">school</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-display font-bold text-on-surface">Batch Head</h2>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-surface-container text-secondary">Cohort Scope</span>
+          </div>
+          <p class="text-xs text-secondary mt-2 leading-relaxed">
+            Supervise an entire graduating class across sections. Compare Midsem vs. Endsem exam progression and placement readiness cohorts.
+          </p>
+          
+          <!-- Quick Batch Selector -->
+          <div class="mt-4 pt-3 border-t border-outline-variant/20">
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-secondary mb-1">Select Batch Year</label>
+            <select id="batchYearSelect" class="w-full bg-surface-container-low text-xs rounded-lg px-2.5 py-1.5 border border-outline-variant/30 text-on-surface font-semibold focus:ring-1 focus:ring-primary outline-none">
+              <option value="2021-2025">Class of 2021-2025 (4th Year Seniors)</option>
+              <option value="2022-2026">Class of 2022-2026 (3rd Year Juniors)</option>
+            </select>
+          </div>
+        </div>
+        <div class="mt-6">
+          <button onclick="loginAsBatchHead()" class="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all">
+            <span>Enter as Batch Head</span>
+            <span class="material-symbols-outlined text-base">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- CARD 4: MENTOR / FACULTY ADVISOR -->
+      <div class="bg-surface-container-lowest rounded-2xl p-6 border border-outline-variant/30 hover:border-primary hover:shadow-lg transition-all duration-200 flex flex-col justify-between group">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+            <span class="material-symbols-outlined text-2xl">supervisor_account</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-display font-bold text-on-surface">Class Mentor</h2>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-surface-container text-secondary">Class Section</span>
+          </div>
+          <p class="text-xs text-secondary mt-2 leading-relaxed">
+            Classroom level advisory. Deep dive into class attendance shortages (&lt;75%), counseling notes, and targeted interventions for assigned mentees.
+          </p>
+          
+          <!-- Quick Section Selector -->
+          <div class="mt-4 pt-3 border-t border-outline-variant/20">
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-secondary mb-1">Select Assigned Section</label>
+            <select id="mentorSectionSelect" class="w-full bg-surface-container-low text-xs rounded-lg px-2.5 py-1.5 border border-outline-variant/30 text-on-surface font-semibold focus:ring-1 focus:ring-primary outline-none">
+              <option value="CSE-A">Section CSE-A (Mentor Prof. Sharma)</option>
+              <option value="CSE-B">Section CSE-B (Mentor Prof. Nair)</option>
+              <option value="IT-A">Section IT-A (Mentor Prof. Kapoor)</option>
+              <option value="IT-B">Section IT-B (Mentor Prof. Rao)</option>
+              <option value="ECE-A">Section ECE-A (Mentor Prof. Bose)</option>
+              <option value="DSAI-A">Section DSAI-A (Mentor Prof. Sen)</option>
+            </select>
+          </div>
+        </div>
+        <div class="mt-6">
+          <button onclick="loginAsMentor()" class="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all">
+            <span>Enter as Mentor</span>
+            <span class="material-symbols-outlined text-base">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- CARD 5: STUDENT PERSONAL PORTAL -->
+      <div class="bg-surface-container-lowest rounded-2xl p-6 border-2 border-primary/40 hover:border-primary hover:shadow-xl transition-all duration-200 flex flex-col justify-between group md:col-span-2 lg:col-span-2 bg-gradient-to-br from-surface-container-lowest via-surface-container-lowest to-surface-container-low">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center shadow-md">
+              <span class="material-symbols-outlined text-2xl">person</span>
+            </div>
+            <span class="text-xs uppercase font-bold tracking-wider px-3 py-1 rounded-full bg-tertiary/10 text-tertiary flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>
+              Confidential Student Portal
+            </span>
+          </div>
+
+          <h2 class="text-xl font-display font-bold text-on-surface">Student Portal Login</h2>
+          <p class="text-xs text-secondary mt-1.5 leading-relaxed">
+            Strict RBAC Privacy Enforcement: Students can <strong>ONLY</strong> access their single personal record. View your personalized weakness diagnosis, exam marks, course certifications, and instant <strong>Attendance Shortage Reminders</strong>.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 pt-4 border-t border-outline-variant/20">
+            <div>
+              <label class="block text-[10px] font-bold uppercase tracking-wider text-secondary mb-1">Select Sample Student Account</label>
+              <select id="studentPresetSelect" onchange="document.getElementById('studentIdInput').value = this.value" class="w-full bg-surface-container-low text-xs rounded-lg px-2.5 py-2 border border-outline-variant/30 text-on-surface font-semibold focus:ring-1 focus:ring-primary outline-none">
+                <option value="STU001">STU001 • Aarav Chopra (Information Technology • Class IT-B • Good Standing)</option>
+                <option value="STU002">STU002 • Ananya Kulkarni (Electronics & Communication Engineering • Class ECE-A • Good Standing)</option>
+                <option value="STU003">STU003 • Rohan Mishra (Data Science & AI • Class DSAI-B • Good Standing)</option>
+                <option value="STU004">STU004 • Priya Chatterjee (Computer Science & Engineering • Class CSE-A • Good Standing)</option>
+                <option value="STU005">STU005 • Aditya Menon (Information Technology • Class IT-B • Good Standing)</option>
+                <option value="STU006">STU006 • Sneha Pandey (Electronics & Communication Engineering • Class ECE-A • Good Standing)</option>
+                <option value="STU007">STU007 • Vikram Venkatesh (Data Science & AI • Class DSAI-B • Good Standing)</option>
+                <option value="STU008">STU008 • Isha Verma (Computer Science & Engineering • Class CSE-A • Good Standing)</option>
+                <option value="STU009">STU009 • Kunal Gupta (Information Technology • Class IT-B • Good Standing)</option>
+                <option value="STU010">STU010 • Neha Mehta (Electronics & Communication Engineering • Class ECE-A • Good Standing)</option>
+                <option value="STU011">STU011 • Kabir Chopra (Data Science & AI • Class DSAI-B • Good Standing)</option>
+                <option value="STU012">STU012 • Riya Kulkarni (Computer Science & Engineering • Class CSE-A • Good Standing)</option>
+                <option value="STU013">STU013 • Arjun Mishra (Information Technology • Class IT-B • Good Standing)</option>
+                <option value="STU014">STU014 • Meera Chatterjee (Electronics & Communication Engineering • Class ECE-A • Good Standing)</option>
+                <option value="STU015">STU015 • Dev Menon (Data Science & AI • Class DSAI-B • Good Standing)</option>
+                <option value="STU016">STU016 • Pooja Pandey (Computer Science & Engineering • Class CSE-A • Good Standing)</option>
+                <option value="STU017">STU017 • Siddharth Venkatesh (Information Technology • Class IT-B • Good Standing)</option>
+                <option value="STU018">STU018 • Kavya Verma (Electronics & Communication Engineering • Class ECE-A • ⚠️ Low Attendance &lt;75%)</option>
+                <option value="STU019">STU019 • Rahul Gupta (Data Science & AI • Class DSAI-B • ⚠️ Low Attendance &lt;75%)</option>
+                <option value="STU020">STU020 • Tanvi Mehta (Computer Science & Engineering • Class CSE-A • ⚠️ Low Attendance &lt;75%)</option>
+                <option value="STU021">STU021 • Ayush Chopra (Information Technology • Class IT-B • ⚠️ Low Attendance &lt;75%)</option>
+                <option value="STU022">STU022 • Diya Kulkarni (Electronics & Communication Engineering • Class ECE-A • ⚠️ Low Attendance &lt;75%)</option>
+                <option value="STU023">STU023 • Manish Mishra (Data Science & AI • Class DSAI-B • ⚠️ Low Attendance &lt;75%)</option>
+                <option value="STU024">STU024 • Shreya Chatterjee (Computer Science & Engineering • Class CSE-A • ⚠️ Low Attendance &lt;75%)</option>
+                <option value="STU025">STU025 • Nikhil Menon (Information Technology • Class IT-B • ⚠️ Low Attendance &lt;75%)</option>
+                <option value="STU026">STU026 • Simran Pandey (Electronics & Communication Engineering • Class ECE-A • ⚠️ Low Attendance &lt;75%)</option>
+                <option value="STU027">STU027 • Varun Venkatesh (Data Science & AI • Class DSAI-B • ⚠️ Low Attendance &lt;75%)</option>
+                <option value="STU028">STU028 • Anushka Verma (Computer Science & Engineering • Class CSE-A • ⚠️ Low Attendance &lt;75%)</option>
+                <option value="STU029">STU029 • Harsh Gupta (Information Technology • Class IT-B • ⚠️ Low Attendance &lt;75%)</option>
+                <option value="STU030">STU030 • Tara Mehta (Electronics & Communication Engineering • Class ECE-A • ⚠️ Low Attendance &lt;75%)</option>
+                <option value="STU031">STU031 • Rishi Chopra (Data Science & AI • Class DSAI-B • ⚠️ Low Attendance &lt;75%)</option>
+                <option value="STU032">STU032 • Kritika Kulkarni (Computer Science & Engineering • Class CSE-A • ⚠️ Low Attendance &lt;75%)</option>
+                <option value="STU033">STU033 • Abhishek Mishra (Information Technology • Class IT-B • ⚠️ Low Attendance &lt;75%)</option>
+                <option value="STU034">STU034 • Swati Chatterjee (Electronics & Communication Engineering • Class ECE-A • ⚠️ Low Attendance &lt;75%)</option>
+                <option value="STU035">STU035 • Gaurav Menon (Data Science & AI • Class DSAI-B • Good Standing)</option>
+                <option value="STU036">STU036 • Aditi Pandey (Computer Science & Engineering • Class CSE-A • Good Standing)</option>
+                <option value="STU037">STU037 • Pranav Venkatesh (Information Technology • Class IT-B • Good Standing)</option>
+                <option value="STU038">STU038 • Nandini Verma (Electronics & Communication Engineering • Class ECE-A • Good Standing)</option>
+                <option value="STU039">STU039 • Karan Gupta (Data Science & AI • Class DSAI-B • Good Standing)</option>
+                <option value="STU040">STU040 • Sanjana Mehta (Computer Science & Engineering • Class CSE-A • Good Standing)</option>
+                <option value="STU041">STU041 • Yash Chopra (Information Technology • Class IT-B • Good Standing)</option>
+                <option value="STU042">STU042 • Bhavna Kulkarni (Electronics & Communication Engineering • Class ECE-A • Good Standing)</option>
+                <option value="STU043">STU043 • Akash Mishra (Data Science & AI • Class DSAI-B • Good Standing)</option>
+                <option value="STU044">STU044 • Shruti Chatterjee (Computer Science & Engineering • Class CSE-A • Good Standing)</option>
+                <option value="STU045">STU045 • Deepak Menon (Information Technology • Class IT-B • Good Standing)</option>
+                <option value="STU046">STU046 • Payal Pandey (Electronics & Communication Engineering • Class ECE-A • Good Standing)</option>
+                <option value="STU047">STU047 • Tushar Venkatesh (Data Science & AI • Class DSAI-B • Good Standing)</option>
+                <option value="STU048">STU048 • Vidya Verma (Computer Science & Engineering • Class CSE-A • Good Standing)</option>
+                <option value="STU049">STU049 • Suresh Gupta (Information Technology • Class IT-B • Good Standing)</option>
+                <option value="STU050">STU050 • Mallika Mehta (Electronics & Communication Engineering • Class ECE-A • Good Standing)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold uppercase tracking-wider text-secondary mb-1">Or Enter Student Roll / ID</label>
+              <div class="flex items-center gap-2">
+                <input id="studentIdInput" type="text" value="STU001" placeholder="e.g. STU001 or 1" class="flex-1 bg-surface-container-low text-xs rounded-lg px-3 py-2 border border-outline-variant/30 text-on-surface font-data-mono font-bold uppercase focus:ring-1 focus:ring-primary outline-none">
+                <button onclick="loginAsStudent()" class="py-2 px-4 rounded-lg bg-primary hover:bg-primary-container text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all whitespace-nowrap">
+                  <span>Sign In</span>
+                  <span class="material-symbols-outlined text-sm">login</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-outline-variant/10 flex flex-wrap items-center justify-between text-[11px] text-secondary gap-2">
+          <span>🔒 Protected by end-to-end RBAC scope rules</span>
+          <span class="text-primary font-semibold">Immediate Attendance Alert reminder active if classes &lt; 75%</span>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full border-t border-outline-variant/20 py-4 px-6 bg-surface-container-lowest text-center text-xs text-secondary">
+    OmniGrad Student Intelligence System • Node.js / Express RBAC Architecture • <a href="/api" class="text-primary hover:underline font-semibold">API Documentation</a>
+  </footer>
+
+  <script>
+    function loginAsHod() {
+      const dept = document.getElementById('hodDeptSelect').value;
+      window.location.href = `/dashboard?role=hod&department=${encodeURIComponent(dept)}`;
+    }
+
+    function loginAsBatchHead() {
+      const batch = document.getElementById('batchYearSelect').value;
+      window.location.href = `/dashboard?role=batch_head&batch=${encodeURIComponent(batch)}`;
+    }
+
+    function loginAsMentor() {
+      const sec = document.getElementById('mentorSectionSelect').value;
+      window.location.href = `/dashboard?role=mentor&class=${encodeURIComponent(sec)}`;
+    }
+
+    function loginAsStudent() {
+      let id = document.getElementById('studentIdInput').value.trim().toUpperCase();
+      if (!id) id = 'STU001';
+      if (!id.startsWith('STU')) id = 'STU' + id.padStart(3, '0');
+      window.location.href = `/dashboard?role=student&id=${encodeURIComponent(id)}`;
+    }
+
+    // Load and populate all 50 students into dropdown dynamically
+    async function loadAllStudentsForLogin() {
+      try {
+        let res = await fetch('/api/students/directory');
+        if (!res.ok) res = await fetch('/api/students');
+        const json = await res.json();
+        const students = json.students || json.data || [];
+        const select = document.getElementById('studentPresetSelect');
+        if (select && students.length > 0) {
+          select.innerHTML = '';
+          students.forEach((s) => {
+            const opt = document.createElement('option');
+            opt.value = s.id;
+            const classAttn = s.classAttendance !== undefined ? s.classAttendance : (s.categories ? (s.categories.attendance.classes !== undefined ? s.categories.attendance.classes : s.categories.attendance.overall) : 80);
+            const isAlert = s.attendanceRiskAlert !== undefined ? s.attendanceRiskAlert : (classAttn < 75);
+            const tag = isAlert ? '⚠️ Low Attendance (<75%)' : 'Good Standing';
+            const cgpa = s.cgpa !== undefined ? s.cgpa : (s.categories ? s.categories.academic.cgpa : 8.0);
+            opt.textContent = `${s.id} • ${s.name} (${s.department} • Class ${s.class || 'A'} • CGPA: ${cgpa} • ${tag})`;
+            select.appendChild(opt);
+          });
+          if (document.getElementById('studentIdInput')) {
+            document.getElementById('studentIdInput').value = select.value || 'STU001';
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load student list for login:', err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadAllStudentsForLogin);
+  </script>
+</body>
+</html>
