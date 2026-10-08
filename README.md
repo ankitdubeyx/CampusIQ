@@ -1,4 +1,4 @@
-# CampusIQ 🎓
+# CampusIQ 
 ### Student Success & Retention Intelligence System
 > **AI-Powered Academic Telemetry, Multi-Vector Success Scoring & Automated Retention Interventions**
 
@@ -11,7 +11,7 @@
 
 ---
 
-## 📌 Overview
+## Overview
 
 **CampusIQ** is a comprehensive academic analytics and retention intelligence platform built for modern universities and colleges. Rather than relying on simple, lagging grade reports, CampusIQ synthesizes student data across **7 weighted telemetry vectors** to compute a real-time **Student Success Score (0–100)**, identify critical retention risks early, and generate actionable, personalized recovery plans powered by local LLM intelligence.
 
@@ -19,9 +19,9 @@ The platform provides a unified experience with strict **Role-Based Access Contr
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-### 1. 🛡️ Role-Based Access Control (RBAC) Gateway
+### 1. Role-Based Access Control (RBAC) Gateway
 Accessible via a centralized login page (`/login`):
 * **Dean / Provost (`?role=dean`)**:
   - Full institutional governance across all schools and departments.
@@ -43,7 +43,7 @@ Accessible via a centralized login page (`/login`):
 
 ---
 
-### 2. 📊 7-Vector Student Success Score Formula
+### 2. 7-Vector Student Success Score Formula
 
 Every student's composite score is computed in real time:
 
@@ -61,7 +61,7 @@ $$\text{Success Score} = \sum_{i=1}^{7} (W_i \times S_i)$$
 
 ---
 
-### 3. 🤖 Local LLM Automated Intervention Generation
+### 3. Local LLM Automated Intervention Generation
 * **Actionable Admin Workflow**: High Risk students in the Management View feature a **"Generate Intervention"** button.
 * **Dedicated Endpoint**: Calls `GET /api/generate-intervention/:studentId`.
 * **Instant Diagnostic Modal**: Displays an institutional academic recovery notice detailing:
@@ -73,7 +73,7 @@ $$\text{Success Score} = \sum_{i=1}^{7} (W_i \times S_i)$$
 
 ---
 
-### 4. 📈 Interactive Visual Analytics & Charts
+### 4. Interactive Visual Analytics & Charts
 * **Institutional 7-Vector Spider / Radar Chart**: Responsive radar chart comparing institutional averages against accreditation benchmarks.
 * **Class Benchmark & Subject Score Comparison**: Interactive bar charts comparing Midsem, Endsem, and Section Averages with dynamic subject selection.
 * **Interactive KPI Filter Pills**: Instantly filter student directory by clicking metric cards (**High Risk**, **Low Attendance <75%**, **CGPA <7.0**).
@@ -81,13 +81,13 @@ $$\text{Success Score} = \sum_{i=1}^{7} (W_i \times S_i)$$
 
 ---
 
-### 5. 📂 Flexible Dataset Ingestion & Factory Reset
+### 5. Flexible Dataset Ingestion & Factory Reset
 * **Drag-and-Drop Ingestion**: Ingest custom student cohorts from `.csv` or `.json` files (`POST /api/upload`).
 * **Factory Reset**: One-click restore to the original 50-student baseline database (`POST /api/reset`).
 
 ---
 
-## 🚀 Quickstart Guide
+## Quickstart Guide
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (v18.0 or higher recommended)
@@ -119,7 +119,7 @@ $$\text{Success Score} = \sum_{i=1}^{7} (W_i \times S_i)$$
 
 ---
 
-## 🔌 API Endpoints Reference
+## API Endpoints Reference
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
@@ -141,7 +141,7 @@ curl "http://localhost:3000/api/generate-intervention/STU007"
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 CampusIQ/
@@ -164,7 +164,7 @@ CampusIQ/
 
 ---
 
-## 👥 Roles Supported
+## Roles Supported
 
 ```mermaid
 graph TD
@@ -183,5 +183,5 @@ graph TD
 
 ---
 
-## 📄 License
+## License
 This project is licensed under the [MIT License](LICENSE).
