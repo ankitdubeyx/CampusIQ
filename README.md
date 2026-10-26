@@ -1,4 +1,4 @@
-# CampusIQ 🎓
+# CampusIQ 
 ### Student Success & Retention Intelligence System
 > **AI-Powered Academic Telemetry, Multi-Vector Success Scoring & Automated Retention Interventions**
 
