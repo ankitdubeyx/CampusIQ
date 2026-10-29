@@ -66,6 +66,9 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-brand-600 selection:text-white">
 
+  <!-- Global Top Progress Indicator -->
+  <div id="topProgressBar" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-brand-600 via-indigo-500 to-emerald-400 z-50 transition-all duration-150 pointer-events-none" style="width: 0%; opacity: 0;"></div>
+
   <!-- ======================================================================= -->
   <!-- 1. MINIMAL TOP NAVIGATION BAR                                            -->
   <!-- ======================================================================= -->
@@ -201,6 +204,53 @@
 
         <!-- Preview / Notification Message inside Card -->
         <div id="gatePreviewStatus" class="hidden mt-4 w-full max-w-md text-xs rounded-lg p-2.5 border"></div>
+
+        <!-- Progress / Loading Bar Card (Tells user how much data has been loaded so far) -->
+        <div id="gateLoadingProgressContainer" class="w-full max-w-md mt-5 p-4 rounded-2xl bg-slate-50 border border-slate-200/90 text-left transition-all shadow-xs" onclick="event.stopPropagation()">
+          
+          <!-- Top Row: Status Dot, Title, and Percentage -->
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <span id="gateProgressDot" class="w-2.5 h-2.5 rounded-full bg-slate-400 transition-colors"></span>
+              <span id="gateProgressTitle" class="text-xs font-bold text-slate-800 tracking-tight">Dataset Loading Progress</span>
+            </div>
+            <span id="gateProgressPercent" class="text-xs font-extrabold text-brand-600 font-mono bg-brand-50 px-2 py-0.5 rounded-md border border-brand-100">0%</span>
+          </div>
+
+          <!-- Progress Bar Track -->
+          <div class="w-full h-3 bg-slate-200/90 rounded-full overflow-hidden relative shadow-inner p-0.5 mb-2.5">
+            <div id="gateProgressBar" class="h-full bg-gradient-to-r from-brand-500 via-indigo-600 to-emerald-500 rounded-full transition-all duration-150 ease-out shadow-xs" style="width: 0%;"></div>
+          </div>
+
+          <!-- Counter & Dynamic Stage Description -->
+          <div class="flex items-center justify-between text-[11px] font-medium mb-3">
+            <span id="gateProgressCount" class="font-mono text-slate-700 font-bold flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm text-slate-400">dataset</span>
+              <span id="gateProgressCountText">0 / 0 records loaded</span>
+            </span>
+            <span id="gateProgressStage" class="truncate max-w-[210px] text-right text-slate-500">Awaiting dataset upload</span>
+          </div>
+
+          <!-- 4-Step Milestone Checklist -->
+          <div class="grid grid-cols-4 gap-1.5 pt-2.5 border-t border-slate-200/70 text-[10px]">
+            <div id="stepMilestoneScan" class="flex items-center gap-1 text-slate-400 transition-colors">
+              <span class="material-symbols-outlined text-xs">check_circle</span>
+              <span class="truncate">Schema</span>
+            </div>
+            <div id="stepMilestoneParse" class="flex items-center gap-1 text-slate-400 transition-colors">
+              <span class="material-symbols-outlined text-xs">check_circle</span>
+              <span class="truncate">Records</span>
+            </div>
+            <div id="stepMilestoneScore" class="flex items-center gap-1 text-slate-400 transition-colors">
+              <span class="material-symbols-outlined text-xs">check_circle</span>
+              <span class="truncate">7 Vectors</span>
+            </div>
+            <div id="stepMilestoneScope" class="flex items-center gap-1 text-slate-400 transition-colors">
+              <span class="material-symbols-outlined text-xs">check_circle</span>
+              <span class="truncate">Hierarchy</span>
+            </div>
+          </div>
+        </div>
 
         <!-- Submit Process Button (Inside Dropzone Card) -->
         <div id="gateSubmitContainer" class="hidden mt-6 w-full max-w-md" onclick="event.stopPropagation()">
@@ -4087,10 +4137,112 @@
     }
 
     // =======================================================================
-    // STAGE 1: GATE UPLOAD HANDLERS
+    // STAGE 1: GATE UPLOAD HANDLERS & REAL-TIME PROGRESS TRACKING
     // =======================================================================
     let gateUploadedFileText = '';
     let gateUploadedFileType = 'auto';
+    let gateEstimatedRows = 0;
+    let gateLoadingTimer = null;
+
+    /**
+     * Updates the Stage 1 Progress / Loading Bar
+     * Informs the user how much data has been loaded so far (percentages, row counts, milestones).
+     */
+    function updateGateProgress({
+      percent = 0,
+      loadedCount = null,
+      totalCount = null,
+      countText = null,
+      title = 'Dataset Loading Progress',
+      stage = 'Processing...',
+      state = 'loading'
+    } = {}) {
+      const bar = document.getElementById('gateProgressBar');
+      const topBar = document.getElementById('topProgressBar');
+      const pctEl = document.getElementById('gateProgressPercent');
+      const dotEl = document.getElementById('gateProgressDot');
+      const titleEl = document.getElementById('gateProgressTitle');
+      const countTextEl = document.getElementById('gateProgressCountText');
+      const stageEl = document.getElementById('gateProgressStage');
+
+      const safePct = Math.max(0, Math.min(100, Math.round(percent)));
+
+      if (bar) bar.style.width = `${safePct}%`;
+      if (topBar) {
+        topBar.style.width = `${safePct}%`;
+        topBar.style.opacity = safePct > 0 ? '1' : '0';
+      }
+      if (pctEl) pctEl.textContent = `${safePct}%`;
+      if (titleEl) titleEl.textContent = title;
+      if (stageEl) stageEl.textContent = stage;
+
+      if (countTextEl) {
+        if (countText) {
+          countTextEl.textContent = countText;
+        } else if (loadedCount !== null && totalCount !== null && totalCount > 0) {
+          countTextEl.textContent = `${Number(loadedCount).toLocaleString()} / ${Number(totalCount).toLocaleString()} records loaded`;
+        } else if (loadedCount !== null) {
+          countTextEl.textContent = `${Number(loadedCount).toLocaleString()} records loaded`;
+        }
+      }
+
+      if (dotEl) {
+        dotEl.className = 'w-2.5 h-2.5 rounded-full transition-colors';
+        if (state === 'reading') {
+          dotEl.classList.add('bg-brand-500', 'animate-ping');
+        } else if (state === 'loading') {
+          dotEl.classList.add('bg-brand-600', 'animate-pulse');
+        } else if (state === 'success') {
+          dotEl.classList.add('bg-emerald-500');
+        } else if (state === 'error') {
+          dotEl.classList.add('bg-rose-500');
+        } else {
+          dotEl.classList.add('bg-slate-400');
+        }
+      }
+
+      // Update 4-step milestone checklist
+      const mScan = document.getElementById('stepMilestoneScan');
+      const mParse = document.getElementById('stepMilestoneParse');
+      const mScore = document.getElementById('stepMilestoneScore');
+      const mScope = document.getElementById('stepMilestoneScope');
+
+      function updateMilestone(el, active) {
+        if (!el) return;
+        if (active) {
+          el.className = 'flex items-center gap-1 text-emerald-600 font-semibold transition-colors';
+        } else {
+          el.className = 'flex items-center gap-1 text-slate-400 transition-colors';
+        }
+      }
+
+      updateMilestone(mScan, safePct >= 15);
+      updateMilestone(mParse, safePct >= 45);
+      updateMilestone(mScore, safePct >= 70);
+      updateMilestone(mScope, safePct >= 95);
+    }
+
+    function resetGateProgress() {
+      if (gateLoadingTimer) {
+        clearInterval(gateLoadingTimer);
+        gateLoadingTimer = null;
+      }
+      gateEstimatedRows = 0;
+      updateGateProgress({
+        percent: 0,
+        countText: '0 / 0 records loaded',
+        title: 'Dataset Loading Progress',
+        stage: 'Awaiting dataset upload',
+        state: 'idle'
+      });
+      const topBar = document.getElementById('topProgressBar');
+      if (topBar) {
+        topBar.style.width = '0%';
+        topBar.style.opacity = '0';
+      }
+    }
+    window.updateGateProgress = updateGateProgress;
+    window.resetGateProgress = resetGateProgress;
 
     function handleGateDragOver(e) {
       if (e) { e.preventDefault(); e.stopPropagation(); }
@@ -4125,6 +4277,13 @@
       const fileExt = fileName.split('.').pop().toLowerCase();
       if (fileExt !== 'csv' && fileExt !== 'json') {
         showGateStatus('Please select a valid .CSV or .JSON dataset file.', 'error');
+        updateGateProgress({
+          percent: 0,
+          countText: 'Invalid file format',
+          title: 'File Format Error',
+          stage: 'Please upload .csv or .json files only',
+          state: 'error'
+        });
         return;
       }
 
@@ -4141,37 +4300,89 @@
       if (submitContainer) submitContainer.classList.remove('hidden');
       if (iconEl) iconEl.textContent = fileExt === 'csv' ? 'table_chart' : 'data_object';
 
+      resetGateProgress();
+      updateGateProgress({
+        percent: 15,
+        countText: `Reading ${(file.size / 1024).toFixed(1)} KB from disk...`,
+        title: 'Reading File From Disk',
+        stage: 'Scanning file structure...',
+        state: 'reading'
+      });
+
       const reader = new FileReader();
+
+      reader.onprogress = function(evt) {
+        if (evt.lengthComputable && evt.total > 0) {
+          const p = Math.min(85, Math.round((evt.loaded / evt.total) * 100));
+          updateGateProgress({
+            percent: p,
+            countText: `${(evt.loaded / 1024).toFixed(0)} KB / ${(evt.total / 1024).toFixed(0)} KB read`,
+            title: 'Reading File From Disk',
+            stage: `Streaming bytes into browser memory (${p}%)...`,
+            state: 'reading'
+          });
+        }
+      };
+
       reader.onload = function(evt) {
         gateUploadedFileText = evt.target.result;
-        let estimatedRows = 0;
+        gateEstimatedRows = 0;
         if (fileExt === 'json') {
           try {
             const parsed = JSON.parse(gateUploadedFileText);
-            estimatedRows = Array.isArray(parsed) ? parsed.length : (parsed.data || parsed.students || []).length;
+            gateEstimatedRows = Array.isArray(parsed) ? parsed.length : (parsed.data || parsed.students || []).length;
           } catch (err) {
             showGateStatus('Invalid JSON syntax: ' + err.message, 'error');
+            updateGateProgress({
+              percent: 0,
+              countText: 'JSON Syntax Error',
+              title: 'Parsing Failed',
+              stage: err.message,
+              state: 'error'
+            });
             const submitBtn = document.getElementById('btnGateSubmit');
             if (submitBtn) submitBtn.disabled = true;
             return;
           }
         } else {
           const lines = gateUploadedFileText.trim().split(/\r?\n/).filter(l => l.trim().length);
-          estimatedRows = Math.max(0, lines.length - 1);
+          gateEstimatedRows = Math.max(0, lines.length - 1);
         }
 
         const submitBtn = document.getElementById('btnGateSubmit');
-        if (estimatedRows > 0) {
-          showGateStatus(`Detected ${estimatedRows} student rows ready to import.`, 'success');
+        if (gateEstimatedRows > 0) {
+          showGateStatus(`Detected ${gateEstimatedRows.toLocaleString()} student rows ready to import.`, 'success');
+          updateGateProgress({
+            percent: 100,
+            loadedCount: gateEstimatedRows,
+            totalCount: gateEstimatedRows,
+            title: 'File Ready for Analysis',
+            stage: `${gateEstimatedRows.toLocaleString()} student rows detected. Click Analyze below to ingest!`,
+            state: 'idle'
+          });
           if (submitBtn) submitBtn.disabled = false;
         } else {
           showGateStatus('File appears to be empty or lacks data rows.', 'warning');
+          updateGateProgress({
+            percent: 0,
+            countText: '0 records detected',
+            title: 'Empty Dataset File',
+            stage: 'File contains headers only or no valid student data rows.',
+            state: 'error'
+          });
           if (submitBtn) submitBtn.disabled = true;
         }
       };
 
       reader.onerror = function() {
         showGateStatus('Failed to read file from disk.', 'error');
+        updateGateProgress({
+          percent: 0,
+          countText: 'File read error',
+          title: 'Read Failed',
+          stage: 'Could not access file bytes from disk.',
+          state: 'error'
+        });
       };
 
       reader.readAsText(file);
@@ -4181,6 +4392,7 @@
       if (e && e.stopPropagation) e.stopPropagation();
       gateUploadedFileText = '';
       gateUploadedFileType = 'auto';
+      gateEstimatedRows = 0;
       const fileInput = document.getElementById('gateFileInput');
       if (fileInput) fileInput.value = '';
       const badgeEl = document.getElementById('gateFileSelectedBadge');
@@ -4189,6 +4401,7 @@
       if (submitContainer) submitContainer.classList.add('hidden');
       const previewStatus = document.getElementById('gatePreviewStatus');
       if (previewStatus) previewStatus.classList.add('hidden');
+      resetGateProgress();
     }
 
     function showGateStatus(msg, type = 'info') {
@@ -4218,6 +4431,48 @@
         submitBtn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span> Analyzing schema & ingesting...';
       }
 
+      const totalRows = gateEstimatedRows > 0 ? gateEstimatedRows : 2000;
+      let currentPct = 5;
+      let currentLoaded = 0;
+
+      updateGateProgress({
+        percent: currentPct,
+        loadedCount: 0,
+        totalCount: totalRows,
+        title: 'Ingesting Student Dataset...',
+        stage: 'Connecting to ingestion engine...',
+        state: 'loading'
+      });
+
+      const stages = [
+        { pct: 20, stage: 'Transmitting dataset payload to server...' },
+        { pct: 45, stage: 'Scanning custom column headers & mapping schema...' },
+        { pct: 68, stage: 'Normalizing 7-vector academic & placement scores...' },
+        { pct: 88, stage: 'Evaluating statutory attendance & risk alerts...' },
+        { pct: 95, stage: 'Structuring Dean, HOD & Mentor scope hierarchies...' }
+      ];
+
+      let stageIdx = 0;
+      if (gateLoadingTimer) clearInterval(gateLoadingTimer);
+      gateLoadingTimer = setInterval(() => {
+        if (stageIdx < stages.length) {
+          const target = stages[stageIdx];
+          currentPct = Math.min(target.pct, currentPct + 5);
+          currentLoaded = Math.min(Math.round((currentPct / 100) * totalRows), totalRows);
+          updateGateProgress({
+            percent: currentPct,
+            loadedCount: currentLoaded,
+            totalCount: totalRows,
+            title: 'Ingesting Student Dataset...',
+            stage: target.stage,
+            state: 'loading'
+          });
+          if (currentPct >= target.pct) {
+            stageIdx++;
+          }
+        }
+      }, 100);
+
       try {
         const response = await fetch('/api/upload', {
           method: 'POST',
@@ -4233,14 +4488,44 @@
           throw new Error(json.error || `Upload failed with status ${response.status}`);
         }
 
+        if (gateLoadingTimer) {
+          clearInterval(gateLoadingTimer);
+          gateLoadingTimer = null;
+        }
+
         students = json.data || [];
         currentFiltered = [...students];
         currentHierarchy = json.hierarchy || extractHierarchyClient(students);
 
-        showToast(`Successfully analyzed ${json.totalStudents} students! Select a role to proceed.`, 'cloud_done');
-        showRoleLandingView();
+        const finalTotal = json.totalStudents || students.length || totalRows;
+        updateGateProgress({
+          percent: 100,
+          loadedCount: finalTotal,
+          totalCount: finalTotal,
+          title: 'Dataset Ingestion Complete!',
+          stage: `Successfully loaded ${finalTotal.toLocaleString()} students! Transitioning to Role Gateway...`,
+          state: 'success'
+        });
+
+        showToast(`Successfully analyzed ${finalTotal.toLocaleString()} students! Select a role to proceed.`, 'cloud_done');
+
+        setTimeout(() => {
+          showRoleLandingView();
+        }, 450);
+
       } catch (err) {
         console.error('Upload Error:', err);
+        if (gateLoadingTimer) {
+          clearInterval(gateLoadingTimer);
+          gateLoadingTimer = null;
+        }
+        updateGateProgress({
+          percent: 100,
+          countText: 'Import halted',
+          title: 'Dataset Ingestion Failed',
+          stage: err.message,
+          state: 'error'
+        });
         showGateStatus(`Import failed: ${err.message}`, 'error');
       } finally {
         if (submitBtn) {
@@ -4252,20 +4537,79 @@
 
     // Helper: Load Reference Sample Dataset in 1 Click
     async function loadSampleDataset() {
+      const sampleTotal = 50;
+      let samplePct = 12;
+      let sampleLoaded = 6;
+
+      updateGateProgress({
+        percent: samplePct,
+        loadedCount: sampleLoaded,
+        totalCount: sampleTotal,
+        title: 'Loading Reference Dataset...',
+        stage: 'Fetching 50 reference students across 4 departments...',
+        state: 'loading'
+      });
+
+      if (gateLoadingTimer) clearInterval(gateLoadingTimer);
+      gateLoadingTimer = setInterval(() => {
+        if (samplePct < 90) {
+          samplePct += 14;
+          sampleLoaded = Math.min(Math.round((samplePct / 100) * sampleTotal), sampleTotal);
+          updateGateProgress({
+            percent: samplePct,
+            loadedCount: sampleLoaded,
+            totalCount: sampleTotal,
+            title: 'Loading Reference Dataset...',
+            stage: samplePct > 50 ? 'Generating multi-tiered role scopes...' : 'Evaluating 7-vector diagnostic scores...',
+            state: 'loading'
+          });
+        }
+      }, 70);
+
       try {
         showToast('Loading reference sample dataset...', 'sync');
         const res = await fetch('/api/load-sample', { method: 'POST' });
         const json = await res.json();
         if (!res.ok) throw new Error(json.error || 'Failed to load sample dataset');
 
+        if (gateLoadingTimer) {
+          clearInterval(gateLoadingTimer);
+          gateLoadingTimer = null;
+        }
+
         students = json.data || [];
         currentFiltered = [...students];
         currentHierarchy = json.hierarchy || extractHierarchyClient(students);
 
-        showToast(`Loaded ${students.length} students with dynamic roles!`, 'check_circle');
-        showRoleLandingView();
+        const finalTotal = students.length || sampleTotal;
+        updateGateProgress({
+          percent: 100,
+          loadedCount: finalTotal,
+          totalCount: finalTotal,
+          title: 'Sample Dataset Loaded!',
+          stage: `${finalTotal} students loaded across 4 Depts, 4 Mentors!`,
+          state: 'success'
+        });
+
+        showToast(`Loaded ${finalTotal} students with dynamic roles!`, 'check_circle');
+
+        setTimeout(() => {
+          showRoleLandingView();
+        }, 450);
+
       } catch (err) {
         console.error('Failed to load sample:', err);
+        if (gateLoadingTimer) {
+          clearInterval(gateLoadingTimer);
+          gateLoadingTimer = null;
+        }
+        updateGateProgress({
+          percent: 100,
+          countText: 'Sample load error',
+          title: 'Sample Load Failed',
+          stage: err.message,
+          state: 'error'
+        });
         showToast(`Error loading sample: ${err.message}`, 'error');
       }
     }
@@ -4346,6 +4690,7 @@
         populateDepartmentDropdown([]);
         renderTable([]);
         clearStudentInspector();
+        resetGateProgress();
 
         showUploadView();
         showToast('Database reset to 0 students. Ready for dataset upload!', 'restart_alt');
@@ -4590,6 +4935,7 @@
       populateDepartmentDropdown([]);
       renderTable([]);
       clearStudentInspector();
+      resetGateProgress();
 
       // 6. ALWAYS show the Dataset Upload screen (Stage 1 Upload Gate) first
       showUploadView();
