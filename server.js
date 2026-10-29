@@ -521,17 +521,34 @@ app.get('/api/students', (req, res) => {
     }
 
     // ROLE: Dean
-    // Dean returns all institutional / school data (optionally filtered by specific dean or school)
+    // Dean returns institutional / school data (optionally filtered by specific dean or school)
     else if (normalizedRole === 'dean') {
-      const targetDean = (req.query.dean || req.query.dean_name || '').trim().toLowerCase();
-      const targetSchool = (school || req.query.faculty || '').trim().toLowerCase();
-      if (targetDean && targetDean !== 'all') {
-        result = result.filter(s =>
-          (s.dean && s.dean.toLowerCase().includes(targetDean)) ||
-          (s.school && s.school.toLowerCase().includes(targetDean))
-        );
-      } else if (targetSchool && targetSchool !== 'all') {
-        result = result.filter(s => (s.school || '').toLowerCase().includes(targetSchool));
+      const targetDean = (req.query.dean || req.query.dean_name || '').trim();
+      const targetSchool = (school || req.query.faculty || req.query.school || '').trim();
+
+      const isDeanAll = !targetDean || 
+                        targetDean.toLowerCase() === 'all' || 
+                        targetDean.toLowerCase() === 'dean' ||
+                        targetDean.toLowerCase() === 'provost' ||
+                        targetDean.toLowerCase() === 'executive' ||
+                        targetDean.toLowerCase() === 'campus' ||
+                        targetDean.toLowerCase() === 'all campus';
+
+      if (targetSchool && targetSchool.toLowerCase() !== 'all') {
+        const lowSchool = targetSchool.toLowerCase();
+        result = result.filter(s => (s.school || '').toLowerCase().includes(lowSchool));
+      } else if (!isDeanAll) {
+        // Strip out "Dean (School of ...)" or "Dean of ..." wrappers to extract the underlying school name
+        let cleanDean = targetDean.replace(/^dean\s*(\((.*?)\)|of\s+(.*?)|[-:]\s*(.*?))?$/i, '$2$3$4').trim() || targetDean;
+        const lowTarget = targetDean.toLowerCase();
+        const lowClean = cleanDean.toLowerCase();
+
+        result = result.filter(s => {
+          const sDean = (s.dean || '').toLowerCase();
+          const sSchool = (s.school || '').toLowerCase();
+          return (sDean && (sDean.includes(lowTarget) || lowTarget.includes(sDean))) ||
+                 (sSchool && (sSchool.includes(lowClean) || lowClean.includes(sSchool) || sSchool.includes(lowTarget)));
+        });
       }
     }
 

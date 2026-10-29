@@ -1929,10 +1929,20 @@
         if (deans.length > 1 && deanSelect && deanSelectWrapper) {
           deanSelectWrapper.style.display = 'block';
           deanSelect.innerHTML = '';
+
+          const allOpt = document.createElement('option');
+          allOpt.value = 'all';
+          allOpt.dataset.deanName = 'Institutional Executive / Provost';
+          allOpt.dataset.school = 'All Campus Schools & Departments';
+          allOpt.textContent = `All Campus (Institutional Executive • ${(hier.totalStudents || students.length).toLocaleString()} Students)`;
+          deanSelect.appendChild(allOpt);
+
           deans.forEach(d => {
             const opt = document.createElement('option');
-            opt.value = d.name;
-            opt.textContent = `${d.name} (${d.school} • ${d.studentCount} Students)`;
+            opt.value = d.school || d.name;
+            opt.dataset.deanName = d.name;
+            opt.dataset.school = d.school;
+            opt.textContent = `${d.name} (${d.school} • ${d.studentCount.toLocaleString()} Students)`;
             deanSelect.appendChild(opt);
           });
         } else if (deanSelectWrapper) {
@@ -2037,27 +2047,64 @@
     function updateDeanPreview() {
       const select = document.getElementById('landingDeanSelect');
       if (!select || !select.selectedOptions[0]) return;
-      const deanName = select.value;
-      const d = currentHierarchy?.deans?.find(item => item.name === deanName);
+      const opt = select.selectedOptions[0];
+      const val = opt.value;
+      if (val === 'all') {
+        const total = currentHierarchy?.totalStudents || students.length;
+        const hrTotal = currentHierarchy?.deans?.reduce((acc, d) => acc + (d.highRiskCount || 0), 0) || 0;
+        const avgCgpa = currentHierarchy?.deans?.length > 0 
+          ? (currentHierarchy.deans.reduce((acc, d) => acc + (parseFloat(d.avgCgpa) || 8.0), 0) / currentHierarchy.deans.length).toFixed(2)
+          : '8.01';
+        document.getElementById('landingDeanName').textContent = 'Provost / Institutional Executive';
+        document.getElementById('landingDeanSchool').textContent = 'All Campus Schools & Departments';
+        document.getElementById('landingDeanStudentCount').textContent = total.toLocaleString();
+        document.getElementById('landingDeanCgpa').textContent = avgCgpa;
+        document.getElementById('landingDeanRisk').textContent = hrTotal.toLocaleString();
+        return;
+      }
+      const d = currentHierarchy?.deans?.find(item => item.name === val || item.school === val);
       if (d) {
         document.getElementById('landingDeanName').textContent = d.name;
         document.getElementById('landingDeanSchool').textContent = d.school;
-        document.getElementById('landingDeanStudentCount').textContent = d.studentCount;
+        document.getElementById('landingDeanStudentCount').textContent = d.studentCount.toLocaleString();
         document.getElementById('landingDeanCgpa').textContent = d.avgCgpa;
-        document.getElementById('landingDeanRisk').textContent = d.highRiskCount;
+        document.getElementById('landingDeanRisk').textContent = d.highRiskCount.toLocaleString();
       }
     }
 
     // Role selection actions from Landing Cards
     function loginFromLandingAsDean() {
       const deanSelect = document.getElementById('landingDeanSelect');
-      const selectedDean = (deanSelect && deanSelect.value) ? deanSelect.value : (currentHierarchy?.deans?.[0]?.name || 'Dean');
-      activeRoleInfo = {
-        role: 'Dean',
-        name: selectedDean,
-        subtitle: 'Institutional Executive Oversight'
-      };
-      showDashboardView(`?role=dean&dean=${encodeURIComponent(selectedDean)}`);
+      let selectedVal = 'all';
+      let selectedName = 'University Provost & Executive';
+      let selectedSchool = '';
+
+      if (deanSelect && deanSelect.selectedOptions[0]) {
+        const opt = deanSelect.selectedOptions[0];
+        selectedVal = opt.value;
+        selectedName = opt.dataset.deanName || opt.value;
+        selectedSchool = opt.dataset.school || '';
+      } else if (currentHierarchy?.deans?.[0]) {
+        selectedVal = currentHierarchy.deans[0].school || currentHierarchy.deans[0].name;
+        selectedName = currentHierarchy.deans[0].name;
+        selectedSchool = currentHierarchy.deans[0].school;
+      }
+
+      if (selectedVal === 'all') {
+        activeRoleInfo = {
+          role: 'Dean',
+          name: 'Institutional Executive',
+          subtitle: 'All Campus Schools & Departments'
+        };
+        showDashboardView(`?role=dean&dean=all`);
+      } else {
+        activeRoleInfo = {
+          role: 'Dean',
+          name: selectedName,
+          subtitle: selectedSchool ? `${selectedSchool} Oversight` : 'School Governance'
+        };
+        showDashboardView(`?role=dean&school=${encodeURIComponent(selectedSchool || selectedVal)}&dean=${encodeURIComponent(selectedName)}`);
+      }
     }
 
     function loginFromLandingAsHod() {
@@ -2160,7 +2207,13 @@
       const qId = params.get('id') || '';
 
       if (normalizedRole === 'dean') {
-        activeRoleInfo = { role: 'Dean', name: qDean, subtitle: 'Institutional Executive Oversight' };
+        const qSchool = params.get('school') || '';
+        const isAll = !qDean || qDean.toLowerCase() === 'all' || qDean.toLowerCase() === 'dean';
+        activeRoleInfo = { 
+          role: 'Dean', 
+          name: isAll ? 'Institutional Executive' : qDean, 
+          subtitle: qSchool ? `${qSchool} Oversight` : 'Institutional Executive Oversight • All Schools' 
+        };
       } else if (normalizedRole === 'hod') {
         activeRoleInfo = { role: 'HOD', name: qHod || qDept, subtitle: `Department of ${qDept}` };
       } else if (normalizedRole === 'batchhead') {
@@ -3118,14 +3171,41 @@
       });
     }
 
+    let tableDisplayLimit = 100;
+
+    function loadMoreRows() {
+      tableDisplayLimit += 100;
+      renderTable(currentFiltered);
+    }
+    window.loadMoreRows = loadMoreRows;
+
+    function loadAllRows() {
+      tableDisplayLimit = currentFiltered.length;
+      renderTable(currentFiltered);
+    }
+    window.loadAllRows = loadAllRows;
+
     // Render Table Rows
     function renderTable(list) {
       const tbody = document.getElementById('cohortTableBody');
       const countNotice = document.getElementById('tableFilterCountNotice');
       const footNotice = document.getElementById('tableFootCount');
 
-      if (countNotice) countNotice.textContent = students.length === 0 ? '0 students in database' : `Showing ${list.length} of ${students.length} students`;
-      if (footNotice) footNotice.textContent = students.length === 0 ? '0 student profiles loaded' : `Showing ${list.length} student profiles`;
+      const isTruncated = list.length > tableDisplayLimit;
+      const displayList = isTruncated ? list.slice(0, tableDisplayLimit) : list;
+
+      if (countNotice) {
+        countNotice.textContent = students.length === 0 
+          ? '0 students in database' 
+          : (isTruncated ? `Showing first ${displayList.length} of ${list.length.toLocaleString()} students` : `Showing ${list.length.toLocaleString()} of ${students.length.toLocaleString()} students`);
+      }
+      if (footNotice) {
+        footNotice.innerHTML = students.length === 0 
+          ? '0 student profiles loaded' 
+          : (isTruncated 
+              ? `<span class="flex items-center gap-1.5 flex-wrap"><span>Showing <strong>${displayList.length}</strong> of <strong>${list.length.toLocaleString()}</strong> profiles</span> <button onclick="loadMoreRows()" class="ml-2 px-2.5 py-0.5 rounded bg-brand-50 hover:bg-brand-100 text-brand-600 font-semibold cursor-pointer border border-brand-200 transition-colors">+ Load Next 100</button> <button onclick="loadAllRows()" class="px-2.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold cursor-pointer border border-slate-200 transition-colors">Show All (${list.length.toLocaleString()})</button></span>`
+              : `Showing all ${list.length.toLocaleString()} student profiles`);
+      }
 
       if (list.length === 0) {
         if (!students || students.length === 0) {
@@ -3156,7 +3236,7 @@
         return;
       }
 
-      tbody.innerHTML = list.map(s => {
+      tbody.innerHTML = displayList.map(s => {
         const isSelected = s.id === activeStudentId;
         const nameParts = s.name.split(' ');
         const initials = (nameParts[0][0] + (nameParts[1] ? nameParts[1][0] : '')).toUpperCase();
@@ -3617,7 +3697,8 @@
         }
       });
 
-      // Render table rows
+      // Reset display limit and render table rows
+      tableDisplayLimit = 100;
       renderTable(currentFiltered);
 
       // Update Cohort Telemetry Stat Bar (with safe null-guards)
