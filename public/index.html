@@ -1421,14 +1421,31 @@
         <div class="xl:col-span-7 flex flex-col gap-4 bg-white rounded-xl p-6 border border-slate-200 shadow-xs">
           
           <div class="flex flex-col gap-3">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-wrap">
               <div>
                 <h2 class="text-lg font-bold text-slate-900">Undergraduate Cohort Directory</h2>
                 <p class="text-xs text-slate-500 mt-0.5">Click any row to inspect their 7-vector telemetry and generate an AI intervention.</p>
               </div>
-              <span class="text-xs font-semibold text-slate-600 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200" id="tableFilterCountNotice">
-                Showing 50 students
-              </span>
+              <div class="flex items-center gap-2.5 flex-wrap">
+                <!-- Page Size Selector (10, 20, 50, 100, All) -->
+                <div class="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-200/90 rounded-lg p-1 text-xs">
+                  <span class="text-slate-500 font-semibold pl-1 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[15px] text-slate-400">table_rows</span>
+                    <span>View:</span>
+                  </span>
+                  <div class="inline-flex rounded-md p-0.5 bg-white border border-slate-200 shadow-2xs" role="group" aria-label="Select cohort view limit">
+                    <button type="button" onclick="setPageSize(10)" id="topPageSize-10" class="pageSizeBtn px-2.5 py-1 rounded text-xs font-semibold transition-all">10</button>
+                    <button type="button" onclick="setPageSize(20)" id="topPageSize-20" class="pageSizeBtn px-2.5 py-1 rounded text-xs font-semibold transition-all">20</button>
+                    <button type="button" onclick="setPageSize(50)" id="topPageSize-50" class="pageSizeBtn px-2.5 py-1 rounded text-xs font-semibold transition-all">50</button>
+                    <button type="button" onclick="setPageSize(100)" id="topPageSize-100" class="pageSizeBtn px-2.5 py-1 rounded text-xs font-semibold transition-all">100</button>
+                    <button type="button" onclick="setPageSize('all')" id="topPageSize-all" class="pageSizeBtn px-2.5 py-1 rounded text-xs font-semibold transition-all">All</button>
+                  </div>
+                </div>
+
+                <span class="text-xs font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-200" id="tableFilterCountNotice">
+                  Showing 100 students
+                </span>
+              </div>
             </div>
 
             <!-- Multi-Tier Filter Controls Bar -->
@@ -1541,9 +1558,11 @@
           </div>
 
           <!-- Table Footer -->
-          <div class="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 pt-3 border-t border-slate-100">
-            <span id="tableFootCount">Loaded 50 live student records</span>
-            <span class="text-brand-600 font-semibold">Click any row to inspect indicators</span>
+          <div class="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 pt-3 border-t border-slate-100 gap-3">
+            <div id="tableFootCount" class="flex items-center gap-2 flex-wrap">
+              <span>Loaded student records</span>
+            </div>
+            <span class="text-brand-600 font-semibold hidden md:inline">Click any row to inspect indicators</span>
           </div>
         </div>
 
@@ -3544,19 +3563,78 @@
       });
     }
 
-    let tableDisplayLimit = 100;
+    let tablePageSize = 100;
+    let tableCurrentPage = 1;
+
+    function setPageSize(sz) {
+      if (sz === 'all') {
+        tablePageSize = 'all';
+      } else {
+        tablePageSize = Number(sz);
+      }
+      tableCurrentPage = 1;
+      updatePageSizeButtons();
+      renderTable(currentFiltered);
+      showToast(`Displaying ${sz === 'all' ? 'all' : sz} students at one go`, 'visibility');
+    }
+    window.setPageSize = setPageSize;
+
+    function goToPrevPage() {
+      if (tableCurrentPage > 1) {
+        tableCurrentPage--;
+        renderTable(currentFiltered);
+        scrollToTableTop();
+      }
+    }
+    window.goToPrevPage = goToPrevPage;
+
+    function goToNextPage() {
+      const total = currentFiltered.length;
+      const totalPages = tablePageSize === 'all' ? 1 : Math.max(1, Math.ceil(total / tablePageSize));
+      if (tableCurrentPage < totalPages) {
+        tableCurrentPage++;
+        renderTable(currentFiltered);
+        scrollToTableTop();
+      }
+    }
+    window.goToNextPage = goToNextPage;
 
     function loadMoreRows() {
-      tableDisplayLimit += 100;
-      renderTable(currentFiltered);
+      goToNextPage();
     }
     window.loadMoreRows = loadMoreRows;
 
     function loadAllRows() {
-      tableDisplayLimit = currentFiltered.length;
-      renderTable(currentFiltered);
+      setPageSize('all');
     }
     window.loadAllRows = loadAllRows;
+
+    function scrollToTableTop() {
+      const target = document.getElementById('directorySection');
+      if (target) {
+        const yOffset = -70;
+        const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      }
+    }
+
+    function updatePageSizeButtons() {
+      const sizes = [10, 20, 50, 100, 'all'];
+      sizes.forEach(sz => {
+        const topBtn = document.getElementById(`topPageSize-${sz}`);
+        const footBtn = document.getElementById(`footPageSize-${sz}`);
+        const isActive = (tablePageSize === sz) || (sz === 'all' && tablePageSize === 'all');
+        const activeClass = 'bg-brand-600 text-white font-bold shadow-2xs';
+        const inactiveClass = 'bg-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium';
+
+        [topBtn, footBtn].forEach(btn => {
+          if (!btn) return;
+          btn.className = `pageSizeBtn px-2.5 py-1 min-h-[28px] rounded-md text-xs transition-all ${isActive ? activeClass : inactiveClass}`;
+          btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+      });
+    }
+    window.updatePageSizeButtons = updatePageSizeButtons;
 
     // Render Table Rows
     function renderTable(list) {
@@ -3564,23 +3642,13 @@
       const countNotice = document.getElementById('tableFilterCountNotice');
       const footNotice = document.getElementById('tableFootCount');
 
-      const isTruncated = list.length > tableDisplayLimit;
-      const displayList = isTruncated ? list.slice(0, tableDisplayLimit) : list;
-
-      if (countNotice) {
-        countNotice.textContent = students.length === 0 
-          ? '0 students in database' 
-          : (isTruncated ? `Showing first ${displayList.length} of ${list.length.toLocaleString()} students` : `Showing ${list.length.toLocaleString()} of ${students.length.toLocaleString()} students`);
-      }
-      if (footNotice) {
-        footNotice.innerHTML = students.length === 0 
-          ? '0 student profiles loaded' 
-          : (isTruncated 
-              ? `<span class="flex items-center gap-2 flex-wrap"><span>Showing <strong>${displayList.length}</strong> of <strong>${list.length.toLocaleString()}</strong> profiles</span> <button onclick="loadMoreRows()" class="ml-2 min-h-[36px] px-3 py-1 rounded-lg bg-brand-50 hover:bg-brand-100 text-brand-600 font-semibold cursor-pointer border border-brand-200 transition-colors active:scale-95" aria-label="Load next 100 student records">+ Load Next 100</button> <button onclick="loadAllRows()" class="min-h-[36px] px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold cursor-pointer border border-slate-200 transition-colors active:scale-95" aria-label="Show all ${list.length.toLocaleString()} students">Show All (${list.length.toLocaleString()})</button></span>`
-              : `Showing all ${list.length.toLocaleString()} student profiles`);
-      }
-
-      if (list.length === 0) {
+      if (!list || list.length === 0) {
+        if (countNotice) {
+          countNotice.textContent = students.length === 0 ? '0 students in database' : '0 matching students';
+        }
+        if (footNotice) {
+          footNotice.innerHTML = '<span>0 student records</span>';
+        }
         if (!students || students.length === 0) {
           tbody.innerHTML = `
             <tr>
@@ -3606,8 +3674,77 @@
             </tr>
           `;
         }
+        updatePageSizeButtons();
         return;
       }
+
+      const total = list.length;
+      const isAll = (tablePageSize === 'all');
+      const pageSizeNum = isAll ? total : Number(tablePageSize);
+      const totalPages = isAll ? 1 : Math.max(1, Math.ceil(total / pageSizeNum));
+
+      if (tableCurrentPage > totalPages) tableCurrentPage = totalPages;
+      if (tableCurrentPage < 1) tableCurrentPage = 1;
+
+      const startIdx = isAll ? 0 : (tableCurrentPage - 1) * pageSizeNum;
+      const endIdx = isAll ? total : Math.min(startIdx + pageSizeNum, total);
+      const displayList = list.slice(startIdx, endIdx);
+
+      if (countNotice) {
+        if (isAll || displayList.length === total) {
+          countNotice.textContent = `Showing all ${total.toLocaleString()} students`;
+        } else {
+          countNotice.textContent = `Showing ${startIdx + 1}–${endIdx} of ${total.toLocaleString()} students`;
+        }
+      }
+
+      if (footNotice) {
+        const hasPrev = tableCurrentPage > 1;
+        const hasNext = tableCurrentPage < totalPages && !isAll;
+
+        footNotice.innerHTML = `
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <span class="font-medium text-slate-700">
+              Showing <strong>${startIdx + 1}</strong>–<strong>${endIdx}</strong> of <strong>${total.toLocaleString()}</strong> profiles
+            </span>
+
+            ${!isAll && totalPages > 1 ? `
+              <div class="inline-flex items-center gap-1 ml-1">
+                <button type="button" onclick="goToPrevPage()" ${!hasPrev ? 'disabled' : ''} class="min-h-[30px] px-2.5 py-1 rounded-lg border border-slate-200 ${!hasPrev ? 'opacity-40 cursor-not-allowed bg-slate-50 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 active:scale-95'} font-semibold text-xs transition-all inline-flex items-center gap-1 shadow-2xs" aria-label="Go to previous page">
+                  <span class="material-symbols-outlined text-sm leading-none">chevron_left</span>
+                  <span>Prev</span>
+                </button>
+                <span class="px-2.5 py-1 text-xs font-semibold text-slate-700 bg-slate-50 rounded border border-slate-200">
+                  Page ${tableCurrentPage} of ${totalPages}
+                </span>
+                <button type="button" onclick="goToNextPage()" ${!hasNext ? 'disabled' : ''} class="min-h-[30px] px-2.5 py-1 rounded-lg border border-slate-200 ${!hasNext ? 'opacity-40 cursor-not-allowed bg-slate-50 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700 active:scale-95'} font-semibold text-xs transition-all inline-flex items-center gap-1 shadow-2xs" aria-label="Go to next page">
+                  <span>Next</span>
+                  <span class="material-symbols-outlined text-sm leading-none">chevron_right</span>
+                </button>
+              </div>
+            ` : ''}
+
+            ${!isAll ? `
+              <button type="button" onclick="setPageSize('all')" class="min-h-[30px] px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold cursor-pointer border border-slate-200 transition-colors active:scale-95 text-xs shadow-2xs" aria-label="Show all ${total.toLocaleString()} students">
+                Show All (${total.toLocaleString()})
+              </button>
+            ` : ''}
+
+            <div class="inline-flex items-center gap-1.5 text-xs text-slate-500 pl-2 sm:border-l border-slate-200">
+              <span class="text-slate-400 font-medium">Show:</span>
+              <div class="inline-flex rounded-md p-0.5 bg-white border border-slate-200 shadow-2xs" role="group" aria-label="Select cohort view limit">
+                <button type="button" onclick="setPageSize(10)" id="footPageSize-10" class="pageSizeBtn px-2 py-0.5 rounded text-xs font-semibold transition-all">10</button>
+                <button type="button" onclick="setPageSize(20)" id="footPageSize-20" class="pageSizeBtn px-2 py-0.5 rounded text-xs font-semibold transition-all">20</button>
+                <button type="button" onclick="setPageSize(50)" id="footPageSize-50" class="pageSizeBtn px-2 py-0.5 rounded text-xs font-semibold transition-all">50</button>
+                <button type="button" onclick="setPageSize(100)" id="footPageSize-100" class="pageSizeBtn px-2 py-0.5 rounded text-xs font-semibold transition-all">100</button>
+                <button type="button" onclick="setPageSize('all')" id="footPageSize-all" class="pageSizeBtn px-2 py-0.5 rounded text-xs font-semibold transition-all">All</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      updatePageSizeButtons();
 
       tbody.innerHTML = displayList.map(s => {
         const isSelected = s.id === activeStudentId;
@@ -4102,8 +4239,8 @@
         }
       });
 
-      // Reset display limit and render table rows
-      tableDisplayLimit = 100;
+      // Reset page to 1 on filter change and render table rows
+      tableCurrentPage = 1;
       renderTable(currentFiltered);
 
       // Update Cohort Telemetry Stat Bar (with safe null-guards)
