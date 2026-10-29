@@ -55,8 +55,7 @@ Unlike conventional Learning Management Systems (LMS) or static grade sheets tha
 
 - Synthesized dataset of 50 student records across 3 distinct personas (High Risk, Moderate Risk, Exemplary Achievers) in `data/students.json`.
 - Full-stack codebase with complete API endpoints in `server.js` and responsive frontend in `public/index.html` and `public/login.html`.
-- Formal project documentation in `README.md`, `STUDENT_SUCCESS_SCORE_NOTE.md`, and [`CampusIQ_Project_Report.docx`](file:///Users/ankitdubeyx/Downloads/CampusIQ_Project_Report.docx).
-- Presentation deck in [`CampusIQ_Presentation.pptx`](file:///Users/ankitdubeyx/Downloads/CampusIQ_Presentation.pptx).
+- Formal project documentation in `README.md` and `STUDENT_SUCCESS_SCORE_NOTE.md`.
 - Signed native Android APK in [`CampusIQ.apk`](file:///Users/ankitdubeyx/Downloads/CampusIQ.apk).
 
 ## Product Principles
