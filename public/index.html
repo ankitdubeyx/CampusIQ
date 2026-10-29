@@ -2108,13 +2108,6 @@
       const deanSelect = document.getElementById('landingDeanSelect');
 
       if (deans.length > 0) {
-        const primaryDean = deans[0];
-        if (deanNameEl) deanNameEl.textContent = primaryDean.name || 'Dean';
-        if (deanSchoolEl) deanSchoolEl.textContent = primaryDean.school || 'School of Engineering & Computing';
-        if (deanStudentCountEl) deanStudentCountEl.textContent = primaryDean.studentCount;
-        if (deanCgpaEl) deanCgpaEl.textContent = primaryDean.avgCgpa;
-        if (deanRiskEl) deanRiskEl.textContent = primaryDean.highRiskCount;
-
         if (deans.length > 1 && deanSelect && deanSelectWrapper) {
           deanSelectWrapper.style.display = 'block';
           deanSelect.innerHTML = '';
@@ -2134,8 +2127,17 @@
             opt.textContent = `${d.name} (${d.school} • ${d.studentCount.toLocaleString()} Students)`;
             deanSelect.appendChild(opt);
           });
-        } else if (deanSelectWrapper) {
-          deanSelectWrapper.style.display = 'none';
+          // Immediately sync Dean Card preview with default "All Campus" selected option
+          updateDeanPreview();
+        } else {
+          if (deanSelectWrapper) deanSelectWrapper.style.display = 'none';
+          const primaryDean = deans[0];
+          const total = hier.totalStudents || (students ? students.length : primaryDean.studentCount);
+          if (deanNameEl) deanNameEl.textContent = primaryDean.name || 'Institutional Executive';
+          if (deanSchoolEl) deanSchoolEl.textContent = primaryDean.school || 'All Campus Schools & Departments';
+          if (deanStudentCountEl) deanStudentCountEl.textContent = total.toLocaleString();
+          if (deanCgpaEl) deanCgpaEl.textContent = primaryDean.avgCgpa;
+          if (deanRiskEl) deanRiskEl.textContent = primaryDean.highRiskCount;
         }
       }
 
@@ -2239,16 +2241,32 @@
       const opt = select.selectedOptions[0];
       const val = opt.value;
       if (val === 'all') {
-        const total = currentHierarchy?.totalStudents || students.length;
-        const hrTotal = currentHierarchy?.deans?.reduce((acc, d) => acc + (d.highRiskCount || 0), 0) || 0;
-        const avgCgpa = currentHierarchy?.deans?.length > 0 
-          ? (currentHierarchy.deans.reduce((acc, d) => acc + (parseFloat(d.avgCgpa) || 8.0), 0) / currentHierarchy.deans.length).toFixed(2)
-          : '8.01';
-        document.getElementById('landingDeanName').textContent = 'Provost / Institutional Executive';
-        document.getElementById('landingDeanSchool').textContent = 'All Campus Schools & Departments';
-        document.getElementById('landingDeanStudentCount').textContent = total.toLocaleString();
-        document.getElementById('landingDeanCgpa').textContent = avgCgpa;
-        document.getElementById('landingDeanRisk').textContent = hrTotal.toLocaleString();
+        const total = (students && students.length > 0) ? students.length : (currentHierarchy?.totalStudents || 2000);
+        let hrTotal = 0;
+        let avgCgpa = '8.00';
+
+        if (students && students.length > 0) {
+          hrTotal = students.filter(s => s.analytics?.riskFlag === 'High').length;
+          const sumCgpa = students.reduce((acc, s) => acc + (s.categories?.academic?.cgpa || 0), 0);
+          avgCgpa = (sumCgpa / students.length).toFixed(2);
+        } else if (currentHierarchy?.deans && currentHierarchy.deans.length > 0) {
+          hrTotal = currentHierarchy.deans.reduce((acc, d) => acc + (d.highRiskCount || 0), 0);
+          const sumW = currentHierarchy.deans.reduce((acc, d) => acc + ((parseFloat(d.avgCgpa) || 8.0) * (d.studentCount || 1)), 0);
+          const sumC = currentHierarchy.deans.reduce((acc, d) => acc + (d.studentCount || 1), 0);
+          avgCgpa = (sumW / (sumC || 1)).toFixed(2);
+        }
+
+        const nameEl = document.getElementById('landingDeanName');
+        const schoolEl = document.getElementById('landingDeanSchool');
+        const countEl = document.getElementById('landingDeanStudentCount');
+        const cgpaEl = document.getElementById('landingDeanCgpa');
+        const riskEl = document.getElementById('landingDeanRisk');
+
+        if (nameEl) nameEl.textContent = 'Provost / Institutional Executive';
+        if (schoolEl) schoolEl.textContent = 'All Campus Schools & Departments';
+        if (countEl) countEl.textContent = total.toLocaleString();
+        if (cgpaEl) cgpaEl.textContent = avgCgpa;
+        if (riskEl) riskEl.textContent = hrTotal.toLocaleString();
         return;
       }
       const d = currentHierarchy?.deans?.find(item => item.name === val || item.school === val);
@@ -2919,16 +2937,23 @@
 
       if (topContainer) {
         topContainer.innerHTML = topList.map((s, idx) => {
-          const medals = ['🥇 #1', '🥈 #2', '🥉 #3', '#4', '#5'];
-          const medalBadge = medals[idx] || `#${idx + 1}`;
+          const rankMeta = [
+            { icon: '🥇', rank: '#1', bg: 'bg-amber-100 text-amber-900 border-amber-300' },
+            { icon: '🥈', rank: '#2', bg: 'bg-slate-200 text-slate-800 border-slate-300' },
+            { icon: '🥉', rank: '#3', bg: 'bg-amber-50 text-amber-950 border-amber-300' },
+            { icon: '<span class="text-slate-400 font-bold">★</span>', rank: '#4', bg: 'bg-slate-100 text-slate-700 border-slate-200' },
+            { icon: '<span class="text-slate-400 font-bold">★</span>', rank: '#5', bg: 'bg-slate-100 text-slate-700 border-slate-200' }
+          ];
+          const rankInfo = rankMeta[idx] || { icon: '<span class="text-slate-400 font-bold">★</span>', rank: `#${idx + 1}`, bg: 'bg-slate-100 text-slate-700 border-slate-200' };
           const mock = s.categories.placement?.mockInterviewScore || 80;
           const strengths = s.categories.feedback?.strengths?.slice(0, 2).join(' • ') || 'Exemplary academic and technical standing';
 
           return `
             <div class="py-2.5 px-2 sm:px-3 rounded-lg hover:bg-slate-50 transition-colors flex items-center justify-between gap-2.5 group">
               <div class="flex items-center gap-2.5 min-w-0 flex-1">
-                <div class="w-8 h-8 rounded-lg ${idx === 0 ? 'bg-amber-100 text-amber-800 border border-amber-200' : idx === 1 ? 'bg-slate-200 text-slate-700 border border-slate-300' : idx === 2 ? 'bg-amber-50 text-amber-900 border border-amber-300' : 'bg-slate-100 text-slate-600 border border-slate-200'} flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
-                  ${medalBadge}
+                <div class="min-w-[48px] h-8 px-1.5 rounded-lg border ${rankInfo.bg} flex items-center justify-center gap-1 font-bold text-xs shrink-0 shadow-2xs font-data-mono">
+                  <span class="text-xs leading-none shrink-0">${rankInfo.icon}</span>
+                  <span class="leading-none shrink-0">${rankInfo.rank}</span>
                 </div>
                 <div class="min-w-0 flex-1">
                   <div class="flex items-center gap-1.5 flex-nowrap overflow-hidden">

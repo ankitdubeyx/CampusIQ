@@ -509,9 +509,16 @@ app.get('/api/students', (req, res) => {
                         targetDean.toLowerCase() === 'provost' ||
                         targetDean.toLowerCase() === 'executive' ||
                         targetDean.toLowerCase() === 'campus' ||
-                        targetDean.toLowerCase() === 'all campus';
+                        targetDean.toLowerCase().includes('all campus') ||
+                        targetDean.toLowerCase().includes('institutional executive');
 
-      if (targetSchool && targetSchool.toLowerCase() !== 'all') {
+      const isSchoolAll = !targetSchool ||
+                          targetSchool.toLowerCase() === 'all' ||
+                          targetSchool.toLowerCase() === 'all campus' ||
+                          targetSchool.toLowerCase().includes('all campus') ||
+                          targetSchool.toLowerCase().includes('all school');
+
+      if (targetSchool && !isSchoolAll) {
         const lowSchool = targetSchool.toLowerCase();
         result = result.filter(s => (s.school || '').toLowerCase().includes(lowSchool));
       } else if (!isDeanAll) {
