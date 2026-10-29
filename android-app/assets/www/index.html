@@ -1375,6 +1375,47 @@
             </div>
           </div>
         </div>
+
+        <!-- Row B: Dedicated Full-Width Section Directory Container -->
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col gap-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-brand-600 text-lg">meeting_room</span>
+                <h3 class="text-sm font-bold text-slate-900">Class & Section Performance Directory</h3>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-brand-50 text-brand-700 border border-brand-200" id="sectionCountBadge">0 Sections</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">Comparative academic, endsem, and attendance performance across each class cohort. Click any section to filter directory table below.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+                <input type="text" id="sectionSearchInput" oninput="filterSectionCards()" placeholder="Search section..." class="pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500 w-36 sm:w-48">
+              </div>
+              <select id="sectionSortSelect" onchange="sortSectionCards()" class="px-2.5 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500">
+                <option value="name-asc">Section Name (A-Z)</option>
+                <option value="score-desc">Highest Score</option>
+                <option value="attn-asc">Lowest Attendance</option>
+                <option value="risk-desc">Most High Risk</option>
+                <option value="count-desc">Largest Cohort</option>
+              </select>
+              <button id="btnToggleSectionExpand" onclick="toggleSectionExpand()" type="button" class="px-2.5 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold transition-all flex items-center gap-1 shadow-2xs cursor-pointer active:scale-95" title="Toggle expand all sections / compact view">
+                <span class="material-symbols-outlined text-sm" id="sectionExpandIcon">unfold_more</span>
+                <span id="sectionExpandText">Expand</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Dynamic Class Summary Cards Grid -->
+          <div id="classSubjectSummaryContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2.5 max-h-72 overflow-y-auto pr-1">
+            <!-- Dynamic Summary Pills -->
+          </div>
+
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+            <span>Tip: Click any class card to instantly filter the student directory below.</span>
+            <span id="classSummaryAttnAlertCount" class="text-rose-600 font-medium"></span>
+          </div>
+        </div>
       </section>
 
       <!-- 5. Split-View Master Directory & Sticky Inspector Panel -->
@@ -3232,6 +3273,8 @@
         if (passEl) passEl.textContent = '0% (0/0)';
         const dimGrid = document.getElementById('radarDimensionGrid');
         if (dimGrid) dimGrid.innerHTML = '<div class="col-span-full py-2 text-slate-400 text-xs">No active telemetry</div>';
+        const secContainer = document.getElementById('classSubjectSummaryContainer');
+        if (secContainer) secContainer.innerHTML = '<div class="col-span-full py-6 text-center text-xs text-slate-400">No student records loaded. Ingest dataset to populate section telemetry.</div>';
         return;
       }
 
@@ -3620,6 +3663,27 @@
       }
     }
     window.filterTableBySection = filterTableBySection;
+
+    function toggleSectionExpand() {
+      const container = document.getElementById('classSubjectSummaryContainer');
+      const icon = document.getElementById('sectionExpandIcon');
+      const text = document.getElementById('sectionExpandText');
+      if (!container) return;
+
+      const isExpanded = !container.classList.contains('max-h-72');
+      if (isExpanded) {
+        container.classList.add('max-h-72', 'overflow-y-auto');
+        if (icon) icon.textContent = 'unfold_more';
+        if (text) text.textContent = 'Expand';
+        showToast('Section directory in compact view', 'unfold_more');
+      } else {
+        container.classList.remove('max-h-72', 'overflow-y-auto');
+        if (icon) icon.textContent = 'unfold_less';
+        if (text) text.textContent = 'Collapse';
+        showToast('Section directory expanded (showing all sections naturally)', 'unfold_less');
+      }
+    }
+    window.toggleSectionExpand = toggleSectionExpand;
 
     // Populate department select options
     function populateDepartmentDropdown(studentList) {
