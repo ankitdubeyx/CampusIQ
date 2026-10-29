@@ -3488,6 +3488,8 @@
 
     // Section Directory Helpers
     let currentClassSummaryData = [];
+    let activeSectionFilter = null;
+    window.activeSectionFilter = null;
 
     function renderSectionCards(data) {
       const container = document.getElementById('classSubjectSummaryContainer');
@@ -3499,13 +3501,19 @@
       container.innerHTML = data.map(c => {
         const isAttnAlert = c.attnAvg < 75;
         const hasHighRisk = c.highRiskCount > 0;
+        const isSelected = activeSectionFilter === c.name;
+        const borderBgClass = isSelected
+          ? 'ring-2 ring-brand-600 bg-brand-50/90 border-brand-500 shadow-sm'
+          : (isAttnAlert ? 'border-rose-200 bg-rose-50/20' : 'border-slate-200/80 bg-slate-50');
+
         return `
-          <div onclick="filterTableBySection('${c.name}')" class="p-2.5 rounded-lg bg-slate-50 hover:bg-brand-50/70 border ${isAttnAlert ? 'border-rose-200 bg-rose-50/20' : 'border-slate-200/80'} hover:border-brand-300 transition-all cursor-pointer flex flex-col justify-between group shadow-2xs" title="Click to filter student directory by section ${c.name}">
+          <div onclick="filterTableBySection('${c.name}')" class="p-2.5 rounded-lg border ${borderBgClass} hover:bg-brand-50/70 hover:border-brand-300 transition-all cursor-pointer flex flex-col justify-between group shadow-2xs relative" title="Click to filter student directory by section ${c.name} (Click again to clear filter)">
+            ${isSelected ? '<span class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-brand-600 text-white flex items-center justify-center text-[10px] shadow-xs"><span class="material-symbols-outlined text-[10px]">check</span></span>' : ''}
             <div class="flex items-center justify-between gap-1">
-              <span class="font-bold text-xs text-slate-900 group-hover:text-brand-600 transition-colors truncate">${c.name}</span>
-              <span class="text-[10px] text-slate-500 font-semibold shrink-0">${c.count} Students</span>
+              <span class="font-bold text-xs ${isSelected ? 'text-brand-700 font-extrabold' : 'text-slate-900 group-hover:text-brand-600'} transition-colors truncate">${c.name}</span>
+              <span class="text-[10px] ${isSelected ? 'text-brand-700 font-bold' : 'text-slate-500 font-semibold'} shrink-0">${c.count} Students</span>
             </div>
-            <div class="flex items-center justify-between text-[11px] mt-1.5 pt-1 border-t border-slate-200/60 font-data-mono">
+            <div class="flex items-center justify-between text-[11px] mt-1.5 pt-1 border-t ${isSelected ? 'border-brand-200' : 'border-slate-200/60'} font-data-mono">
               <span class="text-slate-400 font-normal">Subject</span>
               <strong class="text-brand-600 font-bold">${c.subjectAvg}</strong>
             </div>
@@ -3547,10 +3555,58 @@
     }
 
     function filterTableBySection(sectionName) {
+      if (!sectionName) return;
+
       const search = document.getElementById('studentSearch');
+
+      // Toggle off if clicking the already active section filter
+      if (activeSectionFilter === sectionName) {
+        activeSectionFilter = null;
+        window.activeSectionFilter = null;
+        if (search) search.value = '';
+        renderSectionCards(currentClassSummaryData);
+        filterTable();
+        showToast('Cleared section filter - showing entire cohort', 'filter_alt_off');
+        return;
+      }
+
+      activeSectionFilter = sectionName;
+      window.activeSectionFilter = sectionName;
+
+      // Reset any restrictive dropdown filters so section students are not inadvertently blocked
+      const dept = document.getElementById('departmentFilter');
+      if (dept) dept.value = 'All';
+
+      const risk = document.getElementById('riskFilter');
+      if (risk) risk.value = 'All';
+
+      const attn = document.getElementById('attendanceFilter');
+      if (attn) attn.value = 'All';
+
+      const cgpa = document.getElementById('cgpaFilter');
+      if (cgpa) cgpa.value = 'All';
+
+      const place = document.getElementById('placementFilter');
+      if (place) place.value = 'All';
+
+      const backlogs = document.getElementById('backlogFilter') || document.getElementById('backlogsFilter');
+      if (backlogs) backlogs.value = 'All';
+
+      activeQuad = 'all';
+      const quadBtns = document.querySelectorAll('#quadrantButtonsContainer .quad-btn');
+      quadBtns.forEach((b, idx) => {
+        b.className = idx === 0 
+          ? 'quad-btn min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white shadow-xs transition-colors'
+          : 'quad-btn min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors';
+      });
+
       if (search) search.value = sectionName;
+
+      renderSectionCards(currentClassSummaryData);
       filterTable();
-      showToast(`Filtered student directory by section: ${sectionName}`, 'filter_alt');
+
+      showToast(`Filtered student directory by section: ${sectionName} (${currentFiltered.length} students)`, 'filter_alt');
+
       const target = document.getElementById('directorySection');
       if (target) {
         const yOffset = -70;
@@ -3558,6 +3614,7 @@
         window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
       }
     }
+    window.filterTableBySection = filterTableBySection;
 
     // Populate department select options
     function populateDepartmentDropdown(studentList) {
@@ -4014,11 +4071,19 @@
       const attendanceVal = document.getElementById('attendanceFilter')?.value || 'All';
       const cgpaVal = document.getElementById('cgpaFilter')?.value || 'All';
       const placementVal = document.getElementById('placementFilter')?.value || 'All';
-      const backlogsVal = (document.getElementById('backlogsFilter')?.value || document.getElementById('backlogFilter')?.value || 'All');
+      const backlogsVal = (document.getElementById('backlogFilter')?.value || document.getElementById('backlogsFilter')?.value || 'All');
       const sortByVal = document.getElementById('sortByFilter')?.value || 'default';
 
+      // If activeSectionFilter is active and user changed searchVal, clear activeSectionFilter
+      if (activeSectionFilter && searchVal && searchVal !== activeSectionFilter.toLowerCase().trim()) {
+        activeSectionFilter = null;
+        if (currentClassSummaryData && currentClassSummaryData.length > 0) {
+          renderSectionCards(currentClassSummaryData);
+        }
+      }
+
       let activeFilterCount = 0;
-      if (searchVal) activeFilterCount++;
+      if (searchVal || activeSectionFilter) activeFilterCount++;
       if (deptVal !== 'All') activeFilterCount++;
       if (riskVal !== 'All') activeFilterCount++;
       if (activeQuad !== 'all') activeFilterCount++;
@@ -4028,75 +4093,98 @@
       if (backlogsVal !== 'All') activeFilterCount++;
 
       currentFiltered = students.filter(s => {
-        // 1. Search filter
-        const matchSearch = !searchVal ||
-          s.name.toLowerCase().includes(searchVal) ||
-          s.id.toLowerCase().includes(searchVal) ||
-          s.email.toLowerCase().includes(searchVal);
+        // Section & Class normalization
+        const sClass = String(s.class || s.section || '').toLowerCase().trim();
+        const sDept = String(s.department || '').toLowerCase().trim();
+        const sBatch = String(s.batch || '').toLowerCase().trim();
+        const sName = String(s.name || '').toLowerCase().trim();
+        const sId = String(s.id || '').toLowerCase().trim();
+        const sEmail = String(s.email || '').toLowerCase().trim();
+        const sPersona = String(s.persona || '').toLowerCase().trim();
+        const sSectionKey = (s.class || s.section || s.department || 'General').toLowerCase().trim();
 
-        // 2. Department filter
-        const matchDept = (deptVal === 'All') || (s.department === deptVal);
+        // 1. Section card filter (exact match with section grouping key or class)
+        let matchSection = true;
+        if (activeSectionFilter) {
+          const targetSec = activeSectionFilter.toLowerCase().trim();
+          matchSection = (sSectionKey === targetSec || sClass === targetSec || sClass.includes(targetSec));
+        }
 
-        // 3. Risk filter
-        const matchRisk = (riskVal === 'All') || (s.analytics.riskFlag === riskVal);
+        // 2. Search filter (matches name, roll ID, email, class, section, department, batch, or persona)
+        const isSearchSameAsSection = activeSectionFilter && (searchVal === activeSectionFilter.toLowerCase().trim());
+        const matchSearch = !searchVal || isSearchSameAsSection ||
+          sName.includes(searchVal) ||
+          sId.includes(searchVal) ||
+          sEmail.includes(searchVal) ||
+          sClass.includes(searchVal) ||
+          sSectionKey.includes(searchVal) ||
+          sDept.includes(searchVal) ||
+          sBatch.includes(searchVal) ||
+          sPersona.includes(searchVal);
 
-        // 4. Quadrant / Persona filter
+        // 3. Department filter
+        const matchDept = (deptVal === 'All') || (sDept === deptVal.toLowerCase().trim());
+
+        // 4. Risk filter
+        const matchRisk = (riskVal === 'All') || (s.analytics?.riskFlag === riskVal);
+
+        // 5. Quadrant / Persona filter
         let matchQuad = true;
         if (activeQuad === 'high-academic') matchQuad = (s.persona === 'High Academic / Low Placement');
         else if (activeQuad === 'low-attendance') matchQuad = (s.persona === 'Low Attendance / High Skills');
         else if (activeQuad === 'average') matchQuad = (s.persona === 'Average All-Rounders');
-        else if (activeQuad === 'high-risk') matchQuad = (s.analytics.riskFlag === 'High');
+        else if (activeQuad === 'high-risk') matchQuad = (s.analytics?.riskFlag === 'High');
 
-        // 5. Attendance Tier Filter
-        const attn = s.categories.attendance.overallPercentage;
+        // 6. Attendance Tier Filter
+        const classAttn = s.categories?.attendance?.classes !== undefined ? s.categories.attendance.classes : (s.categories?.attendance?.overallPercentage ?? s.categories?.attendance?.overall ?? 80);
         let matchAttendance = true;
-        if (attendanceVal === 'warning') matchAttendance = (attn < 75);
-        else if (attendanceVal === 'standard') matchAttendance = (attn >= 75 && attn <= 85);
-        else if (attendanceVal === 'excellent') matchAttendance = (attn > 85);
+        if (attendanceVal === 'warning') matchAttendance = (classAttn < 75);
+        else if (attendanceVal === 'standard') matchAttendance = (classAttn >= 75 && classAttn <= 85);
+        else if (attendanceVal === 'excellent') matchAttendance = (classAttn > 85);
 
-        // 6. CGPA Tier Filter
-        const cgpa = s.categories.academic.cgpa;
+        // 7. CGPA Tier Filter
+        const cgpa = s.categories?.academic?.cgpa ?? 8.0;
         let matchCgpa = true;
         if (cgpaVal === 'high') matchCgpa = (cgpa >= 8.5);
-        else if (cgpaVal === 'medium') matchCgpa = (cgpa >= 7.0 && cgpa < 8.5);
+        else if (cgpaVal === 'medium' || cgpaVal === 'mid') matchCgpa = (cgpa >= 7.0 && cgpa < 8.5);
         else if (cgpaVal === 'low') matchCgpa = (cgpa < 7.0);
 
-        // 7. Placement Readiness Tier Filter
-        const mockScore = s.categories.placement.mockInterviewScore;
+        // 8. Placement Readiness Tier Filter
+        const mockScore = s.categories?.placement?.mockInterviewScore ?? 60;
         let matchPlacement = true;
-        if (placementVal === 'ready') matchPlacement = (mockScore >= 80);
+        if (placementVal === 'ready') matchPlacement = (mockScore >= 60);
+        else if (placementVal === 'not_ready' || placementVal === 'critical') matchPlacement = (mockScore < 60);
         else if (placementVal === 'progress') matchPlacement = (mockScore >= 60 && mockScore < 80);
-        else if (placementVal === 'critical') matchPlacement = (mockScore < 60);
 
-        // 8. Backlogs Filter
-        const bl = s.categories.academic.backlogs;
+        // 9. Backlogs Filter
+        const bl = s.categories?.academic?.backlogs ?? 0;
         let matchBacklogs = true;
-        if (backlogsVal === 'zero') matchBacklogs = (bl === 0);
-        else if (backlogsVal === 'hasBacklogs') matchBacklogs = (bl > 0);
+        if (backlogsVal === 'zero' || backlogsVal === 'clean') matchBacklogs = (bl === 0);
+        else if (backlogsVal === 'hasBacklogs' || backlogsVal === 'has_backlogs') matchBacklogs = (bl > 0);
 
-        return matchSearch && matchDept && matchRisk && matchQuad && matchAttendance && matchCgpa && matchPlacement && matchBacklogs;
+        return matchSection && matchSearch && matchDept && matchRisk && matchQuad && matchAttendance && matchCgpa && matchPlacement && matchBacklogs;
       });
 
       // Sorting
       currentFiltered.sort((a, b) => {
         switch (sortByVal) {
           case 'cgpa-desc':
-            return b.categories.academic.cgpa - a.categories.academic.cgpa;
+            return (b.categories?.academic?.cgpa ?? 0) - (a.categories?.academic?.cgpa ?? 0);
           case 'cgpa-asc':
-            return a.categories.academic.cgpa - b.categories.academic.cgpa;
+            return (a.categories?.academic?.cgpa ?? 0) - (b.categories?.academic?.cgpa ?? 0);
           case 'attendance-asc':
-            return a.categories.attendance.overallPercentage - b.categories.attendance.overallPercentage;
+            return (a.categories?.attendance?.overallPercentage ?? 0) - (b.categories?.attendance?.overallPercentage ?? 0);
           case 'attendance-desc':
-            return b.categories.attendance.overallPercentage - a.categories.attendance.overallPercentage;
+            return (b.categories?.attendance?.overallPercentage ?? 0) - (a.categories?.attendance?.overallPercentage ?? 0);
           case 'placement-desc':
-            return b.categories.placement.mockInterviewScore - a.categories.placement.mockInterviewScore;
+            return (b.categories?.placement?.mockInterviewScore ?? 0) - (a.categories?.placement?.mockInterviewScore ?? 0);
           case 'skills-desc':
-            return b.categories.skills.codingAssessmentScore - a.categories.skills.codingAssessmentScore;
+            return (b.categories?.skills?.codingAssessmentScore ?? 0) - (a.categories?.skills?.codingAssessmentScore ?? 0);
           case 'name-asc':
-            return a.name.localeCompare(b.name);
+            return (a.name || '').localeCompare(b.name || '');
           case 'default':
           default:
-            return b.analytics.successScore - a.analytics.successScore;
+            return (b.analytics?.successScore ?? 0) - (a.analytics?.successScore ?? 0);
         }
       });
 
@@ -4130,10 +4218,11 @@
       const activeBadge = document.getElementById('cohortActiveFiltersBadge');
       if (activeBadge) {
         if (activeFilterCount > 0) {
-          activeBadge.textContent = `${activeFilterCount} Active Filter${activeFilterCount === 1 ? '' : 's'}`;
+          const filterLabel = activeSectionFilter ? `Section: ${activeSectionFilter}` : `${activeFilterCount} Active Filter${activeFilterCount === 1 ? '' : 's'}`;
+          activeBadge.textContent = filterLabel;
           activeBadge.className = 'text-xs text-brand-600 font-bold px-2 py-0.5 rounded-full bg-brand-50 border border-brand-200';
         } else {
-          activeBadge.textContent = 'All 50 Visible';
+          activeBadge.textContent = `All ${students.length.toLocaleString()} Visible`;
           activeBadge.className = 'text-xs text-slate-500 font-medium';
         }
       }
@@ -4146,6 +4235,7 @@
 
     // Reset all filter dropdowns and search inputs to default
     function clearAllFilters() {
+      activeSectionFilter = null;
       const search = document.getElementById('studentSearch');
       if (search) search.value = '';
       const headerSearch = document.getElementById('headerSearch');
@@ -4166,7 +4256,7 @@
       const place = document.getElementById('placementFilter');
       if (place) place.value = 'All';
 
-      const backlogs = document.getElementById('backlogsFilter');
+      const backlogs = document.getElementById('backlogFilter') || document.getElementById('backlogsFilter');
       if (backlogs) backlogs.value = 'All';
 
       const sort = document.getElementById('sortByFilter');
@@ -4175,6 +4265,10 @@
       activeQuad = 'all';
       activeKpiFilter = null;
       clearAllKpiCardHighlights();
+
+      if (currentClassSummaryData && currentClassSummaryData.length > 0) {
+        renderSectionCards(currentClassSummaryData);
+      }
 
       const buttons = document.querySelectorAll('#quadrantButtonsContainer .quad-btn');
       buttons.forEach((b, idx) => {
