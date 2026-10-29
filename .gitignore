@@ -5,3 +5,17 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .env
+
+# Assistant and Tooling metadata
+.agent/
+.claude/
+.gemini/
+.impeccable/
+
+# Archive files
+*.zip
+public/*.zip
+
+# Android build outputs
+android-app/build/
+*.idsig

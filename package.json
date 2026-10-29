@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "generate-data": "node data/generate-students.js"
+    "generate-data": "node data/generate-students.js",
+    "build:apk": "./build-apk.sh"
   },
   "keywords": [
     "nodejs",

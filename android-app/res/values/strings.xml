@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CampusIQ</string>
+    <string name="developer_name">Ankit Kumar Dubey</string>
+    <string name="reg_number">251302058</string>
+    <string name="app_tagline">Student Success &amp; Retention Intelligence System</string>
+</resources>

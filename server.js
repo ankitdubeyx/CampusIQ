@@ -21,6 +21,7 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const {
   calculateStudentSuccessScore,
   assignRiskFlag,
@@ -33,22 +34,72 @@ const PORT = process.env.PORT || 3000;
 
 // Path to our mock JSON database
 const DATA_FILE = path.join(__dirname, 'data', 'students.json');
+// Writable fallback path for serverless / read-only runtimes (AWS Lambda, Vercel, Netlify)
+const TMP_DATA_FILE = path.join(os.tmpdir(), 'campusiq_students.json');
 
 // In-memory student cache loaded from the JSON file
 let rawStudents = [];
 
 /**
- * Helper function to load student data from the JSON file
+ * Safely persists student data to disk.
+ * Handles standard local environments, read-only serverless filesystems (/var/task),
+ * and containerized environments gracefully without throwing EROFS errors.
+ */
+function saveStudentsToFile(data) {
+  const jsonStr = JSON.stringify(data, null, 2);
+
+  // 1. Primary: Try project data/students.json
+  try {
+    fs.writeFileSync(DATA_FILE, jsonStr, 'utf-8');
+    return true;
+  } catch (err) {
+    if (err.code === 'EROFS' || (err.message && err.message.includes('read-only'))) {
+      console.warn(`[Storage] Read-only filesystem detected at ${DATA_FILE}. Using writable /tmp fallback.`);
+    } else {
+      console.warn(`[Storage Warning] Cannot write to ${DATA_FILE} (${err.message}). Trying /tmp fallback...`);
+    }
+  }
+
+  // 2. Secondary fallback: Try os.tmpdir() (/tmp), always writable in AWS Lambda / Vercel
+  try {
+    fs.writeFileSync(TMP_DATA_FILE, jsonStr, 'utf-8');
+    return true;
+  } catch (tmpErr) {
+    console.warn(`[Storage Warning] Could not write to /tmp fallback (${tmpErr.message}). In-memory state maintained.`);
+  }
+
+  return false;
+}
+
+/**
+ * Helper function to load student data from the JSON file or /tmp fallback
  */
 function loadStudents() {
+  // 1. Check if temporary writable storage has a persisted uploaded dataset
   try {
-    const rawData = fs.readFileSync(DATA_FILE, 'utf-8');
-    rawStudents = JSON.parse(rawData);
-    console.log(`[Database] Loaded ${rawStudents.length} students from ${DATA_FILE}`);
+    if (fs.existsSync(TMP_DATA_FILE)) {
+      const tmpData = fs.readFileSync(TMP_DATA_FILE, 'utf-8');
+      rawStudents = JSON.parse(tmpData);
+      console.log(`[Database] Loaded ${rawStudents.length} students from /tmp fallback (${TMP_DATA_FILE})`);
+      return;
+    }
+  } catch (e) {
+    // Continue to standard file
+  }
+
+  // 2. Load from standard DATA_FILE
+  try {
+    if (fs.existsSync(DATA_FILE)) {
+      const rawData = fs.readFileSync(DATA_FILE, 'utf-8');
+      rawStudents = JSON.parse(rawData);
+      console.log(`[Database] Loaded ${rawStudents.length} students from ${DATA_FILE}`);
+      return;
+    }
   } catch (err) {
     console.error('[Database Error] Failed to load students.json:', err.message);
-    rawStudents = [];
   }
+
+  rawStudents = [];
 }
 
 // Initial load
@@ -88,13 +139,17 @@ function getEnrichedStudents() {
 // ------------------------------------------------------------------------------
 
 /**
- * Root Route: GET / & GET /login
- * Serves the Role Selection Login Page
+ * Root Route: GET /
+ * Serves the Student Analytics Dashboard directly with full cohort telemetry
  */
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+/**
+ * Login Gateway: GET /login
+ * Serves the Role Selection Gateway for institutional access
+ */
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
@@ -848,12 +903,8 @@ app.post('/api/students', (req, res) => {
 
   rawStudents.push(newStudent);
 
-  // Persist to JSON file
-  try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(rawStudents, null, 2), 'utf-8');
-  } catch (err) {
-    console.error('Failed to write to file:', err);
-  }
+  // Persist to JSON file (safe for read-only serverless filesystems)
+  saveStudentsToFile(rawStudents);
 
   const enriched = enrichStudent(newStudent);
 
@@ -898,9 +949,11 @@ app.post('/api/upload', (req, res) => {
 
     const normalized = parseAndNormalizeDataset(inputData, fileType);
     
-    // Save to students.json
-    fs.writeFileSync(DATA_FILE, JSON.stringify(normalized, null, 2), 'utf-8');
+    // In-memory update ALWAYS happens first!
     rawStudents = normalized;
+
+    // Persist to storage (safe for read-only serverless filesystems like /var/task)
+    saveStudentsToFile(normalized);
 
     const enriched = getEnrichedStudents();
     const riskSummary = {
@@ -929,34 +982,21 @@ app.post('/api/upload', (req, res) => {
 
 /**
  * POST /api/reset
- * Resets the student database back to the default 50 students
+ * Resets the student database to 0 students, awaiting user dataset upload
  */
 app.post('/api/reset', (req, res) => {
   try {
-    const defaultFile = path.join(__dirname, 'data', 'default-students.json');
-    if (fs.existsSync(defaultFile)) {
-      const defaultData = fs.readFileSync(defaultFile, 'utf-8');
-      fs.writeFileSync(DATA_FILE, defaultData, 'utf-8');
-      rawStudents = JSON.parse(defaultData);
-    } else {
-      loadStudents();
-    }
+    rawStudents = [];
+    saveStudentsToFile([]);
 
-    const enriched = getEnrichedStudents();
-    const riskSummary = {
-      high: enriched.filter(s => s.analytics.riskFlag === 'High').length,
-      medium: enriched.filter(s => s.analytics.riskFlag === 'Medium').length,
-      low: enriched.filter(s => s.analytics.riskFlag === 'Low').length
-    };
-
-    console.log(`[Database Reset] Reset back to default ${rawStudents.length} students`);
+    console.log('[Database Reset] Reset database to 0 students (awaiting dataset upload)');
 
     res.json({
       success: true,
-      message: 'Database successfully restored to default 50 students!',
-      totalStudents: rawStudents.length,
-      riskSummary,
-      data: enriched
+      message: 'Database reset to 0 students. Ready for dataset upload!',
+      totalStudents: 0,
+      riskSummary: { high: 0, medium: 0, low: 0 },
+      data: []
     });
   } catch (err) {
     res.status(500).json({

@@ -1,0 +1,3615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>CampusIQ — Student Retention & Success Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Figtree', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    /* Impeccable Minimal & Modern Design Tokens */
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      color: #0f172a;
+      background-color: #f8fafc;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: 2rem; line-height: 1.25; font-weight: 700; letter-spacing: -0.025em; }
+    h2 { font-size: 1.25rem; line-height: 1.35; font-weight: 600; letter-spacing: -0.015em; }
+    h3 { font-size: 1rem; line-height: 1.4; font-weight: 600; }
+    h4 { font-size: 0.875rem; line-height: 1.4; font-weight: 600; }
+    p { font-size: 0.875rem; line-height: 1.55; color: #475569; max-width: 75ch; }
+    
+    /* Tabular numeric alignment */
+    .font-data-mono, .tabular-nums {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum";
+    }
+
+    ::selection { background-color: #2563eb; color: #ffffff; }
+    :focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-brand-600 selection:text-white">
+
+  <!-- ======================================================================= -->
+  <!-- 1. MINIMAL TOP NAVIGATION BAR                                            -->
+  <!-- ======================================================================= -->
+  <header class="w-full bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3">
+        <a href="/dashboard?role=dean" class="w-9 h-9 rounded-lg bg-brand-600 text-white flex items-center justify-center font-bold text-lg shadow-xs hover:bg-brand-700 transition-colors">
+          Ω
+        </a>
+        <div>
+          <span class="font-bold text-base text-slate-900 tracking-tight leading-tight block">CampusIQ</span>
+          <span class="text-xs text-slate-500 font-medium">Student Retention Intelligence</span>
+        </div>
+      </div>
+
+      <!-- Center: Active Scope Pill -->
+      <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-xs text-slate-600">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span class="font-semibold text-slate-800" id="rbacBannerUser">Dean Office</span>
+        <span class="text-slate-300">•</span>
+        <span class="text-slate-500" id="rbacBannerTag">Full Campus Scope</span>
+      </div>
+
+      <!-- Action Buttons Toolbar -->
+      <div class="flex items-center gap-2">
+        <button id="btnOpenUploadModal" onclick="openUploadModal()" class="min-h-[38px] px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer" title="Ingest CSV or JSON student dataset">
+          <span class="material-symbols-outlined text-base">cloud_upload</span>
+          <span class="inline">Upload</span>
+        </button>
+
+        <button onclick="fetchStudents()" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer" title="Reload live data">
+          <span class="material-symbols-outlined text-base text-slate-500">refresh</span>
+          <span class="hidden sm:inline">Refresh</span>
+        </button>
+
+        <button id="btnResetDataset" onclick="resetToDefaultData()" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:text-rose-700 hover:bg-rose-50 hover:border-rose-200 transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer" title="Reset student count to 0 (clears database to wait for dataset upload)">
+          <span class="material-symbols-outlined text-base text-slate-400">restart_alt</span>
+          <span class="inline">Reset</span>
+        </button>
+
+        <button onclick="filterByRisk('High')" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors">
+          <span class="material-symbols-outlined text-base">warning</span>
+          <span id="quickHighRiskBtnText">Triage High Risk</span>
+        </button>
+
+        <a href="/login" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors" title="Switch active institutional role">
+          <span class="material-symbols-outlined text-sm">switch_account</span>
+          <span class="hidden sm:inline">Switch Role</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================================= -->
+  <!-- 2. MAIN WORKSPACE CANVAS                                                -->
+  <!-- ======================================================================= -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 flex flex-col gap-8">
+
+    <!-- Toast Notification -->
+    <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+      <div class="bg-slate-900 text-white px-4 py-3 rounded-lg shadow-xl text-xs font-semibold flex items-center gap-2.5 border border-slate-700">
+        <span class="material-symbols-outlined text-emerald-400 text-base" id="toastIcon">check_circle</span>
+        <span id="toastMessage">Success</span>
+      </div>
+    </div>
+
+    <!-- Hidden Subtitle / Meta for backward-compatibility -->
+    <div class="hidden">
+      <span id="rbacBannerTitle">Administrator / Dean Active</span>
+      <span id="rbacBannerDesc">Viewing full institutional analytics</span>
+    </div>
+
+    <!-- ------------------------------------------------------------------- -->
+    <!-- SECTION A: STUDENT PERSONAL RECORD PORTAL VIEW (When Role = Student)-->
+    <!-- ------------------------------------------------------------------- -->
+    <section id="studentPersonalView" class="hidden flex-col gap-6">
+      
+      <!-- Student Switcher Bar -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
+        <div class="flex items-center gap-3">
+          <span class="w-9 h-9 rounded-lg bg-brand-50 text-brand-600 inline-flex items-center justify-center">
+            <span class="material-symbols-outlined text-xl">badge</span>
+          </span>
+          <div>
+            <div class="text-xs font-bold uppercase tracking-wider text-brand-600">Confidential Student Portal</div>
+            <div class="text-xs text-slate-500">Zero peer leakage: viewing only your authenticated record</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <label for="stuPortalSwitcherSelect" class="text-xs font-semibold text-slate-600 whitespace-nowrap">Switch Test Record:</label>
+          <select id="stuPortalSwitcherSelect" onchange="switchStudentRecord(this.value)" class="min-h-[40px] bg-slate-50 text-xs font-medium rounded-lg px-3 py-1.5 border border-slate-200 text-slate-800 outline-none focus:border-brand-600">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+      </div>
+
+      <!-- Student Hero Header Card -->
+      <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="flex items-center gap-4">
+          <span class="w-16 h-16 rounded-xl bg-brand-600 text-white inline-flex items-center justify-center font-bold text-2xl shadow-sm" id="stuPortalAvatar">
+            AC
+          </span>
+          <div>
+            <div class="flex items-center gap-2.5 flex-wrap">
+              <h1 class="text-2xl font-bold text-slate-900 tracking-tight" id="stuPortalName">Aarav Chopra</h1>
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold" id="stuPortalRiskBadge">Low Risk</span>
+            </div>
+            <div class="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+              <span class="font-semibold text-slate-700" id="stuPortalDept">Information Technology</span>
+              <span>•</span>
+              <span id="stuPortalBatch">Batch 2021-2025</span>
+              <span>•</span>
+              <span id="stuPortalClass">Class IT-B</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-6 self-stretch sm:self-auto justify-between sm:justify-end border-t sm:border-t-0 pt-4 sm:pt-0 border-slate-100">
+          <div class="text-center sm:text-right">
+            <span class="text-xs font-medium text-slate-500 uppercase tracking-wider block">Student Success Score</span>
+            <div class="text-3xl font-bold text-brand-600 font-data-mono" id="stuPortalSuccessScore">88.5</div>
+          </div>
+          <div class="h-10 w-px bg-slate-200"></div>
+          <div class="text-center sm:text-right">
+            <span class="text-xs font-medium text-slate-500 uppercase tracking-wider block">CGPA</span>
+            <div class="text-3xl font-bold text-slate-900 font-data-mono" id="stuPortalCgpa">9.50</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attendance Risk Alert Box -->
+      <div id="stuPortalAlertBox" class="hidden rounded-xl p-4 bg-rose-50 border border-rose-200 text-rose-800 flex items-start gap-3 shadow-xs">
+        <span class="material-symbols-outlined text-2xl text-rose-600 flex-shrink-0">warning</span>
+        <div>
+          <h2 class="font-bold text-sm text-rose-900">Attendance Deficit Alert Triggered</h2>
+          <p class="text-xs mt-1 leading-relaxed text-rose-700" id="stuPortalAlertMsg">
+            Your class attendance is below the mandatory 75% threshold. You are scheduled for mentoring recovery.
+          </p>
+        </div>
+      </div>
+
+      <!-- 3-Column Metrics Grid (Weaknesses, Academics, Attendance) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Weaknesses -->
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-3 pb-2 border-b border-slate-100">
+              <span class="material-symbols-outlined text-rose-600 text-lg">flag</span>
+              <h2 class="font-bold text-sm text-slate-900">Coaching & Weakness Diagnosis</h2>
+            </div>
+            <ul class="text-xs text-slate-600 space-y-2.5" id="stuPortalWeaknesses">
+              <!-- Dynamic list -->
+            </ul>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-brand-600 font-semibold">
+            Actionable Faculty Guidance
+          </div>
+        </div>
+
+        <!-- Academic Scores -->
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-3 pb-2 border-b border-slate-100">
+              <span class="material-symbols-outlined text-brand-600 text-lg">school</span>
+              <h2 class="font-bold text-sm text-slate-900">Academic & Exam Records</h2>
+            </div>
+            <div class="space-y-2 text-xs">
+              <div class="flex justify-between py-1 border-b border-slate-100">
+                <span class="text-slate-500">Cumulative CGPA:</span>
+                <strong class="font-data-mono text-slate-900" id="stuPortalMarksCgpa">9.50 / 10.0</strong>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-100">
+                <span class="text-slate-500">Active Backlogs:</span>
+                <strong class="font-data-mono" id="stuPortalMarksBacklogs">0 Active</strong>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-100">
+                <span class="text-slate-500">Midsem Marks:</span>
+                <strong class="font-data-mono text-slate-900" id="stuPortalMarksMidsem">88 / 100</strong>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-100">
+                <span class="text-slate-500">Endsem Marks:</span>
+                <strong class="font-data-mono text-slate-900" id="stuPortalMarksEndsem">94 / 100</strong>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-500 font-medium">
+            Examination Progression Verified
+          </div>
+        </div>
+
+        <!-- Granular Attendance -->
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-3 pb-2 border-b border-slate-100">
+              <span class="material-symbols-outlined text-brand-600 text-lg">event_available</span>
+              <h2 class="font-bold text-sm text-slate-900">Granular Attendance</h2>
+            </div>
+            <div class="space-y-3 text-xs">
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-slate-600 font-medium">Mandatory Classes:</span>
+                  <strong class="font-data-mono" id="stuPortalAttnClasses">92%</strong>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div class="bg-brand-600 h-full rounded-full transition-all" id="stuPortalAttnClassesBar" style="width: 92%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-slate-600 font-medium">Laboratory Practical:</span>
+                  <strong class="font-data-mono" id="stuPortalAttnLab">95%</strong>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div class="bg-emerald-500 h-full rounded-full transition-all" id="stuPortalAttnLabBar" style="width: 95%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-slate-600 font-medium">Overall Composite:</span>
+                  <strong class="font-data-mono" id="stuPortalAttnOverall">90%</strong>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div class="bg-brand-600 h-full rounded-full transition-all" id="stuPortalAttnOverallBar" style="width: 90%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-500 font-medium">
+            Threshold: 75% Minimum Required
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Second Grid: Certifications, Placement Skills, LMS & Feedback -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Certifications -->
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-2 mb-3 border-b border-slate-100">
+              <h2 class="font-bold text-sm text-slate-900">Professional Certifications</h2>
+              <span class="text-xs text-slate-500 font-semibold" id="stuPortalCertsCount">-</span>
+            </div>
+            <div class="space-y-2 text-xs" id="stuPortalCertsList">
+              <!-- Dynamic list -->
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-brand-600 font-semibold">
+            Industry Skill Accreditations
+          </div>
+        </div>
+
+        <!-- Placement Readiness -->
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-3 pb-2 border-b border-slate-100">
+              <span class="material-symbols-outlined text-brand-600 text-lg">work</span>
+              <h2 class="font-bold text-sm text-slate-900">Placement & Technical Skills</h2>
+            </div>
+            <div class="space-y-3 text-xs">
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-slate-600">Mock Interview Readiness:</span>
+                  <strong class="font-data-mono text-brand-600" id="stuPortalPlacementMock">-</strong>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div class="bg-brand-600 h-full rounded-full transition-all" id="stuPortalPlacementMockBar" style="width: 70%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-slate-600">Coding Assessment Score:</span>
+                  <strong class="font-data-mono text-emerald-600" id="stuPortalPlacementCoding">-</strong>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div class="bg-emerald-500 h-full rounded-full transition-all" id="stuPortalPlacementCodingBar" style="width: 80%"></div>
+                </div>
+              </div>
+              <div class="flex justify-between py-1 border-t border-slate-100 text-slate-600">
+                <span>LeetCode Solved:</span>
+                <strong class="font-data-mono text-slate-900" id="stuPortalPlacementLeetCode">-</strong>
+              </div>
+              <div class="flex justify-between py-1 border-t border-slate-100 text-slate-600">
+                <span>Completed Internships:</span>
+                <strong class="font-data-mono text-slate-900" id="stuPortalPlacementInternships">-</strong>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-500 font-medium">
+            Campus Recruitment Assessment
+          </div>
+        </div>
+
+        <!-- LMS & Feedback -->
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-3 pb-2 border-b border-slate-100">
+              <span class="material-symbols-outlined text-brand-600 text-lg">record_voice_over</span>
+              <h2 class="font-bold text-sm text-slate-900">LMS & Faculty Feedback</h2>
+            </div>
+            <div class="space-y-2 text-xs">
+              <div class="flex justify-between py-1 border-b border-slate-100">
+                <span class="text-slate-500">LMS Portal Logins:</span>
+                <strong class="font-data-mono text-slate-900" id="stuPortalLmsLogin">-</strong>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-100">
+                <span class="text-slate-500">Weekly LMS Engagement:</span>
+                <strong class="font-data-mono text-slate-900" id="stuPortalLmsHours">-</strong>
+              </div>
+              <div class="pt-2">
+                <span class="text-xs font-semibold text-slate-700 block mb-1">Mentor Advisory Note:</span>
+                <p class="text-xs text-slate-600 italic bg-slate-50 p-2.5 rounded-lg border border-slate-200" id="stuPortalMentorNote">
+                  -
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-500 font-medium">
+            Confidential Academic Log
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Third Grid: Spider Radar & Vector Dimension Progress Bars -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Competency Radar SVG (5 cols) -->
+        <div class="lg:col-span-5 bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col items-center justify-between">
+          <div class="w-full flex items-center justify-between pb-2 border-b border-slate-100">
+            <h2 class="font-bold text-sm text-slate-900">Personal Competency Radar</h2>
+            <span class="text-xs font-semibold text-brand-600">7 Evaluated Vectors</span>
+          </div>
+
+          <div class="relative w-full max-w-[280px] h-56 flex items-center justify-center my-3">
+            <svg class="w-full h-full" viewBox="-65 0 370 205">
+              <polygon class="text-slate-200" fill="none" points="120,20 190,50 200,120 160,180 80,180 40,120 50,50" stroke="currentColor" stroke-width="1"></polygon>
+              <polygon class="text-slate-200" fill="none" points="120,40 170,62 178,115 148,160 92,160 62,115 70,62" stroke="currentColor" stroke-dasharray="2 2" stroke-width="1"></polygon>
+              <polygon class="text-slate-200" fill="none" points="120,60 150,75 155,110 135,140 105,140 85,110 90,75" stroke="currentColor" stroke-width="1"></polygon>
+              <line class="text-slate-200" stroke="currentColor" stroke-width="1" x1="120" x2="120" y1="100" y2="20"></line>
+              <line class="text-slate-200" stroke="currentColor" stroke-width="1" x1="120" x2="190" y1="100" y2="50"></line>
+              <line class="text-slate-200" stroke="currentColor" stroke-width="1" x1="120" x2="200" y1="100" y2="120"></line>
+              <line class="text-slate-200" stroke="currentColor" stroke-width="1" x1="120" x2="160" y1="100" y2="180"></line>
+              <line class="text-slate-200" stroke="currentColor" stroke-width="1" x1="120" x2="80" y1="100" y2="180"></line>
+              <line class="text-slate-200" stroke="currentColor" stroke-width="1" x1="120" x2="40" y1="100" y2="120"></line>
+              <line class="text-slate-200" stroke="currentColor" stroke-width="1" x1="120" x2="50" y1="100" y2="50"></line>
+              <polygon id="stuPortalRadarPolygon" points="120,45 155,75 160,140 130,150 95,160 70,125 90,65" fill="#2563eb" fill-opacity="0.25" stroke="#2563eb" stroke-width="2.5"></polygon>
+              <text class="text-xs fill-slate-700 font-semibold" text-anchor="middle" x="120" y="14">Academic (30%)</text>
+              <text class="text-xs fill-slate-700 font-semibold" text-anchor="start" x="195" y="46">Placement (20%)</text>
+              <text class="text-xs fill-slate-700 font-semibold" text-anchor="start" x="205" y="125">Attendance (15%)</text>
+              <text class="text-xs fill-slate-700 font-semibold" text-anchor="middle" x="165" y="195">Skills (15%)</text>
+              <text class="text-xs fill-slate-700 font-semibold" text-anchor="middle" x="75" y="195">LMS (10%)</text>
+              <text class="text-xs fill-slate-700 font-semibold" text-anchor="end" x="35" y="125">Engagement (5%)</text>
+              <text class="text-xs fill-slate-700 font-semibold" text-anchor="end" x="42" y="46">Feedback (5%)</text>
+            </svg>
+          </div>
+          <div class="w-full pt-2 border-t border-slate-100 text-center text-xs text-slate-500">
+            Real-Time 7-Vector Balance
+          </div>
+        </div>
+
+        <!-- 7 Dimensions Progress Bars (7 cols) -->
+        <div class="lg:col-span-7 bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div class="flex items-center justify-between pb-2 mb-3 border-b border-slate-100">
+            <h2 class="font-bold text-sm text-slate-900">Weighted Competency Composition</h2>
+            <span class="text-xs font-semibold text-slate-500">Target Benchmark: 80%</span>
+          </div>
+
+          <div class="space-y-2.5 text-xs">
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-slate-700">1. Academic Performance (30% weight)</span>
+                <strong class="font-data-mono text-slate-900" id="stuPortalDimAcademic">-</strong>
+              </div>
+              <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div class="bg-brand-600 h-full rounded-full transition-all" id="stuPortalBarAcademic" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-slate-700">2. Placement & Interview (20% weight)</span>
+                <strong class="font-data-mono text-slate-900" id="stuPortalDimPlacement">-</strong>
+              </div>
+              <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div class="bg-brand-600 h-full rounded-full transition-all" id="stuPortalBarPlacement" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-slate-700">3. Class Attendance (15% weight)</span>
+                <strong class="font-data-mono text-slate-900" id="stuPortalDimAttendance">-</strong>
+              </div>
+              <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div class="bg-emerald-500 h-full rounded-full transition-all" id="stuPortalBarAttendance" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-slate-700">4. Technical Certifications & Coding (15% weight)</span>
+                <strong class="font-data-mono text-slate-900" id="stuPortalDimSkills">-</strong>
+              </div>
+              <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div class="bg-brand-600 h-full rounded-full transition-all" id="stuPortalBarSkills" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-slate-700">5. LMS Activity & Quizzes (10% weight)</span>
+                <strong class="font-data-mono text-slate-900" id="stuPortalDimLms">-</strong>
+              </div>
+              <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div class="bg-brand-600 h-full rounded-full transition-all" id="stuPortalBarLms" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-slate-700">6. Campus Engagement & Co-curricular (5% weight)</span>
+                <strong class="font-data-mono text-slate-900" id="stuPortalDimEngagement">-</strong>
+              </div>
+              <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div class="bg-brand-600 h-full rounded-full transition-all" id="stuPortalBarEngagement" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-slate-700">7. Faculty Assessment & Feedback (5% weight)</span>
+                <strong class="font-data-mono text-slate-900" id="stuPortalDimFeedback">-</strong>
+              </div>
+              <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div class="bg-brand-600 h-full rounded-full transition-all" id="stuPortalBarFeedback" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="text-slate-500 font-medium">Composite Success Score:</span>
+            <strong class="font-data-mono text-brand-600 font-bold" id="stuPortalCompositeScore">Overall Composite: - / 100</strong>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ------------------------------------------------------------------- -->
+    <!-- SECTION B: PRIMARY OVERVIEW & MANAGEMENT DASHBOARD                  -->
+    <!-- ------------------------------------------------------------------- -->
+    <div id="overviewSection" class="flex flex-col gap-8">
+      
+      <!-- 1. Sleek KPI Metric Strip -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        
+        <!-- Card 1: Total Students -->
+        <div id="kpiCardTotal" onclick="filterByKpiCard('total', this)" class="kpi-card bg-white rounded-xl p-5 border border-slate-200 hover:border-brand-600 hover:shadow-md cursor-pointer transition-all flex flex-col justify-between group">
+          <div class="flex items-start justify-between">
+            <div>
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Total Cohort</span>
+              <div class="text-3xl font-bold text-slate-900 font-data-mono mt-1" id="kpiTotalCount">50</div>
+            </div>
+            <span class="w-9 h-9 rounded-lg bg-brand-50 text-brand-600 inline-flex items-center justify-center">
+              <span class="material-symbols-outlined text-xl">groups</span>
+            </span>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="text-emerald-700 font-medium flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">check_circle</span>
+              <span id="kpiActiveCohortName">All School Database</span>
+            </span>
+            <span class="text-brand-600 font-medium group-hover:underline">Reset &rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 2: High Risk -->
+        <div id="kpiCardRisk" onclick="filterByKpiCard('risk', this)" class="kpi-card bg-white rounded-xl p-5 border border-slate-200 hover:border-rose-500 hover:shadow-md cursor-pointer transition-all flex flex-col justify-between group">
+          <div class="flex items-start justify-between">
+            <div>
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">At-Risk Students</span>
+              <div class="text-3xl font-bold text-rose-600 font-data-mono mt-1" id="kpiHighRiskRate">-%</div>
+            </div>
+            <span class="w-9 h-9 rounded-lg bg-rose-50 text-rose-600 inline-flex items-center justify-center">
+              <span class="material-symbols-outlined text-xl">warning</span>
+            </span>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="text-rose-700 font-medium" id="kpiHighRiskCount">- Flagged High Risk</span>
+            <span class="text-rose-600 font-medium group-hover:underline">Filter &rarr;</span>
+          </div>
+          <div class="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
+            <div class="bg-rose-500 h-full rounded-full transition-all" id="kpiHighRiskBar" style="width: 20%"></div>
+          </div>
+        </div>
+
+        <!-- Card 3: Placement Ready -->
+        <div id="kpiCardPlacement" onclick="filterByKpiCard('placement', this)" class="kpi-card bg-white rounded-xl p-5 border border-slate-200 hover:border-emerald-600 hover:shadow-md cursor-pointer transition-all flex flex-col justify-between group">
+          <div class="flex items-start justify-between">
+            <div>
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Placement Ready</span>
+              <div class="text-3xl font-bold text-emerald-600 font-data-mono mt-1" id="kpiPlacementReady">-%</div>
+            </div>
+            <span class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 inline-flex items-center justify-center">
+              <span class="material-symbols-outlined text-xl">work</span>
+            </span>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="text-emerald-700 font-medium" id="kpiPlacementCount">- Ready (&ge;60 Mock)</span>
+            <span class="text-emerald-600 font-medium group-hover:underline">Filter &rarr;</span>
+          </div>
+          <div class="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
+            <div class="bg-emerald-500 h-full rounded-full transition-all" id="kpiPlacementBar" style="width: 75%"></div>
+          </div>
+        </div>
+
+        <!-- Card 4: Average Success Score -->
+        <div id="kpiCardSuccess" onclick="filterByKpiCard('success', this)" class="kpi-card bg-white rounded-xl p-5 border border-slate-200 hover:border-brand-600 hover:shadow-md cursor-pointer transition-all flex flex-col justify-between group">
+          <div class="flex items-start justify-between">
+            <div>
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Cohort Success Score</span>
+              <div class="text-3xl font-bold text-brand-600 font-data-mono mt-1" id="kpiAvgSuccessScore">- <span class="text-xs font-normal text-slate-400">/ 100</span></div>
+            </div>
+            <span class="w-9 h-9 rounded-lg bg-slate-100 text-slate-700 inline-flex items-center justify-center">
+              <span class="material-symbols-outlined text-xl">speed</span>
+            </span>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="text-slate-600 font-medium" id="kpiMedianScore">7-Vector Weighted</span>
+            <span class="text-brand-600 font-medium group-hover:underline">Top Half &rarr;</span>
+          </div>
+          <div class="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
+            <div class="bg-brand-600 h-full rounded-full transition-all" id="kpiAvgScoreBar" style="width: 80%"></div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- 2. Behavioral Persona Matrix -->
+      <section id="cohortMatrixSection" class="flex flex-col gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">Cohort Behavioral Segmentation</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Students segmented by Academic Excellence vs. Placement and Coding Skill readiness.</p>
+          </div>
+          <div class="flex items-center gap-1.5 flex-wrap" id="quadrantButtonsContainer">
+            <button class="quad-btn min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white shadow-xs transition-colors" onclick="filterTableByQuad('all', this)">
+              All (<span id="quadCountAll">50</span>)
+            </button>
+            <button class="quad-btn min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors" onclick="filterTableByQuad('high-academic', this)">
+              High Academic (<span id="quadCountP1">17</span>)
+            </button>
+            <button class="quad-btn min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors" onclick="filterTableByQuad('low-attendance', this)">
+              Low Attendance (<span id="quadCountP2">17</span>)
+            </button>
+            <button class="quad-btn min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors" onclick="filterTableByQuad('average', this)">
+              All-Rounders (<span id="quadCountP3">16</span>)
+            </button>
+            <button class="quad-btn min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 transition-colors" onclick="filterTableByQuad('high-risk', this)">
+              High Risk (<span id="quadCountRisk">10</span>)
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <!-- Persona 1 -->
+          <div class="p-5 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between" onclick="filterTableByQuad('high-academic')">
+            <div>
+              <div class="flex items-start justify-between">
+                <div>
+                  <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Persona 1</span>
+                  <h3 class="text-sm font-bold text-slate-900 mt-0.5">High Academic / Low Placement</h3>
+                </div>
+                <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs font-semibold" id="cardCountP1">17 Students</span>
+              </div>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                High CGPA (~9.2), 0 backlogs, &gt;90% attendance. Requires interview simulation & communication coaching.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <span class="text-brand-600 font-semibold">Avg Mock: ~48/100</span>
+              <span class="text-slate-400">Filter Cohort &rarr;</span>
+            </div>
+          </div>
+
+          <!-- Persona 2 -->
+          <div class="p-5 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between" onclick="filterTableByQuad('low-attendance')">
+            <div>
+              <div class="flex items-start justify-between">
+                <div>
+                  <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Persona 2</span>
+                  <h3 class="text-sm font-bold text-slate-900 mt-0.5">Low Attendance / High Skills</h3>
+                </div>
+                <span class="px-2 py-0.5 rounded bg-brand-50 text-brand-700 text-xs font-semibold" id="cardCountP2">17 Students</span>
+              </div>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Attendance &lt;75% deficit alert, moderate CGPA (~6.7). Strong builders, hackathon winners, 300+ LeetCode solved.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <span class="text-emerald-600 font-semibold">Avg Coding: ~92/100</span>
+              <span class="text-slate-400">Filter Cohort &rarr;</span>
+            </div>
+          </div>
+
+          <!-- Persona 3 -->
+          <div class="p-5 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between" onclick="filterTableByQuad('average')">
+            <div>
+              <div class="flex items-start justify-between">
+                <div>
+                  <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Persona 3</span>
+                  <h3 class="text-sm font-bold text-slate-900 mt-0.5">Average All-Rounders</h3>
+                </div>
+                <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs font-semibold" id="cardCountP3">16 Students</span>
+              </div>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Balanced baseline across all 7 dimensions. Steady attendance (~80%), consistent interview benchmarks, solid retention index.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <span class="text-slate-700 font-semibold">Avg Score: ~79/100</span>
+              <span class="text-slate-400">Filter Cohort &rarr;</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Academic Standing & Performance Triage (2 Columns) -->
+      <section id="performersTriageSection" class="flex flex-col gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-200">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">Academic Standing & Priority Triage</h2>
+            <p class="text-xs text-slate-500 mt-0.5" id="performersScopeSubtitle">Top performers and critical intervention students evaluated in current management scope.</p>
+          </div>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200" id="performersScopeBadge">All School</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Column 1: Top Performers -->
+          <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-emerald-600 text-lg">emoji_events</span>
+                  <h3 class="font-bold text-sm text-slate-900">Exemplary Achievers</h3>
+                </div>
+                <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100" id="topPerformersCountBadge">Top 5</span>
+              </div>
+              <div class="space-y-1" id="topPerformersList">
+                <!-- Dynamic List -->
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span>Recognition & Honors Registry</span>
+              <span class="text-emerald-600 font-semibold">Accredited Excellence</span>
+            </div>
+          </div>
+
+          <!-- Column 2: Weak / Critical Support -->
+          <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-rose-600 text-lg">crisis_alert</span>
+                  <h3 class="font-bold text-sm text-slate-900">Critical Support & Remediation</h3>
+                </div>
+                <span class="text-xs font-semibold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-100" id="weakPerformersCountBadge">Intervention Cohort</span>
+              </div>
+              <div class="space-y-1" id="weakPerformersList">
+                <!-- Dynamic List -->
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span>Remedial Counseling Required</span>
+              <span class="text-rose-600 font-semibold">Immediate Priority</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Management Visual Analytics (Bar Chart & Aggregate Spider) -->
+      <section id="analyticsChartsSection" class="flex flex-col gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-200">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">Cohort Benchmarks & Aggregate Spider Radar</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Comparative subject benchmarks and multi-vector distribution.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Left: Bar Chart -->
+          <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+                <h3 class="text-sm font-bold text-slate-900">Class Average Scores & Subject Benchmark</h3>
+                <span class="text-xs text-slate-500">Passing Threshold: 60/100</span>
+              </div>
+              <div class="h-64 relative">
+                <canvas id="subjectBenchmarkChart"></canvas>
+              </div>
+              <div id="classSubjectSummaryContainer" class="mt-3 pt-3 border-t border-slate-100 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                <!-- Dynamic Summary Pills -->
+              </div>
+            </div>
+            <div class="mt-3 pt-2 border-t border-slate-100 text-xs text-slate-400">
+              Department-wide comparative grading metrics
+            </div>
+          </div>
+
+          <!-- Right: Spider Radar -->
+          <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+                <h3 class="text-sm font-bold text-slate-900">Institutional 7-Vector Spider Radar</h3>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-100" id="spiderCompositeBadge">Balanced Standing</span>
+              </div>
+              <div class="h-64 relative flex items-center justify-center">
+                <canvas id="managementSpiderChart"></canvas>
+              </div>
+            </div>
+            <div class="mt-3 pt-2 border-t border-slate-100 text-xs text-slate-400">
+              Evaluated: Academic, Placement, Attendance, Skills, LMS, Engagement, Feedback
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Split-View Master Directory & Sticky Inspector Panel -->
+      <section class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start" id="directorySection">
+        
+        <!-- Left: Master Data Table (7 cols) -->
+        <div class="xl:col-span-7 flex flex-col gap-4 bg-white rounded-xl p-6 border border-slate-200 shadow-xs">
+          
+          <div class="flex flex-col gap-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h2 class="text-lg font-bold text-slate-900">Undergraduate Cohort Directory</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Click any row to inspect their 7-vector telemetry and generate an AI intervention.</p>
+              </div>
+              <span class="text-xs font-semibold text-slate-600 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200" id="tableFilterCountNotice">
+                Showing 50 students
+              </span>
+            </div>
+
+            <!-- Multi-Tier Filter Controls Bar -->
+            <div class="flex flex-col gap-2.5 pt-3 pb-3 border-t border-b border-slate-200">
+              
+              <!-- Row 1: Search, Dept, Risk, Sort -->
+              <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center">
+                <div class="sm:col-span-4 relative">
+                  <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-sm pointer-events-none">search</span>
+                  <input id="studentSearch" oninput="filterTable()" class="w-full bg-slate-50 text-slate-900 placeholder:text-slate-400 text-xs rounded-lg pl-8 pr-3 py-2 border border-slate-200 focus:border-brand-600 outline-none" placeholder="Search name, roll ID..." type="text">
+                </div>
+
+                <div class="sm:col-span-3">
+                  <select id="departmentFilter" onchange="filterTable()" class="w-full bg-slate-50 text-slate-800 text-xs rounded-lg px-2.5 py-2 border border-slate-200 focus:border-brand-600 outline-none">
+                    <option value="All">All Departments</option>
+                  </select>
+                </div>
+
+                <div class="sm:col-span-2">
+                  <select id="riskFilter" onchange="filterTable()" class="w-full bg-slate-50 text-slate-800 text-xs rounded-lg px-2.5 py-2 border border-slate-200 focus:border-brand-600 outline-none font-medium">
+                    <option value="All">All Risk</option>
+                    <option value="High">🔴 High Risk</option>
+                    <option value="Medium">🟡 Medium Risk</option>
+                    <option value="Low">🟢 Low Risk</option>
+                  </select>
+                </div>
+
+                <div class="sm:col-span-3">
+                  <select id="sortByFilter" onchange="filterTable()" class="w-full bg-slate-50 text-slate-800 text-xs rounded-lg px-2.5 py-2 border border-slate-200 focus:border-brand-600 outline-none font-medium">
+                    <option value="default">Sort: Score &darr;</option>
+                    <option value="cgpa-desc">Sort: CGPA (High)</option>
+                    <option value="cgpa-asc">Sort: CGPA (Low)</option>
+                    <option value="attendance-asc">Sort: Attendance (Deficit)</option>
+                    <option value="attendance-desc">Sort: Attendance (High)</option>
+                    <option value="placement-desc">Sort: Placement Mock</option>
+                    <option value="skills-desc">Sort: Coding Score</option>
+                    <option value="name-asc">Sort: Name (A-Z)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Row 2: Attendance, CGPA, Placement, Backlogs -->
+              <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center pt-2 border-t border-slate-100">
+                <div class="sm:col-span-3">
+                  <label for="attendanceFilter" class="block text-xs font-semibold text-slate-500 mb-0.5">Attendance Filter</label>
+                  <select id="attendanceFilter" onchange="filterTable()" class="w-full bg-slate-50 text-slate-800 text-xs rounded-lg px-2 py-1.5 border border-slate-200 focus:border-brand-600 outline-none">
+                    <option value="All">All Attendance</option>
+                    <option value="warning">🚨 Deficit (&lt;75%)</option>
+                    <option value="standard">Standard (75%-85%)</option>
+                    <option value="excellent">Excellent (&gt;85%)</option>
+                  </select>
+                </div>
+
+                <div class="sm:col-span-3">
+                  <label for="cgpaFilter" class="block text-xs font-semibold text-slate-500 mb-0.5">CGPA Tier</label>
+                  <select id="cgpaFilter" onchange="filterTable()" class="w-full bg-slate-50 text-slate-800 text-xs rounded-lg px-2 py-1.5 border border-slate-200 focus:border-brand-600 outline-none">
+                    <option value="All">All CGPA</option>
+                    <option value="high">Honors (&ge; 8.5)</option>
+                    <option value="mid">Mid Tier (7.0 - 8.4)</option>
+                    <option value="low">At Risk (&lt; 7.0)</option>
+                  </select>
+                </div>
+
+                <div class="sm:col-span-3">
+                  <label for="placementFilter" class="block text-xs font-semibold text-slate-500 mb-0.5">Placement Readiness</label>
+                  <select id="placementFilter" onchange="filterTable()" class="w-full bg-slate-50 text-slate-800 text-xs rounded-lg px-2 py-1.5 border border-slate-200 focus:border-brand-600 outline-none">
+                    <option value="All">All Students</option>
+                    <option value="ready">Ready (Mock &ge; 60)</option>
+                    <option value="not_ready">Needs Prep (&lt; 60)</option>
+                  </select>
+                </div>
+
+                <div class="sm:col-span-3 flex items-end gap-2">
+                  <div class="flex-1">
+                    <label for="backlogFilter" class="block text-xs font-semibold text-slate-500 mb-0.5">Backlogs</label>
+                    <select id="backlogFilter" onchange="filterTable()" class="w-full bg-slate-50 text-slate-800 text-xs rounded-lg px-2 py-1.5 border border-slate-200 focus:border-brand-600 outline-none">
+                      <option value="All">All Standing</option>
+                      <option value="clean">0 Backlogs (Clean)</option>
+                      <option value="has_backlogs">Active Backlogs (&ge;1)</option>
+                    </select>
+                  </div>
+                  <button onclick="clearAllFilters()" class="min-h-[34px] px-2.5 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-500 hover:text-slate-900 text-xs font-semibold" title="Clear all filters">
+                    Clear
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Master Table -->
+          <div class="overflow-x-auto -mx-6 px-6">
+            <table class="w-full text-left text-xs">
+              <thead class="text-xs uppercase tracking-wider font-semibold text-slate-400 border-b border-slate-200">
+                <tr>
+                  <th class="py-2.5 px-3">Student Name & Roll</th>
+                  <th class="py-2.5 px-2">Department</th>
+                  <th class="py-2.5 px-2 text-right">CGPA</th>
+                  <th class="py-2.5 px-2 text-right">Exams (Mid/End)</th>
+                  <th class="py-2.5 px-2 text-center">Classes Attn</th>
+                  <th class="py-2.5 px-2 text-right">Success Score</th>
+                  <th class="py-2.5 px-3 text-center">Retention Risk</th>
+                </tr>
+              </thead>
+              <tbody id="cohortTableBody" class="divide-y divide-slate-100">
+                <!-- Dynamically rendered rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Table Footer -->
+          <div class="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 pt-3 border-t border-slate-100">
+            <span id="tableFootCount">Loaded 50 live student records</span>
+            <span class="text-brand-600 font-semibold">Click any row to inspect indicators</span>
+          </div>
+        </div>
+
+        <!-- Right: Sticky Inspector Panel (5 cols) -->
+        <div class="xl:col-span-5 flex flex-col gap-5 bg-white rounded-xl p-6 border border-slate-200 shadow-xs sticky top-20" id="explainablePanel">
+          
+          <!-- Student Header -->
+          <div class="flex items-start justify-between pb-3 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+              <span class="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 inline-flex items-center justify-center font-bold text-base shadow-xs" id="panelAvatar">
+                -
+              </span>
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="text-base font-bold text-slate-900" id="panelStudentName">Select a Student</h3>
+                  <span class="px-2 py-0.5 rounded text-xs font-bold" id="panelRiskBadge">-</span>
+                </div>
+                <p class="text-xs text-slate-500 mt-0.5" id="panelStudentSub">Click any student row to inspect</p>
+                <div class="text-xs text-brand-600 font-semibold mt-0.5" id="panelPersonaTag">-</div>
+              </div>
+            </div>
+
+            <!-- Radial Score Pill -->
+            <div class="flex flex-col items-end">
+              <span class="w-12 h-12 rounded-full ring-2 ring-slate-200 inline-flex flex-col items-center justify-center text-center shadow-xs" id="panelScoreBadge">
+                <span class="text-base font-bold leading-none font-data-mono text-slate-900" id="panelScoreVal">-</span>
+                <span class="text-xs uppercase tracking-wider font-bold text-slate-400">/ 100</span>
+              </span>
+              <span class="text-xs text-slate-500 font-medium mt-1">Score Index</span>
+            </div>
+          </div>
+
+          <!-- Risk Diagnosis Box -->
+          <div class="p-3.5 text-xs flex flex-col gap-1 bg-slate-50/80 rounded-lg border-l-2 border-rose-500" id="panelRiskAlertBox">
+            <div class="font-bold flex items-center gap-1.5 text-slate-800" id="panelRiskAlertTitle">
+              <span class="material-symbols-outlined text-base">info</span>
+              <span>Retention Risk Diagnosis</span>
+            </div>
+            <div class="text-slate-600 leading-relaxed" id="panelRiskReasonsText">
+              Select a student to view diagnosis.
+            </div>
+          </div>
+
+          <!-- Faculty Advisory Notes -->
+          <div class="p-3 text-xs flex flex-col gap-1 bg-slate-50/80 rounded-lg border-l-2 border-brand-500">
+            <div class="font-bold text-slate-800 flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm text-brand-600">notes</span>
+              <span>Faculty & Mentor Notes</span>
+            </div>
+            <p class="text-slate-600 italic leading-relaxed" id="panelAdvisorNote">
+              -
+            </p>
+          </div>
+
+          <!-- Interactive 7-Vector SVG Polygon -->
+          <div class="p-4 flex flex-col items-center justify-center relative bg-slate-50/50 rounded-xl">
+            <div class="w-full flex items-center justify-between pb-2 border-b border-slate-200">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">7-Vector Polygon</span>
+              <span class="text-xs font-semibold text-brand-600">Dynamic Geometry</span>
+            </div>
+
+            <div class="relative w-full max-w-[280px] h-48 flex items-center justify-center my-2">
+              <svg class="w-full h-full" viewBox="-65 0 370 205">
+                <polygon class="text-slate-200" fill="none" points="120,20 190,50 200,120 160,180 80,180 40,120 50,50" stroke="currentColor" stroke-width="1"></polygon>
+                <polygon class="text-slate-200" fill="none" points="120,40 170,62 178,115 148,160 92,160 62,115 70,62" stroke="currentColor" stroke-dasharray="2 2" stroke-width="1"></polygon>
+                <polygon class="text-slate-200" fill="none" points="120,60 150,75 155,110 135,140 105,140 85,110 90,75" stroke="currentColor" stroke-width="1"></polygon>
+                <line class="text-slate-200" stroke="currentColor" stroke-width="1" x1="120" x2="120" y1="100" y2="20"></line>
+                <line class="text-slate-200" stroke="currentColor" stroke-width="1" x1="120" x2="190" y1="100" y2="50"></line>
+                <line class="text-slate-200" stroke="currentColor" stroke-width="1" x1="120" x2="200" y1="100" y2="120"></line>
+                <line class="text-slate-200" stroke="currentColor" stroke-width="1" x1="120" x2="160" y1="100" y2="180"></line>
+                <line class="text-slate-200" stroke="currentColor" stroke-width="1" x1="120" x2="80" y1="100" y2="180"></line>
+                <line class="text-slate-200" stroke="currentColor" stroke-width="1" x1="120" x2="40" y1="100" y2="120"></line>
+                <line class="text-slate-200" stroke="currentColor" stroke-width="1" x1="120" x2="50" y1="100" y2="50"></line>
+                <polygon id="panelPolygon" points="120,100 120,100 120,100 120,100 120,100 120,100 120,100" fill="#2563eb" fill-opacity="0.3" stroke="#2563eb" stroke-width="2.5"></polygon>
+                <text class="text-xs fill-slate-700 font-semibold" text-anchor="middle" x="120" y="14">Academic (30%)</text>
+                <text class="text-xs fill-slate-700 font-semibold" text-anchor="start" x="195" y="46">Placement (20%)</text>
+                <text class="text-xs fill-slate-700 font-semibold" text-anchor="start" x="205" y="125">Attendance (15%)</text>
+                <text class="text-xs fill-slate-700 font-semibold" text-anchor="middle" x="165" y="195">Skills (15%)</text>
+                <text class="text-xs fill-slate-700 font-semibold" text-anchor="middle" x="75" y="195">LMS (10%)</text>
+                <text class="text-xs fill-slate-700 font-semibold" text-anchor="end" x="35" y="125">Engagement (5%)</text>
+                <text class="text-xs fill-slate-700 font-semibold" text-anchor="end" x="42" y="46">Feedback (5%)</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Vector Progress Bars -->
+          <div class="space-y-2 text-xs" id="panelBreakdownList">
+            <!-- Dynamic progress bars -->
+          </div>
+
+          <!-- Action CTA -->
+          <button id="panelInterventionBtn" onclick="openInterventionModalForCurrentStudent()" class="w-full min-h-[44px] py-2.5 px-4 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-xs transition-colors">
+            <span class="material-symbols-outlined text-sm">psychology</span>
+            <span>Generate AI Intervention Notice</span>
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- ======================================================================= -->
+  <!-- 3. MODALS (Upload Dataset & AI Intervention Notice)                     -->
+  <!-- ======================================================================= -->
+  
+  <!-- Upload Dataset Modal -->
+  <div id="uploadDatasetModal" onclick="if(event.target === this) closeUploadModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="relative w-full max-w-xl bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 inline-flex items-center justify-center shadow-xs">
+            <span class="material-symbols-outlined text-xl">cloud_upload</span>
+          </span>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Upload Student Dataset</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Ingest custom CSV or JSON records into the live analytics engine</p>
+          </div>
+        </div>
+        <button onclick="closeUploadModal()" class="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 flex items-center justify-center transition-colors">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 flex flex-col gap-5">
+        
+        <!-- Sample Templates -->
+        <div class="p-4 flex flex-col gap-2 bg-slate-50/70 rounded-xl">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm text-brand-600">download</span>
+              Download Sample Dataset Templates
+            </span>
+            <span class="text-xs text-slate-500 font-semibold">Recommended Format</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Need a template to test? Download our pre-formatted sample files, edit them with your student records, and upload below:
+          </p>
+          <div class="flex items-center gap-2 pt-1 flex-wrap">
+            <a href="/api/sample-template.csv" download="student_dataset_template.csv" class="px-3 py-1.5 rounded-lg bg-white text-xs font-semibold text-brand-600 border border-slate-200 hover:bg-slate-50 transition-colors flex items-center gap-1 shadow-xs">
+              <span class="material-symbols-outlined text-sm">table_chart</span>
+              <span>Sample CSV Template</span>
+            </a>
+            <a href="/api/sample-template.json" download="student_dataset_template.json" class="px-3 py-1.5 rounded-lg bg-white text-xs font-semibold text-brand-600 border border-slate-200 hover:bg-slate-50 transition-colors flex items-center gap-1 shadow-xs">
+              <span class="material-symbols-outlined text-sm">data_object</span>
+              <span>Sample JSON Template</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Drop Zone -->
+        <div id="dropZone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleFileDrop(event)" onclick="document.getElementById('fileInput').click()" class="outline-2 outline-dashed outline-slate-300 hover:outline-brand-600 -outline-offset-2 bg-slate-50 rounded-xl p-6 flex flex-col items-center justify-center gap-2 text-center cursor-pointer transition-all group">
+          <input type="file" id="fileInput" accept=".csv,.json,text/csv,application/json" class="hidden" onchange="handleFileSelect(event)">
+          <span class="w-12 h-12 rounded-xl bg-white text-brand-600 inline-flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform border border-slate-200">
+            <span class="material-symbols-outlined text-2xl">upload_file</span>
+          </span>
+          <div>
+            <div class="text-xs font-bold text-slate-800">
+              <span class="text-brand-600 hover:underline">Click to browse</span> or drag & drop file here
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5">Supports <strong>.CSV</strong> and <strong>.JSON</strong> format</p>
+          </div>
+        </div>
+
+        <!-- Selected File Status -->
+        <div id="fileSelectedInfo" class="hidden p-3 bg-slate-50 rounded-xl flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-brand-600 text-xl" id="fileTypeIcon">description</span>
+            <div>
+              <div class="text-xs font-bold text-slate-800" id="selectedFileName">filename.csv</div>
+              <div class="text-xs text-slate-500" id="selectedFileSize">0 KB • Ready to process</div>
+            </div>
+          </div>
+          <button onclick="clearSelectedFile(event)" class="text-slate-400 hover:text-rose-600 text-xs p-1" title="Remove file">
+            <span class="material-symbols-outlined text-base">delete</span>
+          </button>
+        </div>
+
+        <div id="uploadPreviewStatus" class="hidden text-xs rounded-lg p-2.5 border"></div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3.5 border-t border-slate-200 bg-slate-50 flex items-center justify-between gap-3">
+        <button onclick="closeUploadModal()" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors">
+          Cancel
+        </button>
+        <button id="btnSubmitUpload" onclick="submitUploadedDataset()" disabled class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-all">
+          <span class="material-symbols-outlined text-sm">cloud_done</span>
+          <span>Load & Update Dashboard</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- AI Intervention Notice Modal -->
+  <div id="interventionModal" onclick="if(event.target === this) closeInterventionModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col max-h-[90vh] overflow-hidden">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 inline-flex items-center justify-center font-bold">
+            <span class="material-symbols-outlined text-2xl">outgoing_mail</span>
+          </span>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-base font-bold text-slate-900">Institutional Intervention Notice</h3>
+              <span class="bg-brand-50 text-brand-700 border border-brand-200 text-xs font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">psychology</span>
+                Powered by Local LLM
+              </span>
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5" id="interventionModalSub">
+              Personalized academic & retention recovery draft for student remediation.
+            </p>
+          </div>
+        </div>
+        <button onclick="closeInterventionModal()" class="w-8 h-8 rounded-lg hover:bg-slate-200 text-slate-400 hover:text-slate-700 flex items-center justify-center transition-colors">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <!-- Student Meta Bar -->
+      <div class="px-6 py-2.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs">
+        <div class="flex items-center gap-2.5">
+          <span class="font-bold text-slate-900" id="interventionModalStudent">-</span>
+          <span class="text-slate-500 font-mono text-xs" id="interventionModalId">-</span>
+          <span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 text-xs font-semibold" id="interventionModalRisk">-</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-slate-500 text-xs">
+          <span class="material-symbols-outlined text-xs">schedule</span>
+          <span id="interventionModalTimestamp">Generated Just Now</span>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto flex-1 flex flex-col gap-3">
+        <div class="flex items-center justify-between">
+          <label for="interventionDraftText" class="text-xs font-bold text-slate-800 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm text-brand-600">edit_note</span>
+            <span>Generated Remediation Draft (Ready for Dispatch)</span>
+          </label>
+          <span class="text-xs text-emerald-700 font-semibold flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs">verified</span>
+            Automated Retention Workflow
+          </span>
+        </div>
+
+        <div id="interventionLoadingState" class="hidden flex-col items-center justify-center py-12 gap-3">
+          <span class="w-10 h-10 border-2 border-brand-600 border-t-transparent rounded-full animate-spin inline-block"></span>
+          <p class="text-xs font-semibold text-slate-500">Calling /api/generate-intervention to construct tailored action plan...</p>
+        </div>
+
+        <div id="interventionContentArea" class="flex flex-col gap-2">
+          <textarea id="interventionDraftText" rows="13" class="w-full bg-slate-50 font-mono text-xs text-slate-800 rounded-xl p-4 border border-slate-200 focus:border-brand-600 outline-none resize-none leading-relaxed selection:bg-brand-600 selection:text-white" readonly placeholder="Generating intervention draft..."></textarea>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="text-xs text-slate-500 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-sm text-brand-600">info</span>
+          <span>Logged to student administrative compliance record.</span>
+        </div>
+        
+        <div class="flex items-center gap-2.5 w-full sm:w-auto">
+          <button id="btnCopyIntervention" onclick="copyInterventionNotice()" class="flex-1 sm:flex-none px-3.5 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs transition-colors">
+            <span class="material-symbols-outlined text-sm">content_copy</span>
+            <span>Copy Draft</span>
+          </button>
+          
+          <button id="btnDispatchEmail" onclick="dispatchInterventionNotice()" class="flex-1 sm:flex-none px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs transition-colors">
+            <span class="material-symbols-outlined text-sm">send</span>
+            <span>Dispatch to Student & Advisor</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Minimal Footer -->
+  <footer class="w-full border-t border-slate-200 py-4 px-6 bg-white text-center text-xs text-slate-500">
+    CampusIQ Student Success & Retention Intelligence • Developed by Ankit Kumar Dubey (Reg. No: 251302058) • <a href="/api" class="text-brand-600 hover:underline font-semibold">API Documentation</a>
+  </footer>
+
+<script>
+    // State
+    let students = [];
+    let currentFiltered = [];
+    let activeStudentId = null;
+    let activeQuad = 'all';
+
+    // Show temporary toast message
+    function showToast(msg, icon = 'check_circle') {
+      const toast = document.getElementById("toastNotification");
+      const toastMsg = document.getElementById("toastMessage");
+      const toastIcon = document.getElementById("toastIcon");
+      if (toast && toastMsg) {
+        toastMsg.textContent = msg;
+        if (toastIcon) toastIcon.textContent = icon;
+        toast.classList.remove("translate-y-24", "opacity-0");
+        toast.classList.add("translate-y-0", "opacity-100");
+        setTimeout(() => {
+          toast.classList.remove("translate-y-0", "opacity-100");
+          toast.classList.add("translate-y-24", "opacity-0");
+        }, 3000);
+      }
+    }
+
+    // Current active role configuration
+    let currentRole = 'admin';
+    let currentRoleParams = '';
+
+    // Handle RBAC Role Switching (Dean, HOD, Batch Head, Mentor, Student)
+    function handleRoleChange(selectedKey) {
+      currentRole = selectedKey;
+      const banner = document.getElementById('rbacBanner');
+      const bannerTitle = document.getElementById('rbacBannerTitle');
+      const bannerTag = document.getElementById('rbacBannerTag');
+      const bannerDesc = document.getElementById('rbacBannerDesc');
+      const bannerUser = document.getElementById('rbacBannerUser');
+      const roleScopeBadge = document.getElementById('roleScopeBadge');
+      const studentPersonalView = document.getElementById('studentPersonalView');
+      const adminCanvasElements = ['cohortMatrixSection', 'performersTriageSection', 'analyticsChartsSection', 'directorySection'];
+
+      // Configure API query based on chosen role
+      if (selectedKey === 'admin') {
+        currentRoleParams = '?role=dean';
+        bannerTitle.textContent = 'Administrator / Dean Active';
+        bannerTag.textContent = 'Full Campus Clearance';
+        bannerDesc.textContent = 'Viewing full institutional analytics for all 50 students across all schools, departments, and cohorts.';
+        bannerUser.textContent = 'Dean Office';
+        roleScopeBadge.textContent = 'Dean View (All Records)';
+        studentPersonalView.classList.add('hidden');
+        studentPersonalView.classList.remove('flex');
+        adminCanvasElements.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.remove('hidden');
+        });
+      } else if (selectedKey === 'hod') {
+        currentRoleParams = '?role=hod&department=CSE';
+        bannerTitle.textContent = 'HOD Active: Computer Science & Engineering';
+        bannerTag.textContent = 'Department Scope (CSE Only)';
+        bannerDesc.textContent = 'Restricted departmental view: Only students enrolled in Computer Science & Engineering are accessible.';
+        bannerUser.textContent = 'HOD CSE';
+        roleScopeBadge.textContent = 'HOD View (CSE Only)';
+        studentPersonalView.classList.add('hidden');
+        studentPersonalView.classList.remove('flex');
+        adminCanvasElements.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.remove('hidden');
+        });
+      } else if (selectedKey === 'hod-it') {
+        currentRoleParams = '?role=hod&department=IT';
+        bannerTitle.textContent = 'HOD Active: Information Technology';
+        bannerTag.textContent = 'Department Scope (IT Only)';
+        bannerDesc.textContent = 'Restricted departmental view: Only students enrolled in Information Technology are accessible.';
+        bannerUser.textContent = 'HOD IT';
+        roleScopeBadge.textContent = 'HOD View (IT Only)';
+        studentPersonalView.classList.add('hidden');
+        studentPersonalView.classList.remove('flex');
+        adminCanvasElements.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.remove('hidden');
+        });
+      } else if (selectedKey === 'batch-2021') {
+        currentRoleParams = '?role=batch_head&batch=2021-2025';
+        bannerTitle.textContent = 'Batch Head Active: Class of 2021-2025';
+        bannerTag.textContent = 'Batch Scope (2021-2025)';
+        bannerDesc.textContent = 'Restricted cohort view: Access limited strictly to 4th-year graduating seniors (2021-2025).';
+        bannerUser.textContent = 'Batch Head 2021';
+        roleScopeBadge.textContent = 'Batch 2021-2025';
+        studentPersonalView.classList.add('hidden');
+        studentPersonalView.classList.remove('flex');
+        adminCanvasElements.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.remove('hidden');
+        });
+      } else if (selectedKey === 'batch-2022') {
+        currentRoleParams = '?role=batch_head&batch=2022-2026';
+        bannerTitle.textContent = 'Batch Head Active: Class of 2022-2026';
+        bannerTag.textContent = 'Batch Scope (2022-2026)';
+        bannerDesc.textContent = 'Restricted cohort view: Access limited strictly to 3rd-year juniors (2022-2026).';
+        bannerUser.textContent = 'Batch Head 2022';
+        roleScopeBadge.textContent = 'Batch 2022-2026';
+        studentPersonalView.classList.add('hidden');
+        studentPersonalView.classList.remove('flex');
+        adminCanvasElements.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.remove('hidden');
+        });
+      } else if (selectedKey === 'mentor-csea') {
+        currentRoleParams = '?role=mentor&class=CSE-A';
+        bannerTitle.textContent = 'Mentor Active: Section CSE-A';
+        bannerTag.textContent = 'Class Section Scope';
+        bannerDesc.textContent = 'Restricted class advisory view: Access limited strictly to mentee students in Section CSE-A.';
+        bannerUser.textContent = 'Class Mentor (CSE-A)';
+        roleScopeBadge.textContent = 'Mentor CSE-A';
+        studentPersonalView.classList.add('hidden');
+        studentPersonalView.classList.remove('flex');
+        adminCanvasElements.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.remove('hidden');
+        });
+      } else if (selectedKey === 'mentor-itb') {
+        currentRoleParams = '?role=mentor&class=IT-B';
+        bannerTitle.textContent = 'Mentor Active: Section IT-B';
+        bannerTag.textContent = 'Class Section Scope';
+        bannerDesc.textContent = 'Restricted class advisory view: Access limited strictly to mentee students in Section IT-B.';
+        bannerUser.textContent = 'Class Mentor (IT-B)';
+        roleScopeBadge.textContent = 'Mentor IT-B';
+        studentPersonalView.classList.add('hidden');
+        studentPersonalView.classList.remove('flex');
+        adminCanvasElements.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.remove('hidden');
+        });
+      } else if (selectedKey.startsWith('student')) {
+        let sid = selectedKey.replace(/^student-?/, '').toUpperCase();
+        if (!sid) sid = 'STU001';
+        if (!sid.startsWith('STU')) sid = 'STU' + sid.padStart(3, '0');
+        currentRoleParams = `?role=student&id=${encodeURIComponent(sid)}`;
+        bannerTitle.textContent = `Student Portal: Confidential Record (${sid})`;
+        bannerTag.textContent = 'Confidential Personal Scope';
+        bannerDesc.textContent = 'RBAC Enforcement: Students can ONLY access their single confidential record with specific weaknesses, marks, and attendance.';
+        bannerUser.textContent = `Student ${sid}`;
+        roleScopeBadge.textContent = `Student: ${sid}`;
+        studentPersonalView.classList.remove('hidden');
+        studentPersonalView.classList.add('flex');
+        const sw = document.getElementById('stuPortalSwitcherSelect');
+        if (sw) sw.value = sid;
+      }
+
+      // Hide or show admin-only sections for student role
+      if (selectedKey.startsWith('student')) {
+        adminCanvasElements.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.add('hidden');
+        });
+        const chartsSection = document.getElementById('analyticsChartsSection');
+        if (chartsSection) chartsSection.classList.add('hidden');
+      } else {
+        const chartsSection = document.getElementById('analyticsChartsSection');
+        if (chartsSection) chartsSection.classList.remove('hidden');
+      }
+
+      // Re-fetch data using active role
+      fetchStudents();
+    }
+
+    // Initialize Role from URL Query Parameters (e.g. from /login redirect)
+    function initRoleFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const qRole = params.get('role');
+      const qDept = params.get('department') || params.get('dept');
+      const qBatch = params.get('batch');
+      const qClass = params.get('class');
+      const qId = params.get('id');
+
+      if (!qRole) return;
+
+      const normalizedRole = qRole.toLowerCase().replace(/[\s_-]+/g, '');
+      const roleSelect = document.getElementById('roleLoginSelect');
+
+      if (normalizedRole === 'dean') {
+        if (roleSelect) roleSelect.value = 'admin';
+        handleRoleChange('admin');
+      } else if (normalizedRole === 'hod') {
+        const deptUpper = (qDept || 'CSE').toUpperCase();
+        currentRoleParams = `?role=hod&department=${encodeURIComponent(deptUpper)}`;
+        const bannerTitle = document.getElementById('rbacBannerTitle');
+        const bannerTag = document.getElementById('rbacBannerTag');
+        const bannerDesc = document.getElementById('rbacBannerDesc');
+        const bannerUser = document.getElementById('rbacBannerUser');
+        const roleScopeBadge = document.getElementById('roleScopeBadge');
+
+        bannerTitle.textContent = `HOD Active: Department of ${deptUpper}`;
+        bannerTag.textContent = `${deptUpper} Scope Only`;
+        bannerDesc.textContent = `Restricted departmental view: Only students enrolled in ${deptUpper} are accessible.`;
+        bannerUser.textContent = `HOD ${deptUpper}`;
+        roleScopeBadge.textContent = `HOD View (${deptUpper})`;
+
+        if (roleSelect) {
+          roleSelect.value = deptUpper === 'IT' ? 'hod-it' : 'hod';
+        }
+        fetchStudents();
+      } else if (normalizedRole === 'batchhead') {
+        const batchVal = qBatch || '2021-2025';
+        currentRoleParams = `?role=batch_head&batch=${encodeURIComponent(batchVal)}`;
+        const bannerTitle = document.getElementById('rbacBannerTitle');
+        const bannerTag = document.getElementById('rbacBannerTag');
+        const bannerDesc = document.getElementById('rbacBannerDesc');
+        const bannerUser = document.getElementById('rbacBannerUser');
+        const roleScopeBadge = document.getElementById('roleScopeBadge');
+
+        bannerTitle.textContent = `Batch Head Active: Class of ${batchVal}`;
+        bannerTag.textContent = `Batch ${batchVal} Scope`;
+        bannerDesc.textContent = `Restricted cohort view: Access limited strictly to students in graduating batch ${batchVal}.`;
+        bannerUser.textContent = `Batch Head ${batchVal}`;
+        roleScopeBadge.textContent = `Batch: ${batchVal}`;
+
+        if (roleSelect) {
+          roleSelect.value = batchVal.includes('2022') ? 'batch-2022' : 'batch-2021';
+        }
+        fetchStudents();
+      } else if (normalizedRole === 'mentor') {
+        const classVal = (qClass || 'CSE-A').toUpperCase();
+        currentRoleParams = `?role=mentor&class=${encodeURIComponent(classVal)}`;
+        const bannerTitle = document.getElementById('rbacBannerTitle');
+        const bannerTag = document.getElementById('rbacBannerTag');
+        const bannerDesc = document.getElementById('rbacBannerDesc');
+        const bannerUser = document.getElementById('rbacBannerUser');
+        const roleScopeBadge = document.getElementById('roleScopeBadge');
+
+        bannerTitle.textContent = `Mentor Active: Section ${classVal}`;
+        bannerTag.textContent = `Section ${classVal} Scope`;
+        bannerDesc.textContent = `Restricted class advisory view: Access limited strictly to mentees in Section ${classVal}.`;
+        bannerUser.textContent = `Mentor (${classVal})`;
+        roleScopeBadge.textContent = `Mentor: ${classVal}`;
+
+        if (roleSelect) {
+          roleSelect.value = classVal === 'IT-B' ? 'mentor-itb' : 'mentor-csea';
+        }
+        fetchStudents();
+      } else if (normalizedRole === 'student') {
+        let studentId = (qId || 'STU001').toUpperCase();
+        if (!studentId.startsWith('STU')) studentId = 'STU' + studentId.padStart(3, '0');
+        currentRoleParams = `?role=student&id=${encodeURIComponent(studentId)}`;
+
+        const bannerTitle = document.getElementById('rbacBannerTitle');
+        const bannerTag = document.getElementById('rbacBannerTag');
+        const bannerDesc = document.getElementById('rbacBannerDesc');
+        const bannerUser = document.getElementById('rbacBannerUser');
+        const roleScopeBadge = document.getElementById('roleScopeBadge');
+        const studentPersonalView = document.getElementById('studentPersonalView');
+
+        bannerTitle.textContent = `Student Portal: Confidential Record (${studentId})`;
+        bannerTag.textContent = `Confidential Personal Scope`;
+        bannerDesc.textContent = `RBAC Privacy Policy: Viewing solely your individual marks, certifications, weaknesses, and attendance.`;
+        bannerUser.textContent = `Student ${studentId}`;
+        roleScopeBadge.textContent = `Student: ${studentId}`;
+
+        if (studentPersonalView) {
+          studentPersonalView.classList.remove('hidden');
+          studentPersonalView.classList.add('flex');
+        }
+
+        // Hide upper management sections
+        ['cohortMatrixSection', 'performersTriageSection', 'directorySection', 'analyticsChartsSection'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.add('hidden');
+        });
+
+        if (roleSelect) {
+          roleSelect.value = `student-${studentId.toLowerCase()}`;
+        }
+        const sw = document.getElementById('stuPortalSwitcherSelect');
+        if (sw) sw.value = studentId;
+
+        fetchStudents();
+      }
+    }
+
+    // Fetch live students from Express backend
+    
+    function getOfflineRoleData() {
+      const payload = window.__OFFLINE_PAYLOAD__ || { data: [] };
+      const urlParams = new URLSearchParams(window.location.search);
+      const role = (urlParams.get('role') || 'dean').toLowerCase();
+      const department = urlParams.get('department');
+      const batch = urlParams.get('batch');
+      const className = urlParams.get('class');
+      const studentId = urlParams.get('id') || 'STU001';
+
+      let all = payload.data || [];
+      if (role === 'student') {
+        const stu = all.find(s => s.id === studentId) || (all.length > 0 ? all[0] : null);
+        if (!stu) {
+          return {
+            success: true,
+            role: 'Student',
+            data: {
+              studentDetails: { id: studentId || 'STU000', name: 'No Student Loaded', department: 'N/A', batch: 'N/A', class: 'N/A', cgpa: 0 },
+              performanceVectors: { academic: 0, placement: 0, attendance: 0, skills: 0, lms: 0, engagement: 0, feedback: 0 },
+              overallSuccessScore: 0,
+              predictedRiskLevel: 'N/A',
+              attendanceSummary: { overallPercentage: 0, atRisk: false },
+              subjectWiseAttendance: {},
+              academicRecords: {},
+              placementReadiness: {},
+              lmsAndEngagement: {},
+              skillsAndCertifications: {}
+            }
+          };
+        }
+        return {
+          success: true,
+          role: 'Student',
+          data: {
+            studentDetails: {
+              id: stu.id,
+              name: stu.name,
+              department: stu.department,
+              batch: stu.batch,
+              class: stu.class,
+              cgpa: stu.academics ? stu.academics.cgpa : 8.5
+            },
+            performanceVectors: stu.radarMetrics || {
+              academic: 85, placement: 80, attendance: 90, skills: 85, lms: 80, engagement: 75, feedback: 80
+            },
+            overallSuccessScore: stu.overallSuccessScore || 85,
+            predictedRiskLevel: stu.predictedRiskLevel || 'Low',
+            attendanceSummary: {
+              overallPercentage: stu.attendance ? stu.attendance.classes : 88,
+              atRisk: (stu.attendance ? stu.attendance.classes : 88) < 75
+            },
+            subjectWiseAttendance: (stu.attendance && stu.attendance.subjectWise) || {},
+            academicRecords: stu.academics || {},
+            placementReadiness: stu.placement || {},
+            lmsAndEngagement: stu.lmsEngagement || {},
+            skillsAndCertifications: stu.skillsCertifications || {}
+          }
+        };
+      }
+
+      let filtered = [...all];
+      if (role === 'hod' && department) {
+        filtered = filtered.filter(s => s.department && s.department.toLowerCase() === department.toLowerCase());
+      } else if (role === 'batch_head' && batch) {
+        filtered = filtered.filter(s => s.batch === batch);
+      } else if (role === 'mentor' && className) {
+        filtered = filtered.filter(s => s.class === className);
+      }
+
+      const high = filtered.filter(s => s.predictedRiskLevel === 'High').length;
+      const medium = filtered.filter(s => s.predictedRiskLevel === 'Medium').length;
+      const low = filtered.filter(s => s.predictedRiskLevel === 'Low').length;
+
+      return {
+        success: true,
+        activeRole: role,
+        totalStudentsInDb: all.length,
+        filteredCount: filtered.length,
+        riskSummary: { high, medium, low },
+        data: filtered
+      };
+    }
+
+    async function fetchStudents() {
+      if (location.protocol === "file:" || !navigator.onLine) { const off = getOfflineRoleData(); if (off.role === "Student") { renderStudentPortal(off.data); } else { updateKpis(off); renderTable(off.data); if (off.data.length > 0) { selectStudent(off.data[0].id); } else { clearStudentInspector(); } } return; }
+
+      try {
+        const endpoint = `/api/students${currentRoleParams}`;
+        const res = await fetch(endpoint);
+        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+        const json = await res.json();
+        
+        // Handle Student Role (returns single personal record object)
+        if (json.role === 'Student' && json.data) {
+          const rec = json.data;
+          renderStudentPortal(rec);
+          showToast(`Logged in as ${rec.studentDetails.name} (Confidential View)`);
+          return;
+        }
+
+        // Multi-student view (Dean, HOD, Batch Head, Mentor)
+        students = json.data || [];
+        currentFiltered = [...students];
+        
+        // Update top-level metrics
+        updateKpis(json);
+        
+        // Populate department filter dropdown
+        populateDepartmentDropdown(students);
+
+        // Render table
+        renderTable(students);
+
+        // Select the first student by default or clear inspector if empty
+        if (students.length > 0) {
+          selectStudent(students[0].id);
+        } else {
+          clearStudentInspector();
+        }
+
+        showToast(`Loaded ${students.length} students under active role!`);
+      } catch (err) {
+        console.error('Failed to fetch students:', err);
+        showToast(`Error connecting to /api/students: ${err.message}`, 'error');
+        document.getElementById('cohortTableBody').innerHTML = `
+          <tr>
+            <td colspan="7" class="py-8 text-center text-error font-semibold">
+              Failed to connect to backend at /api/students.<br>
+              Make sure your Node server is running on http://localhost:3000.
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    // Switch active student in personal view
+    function switchStudentView(studentId) {
+      if (!studentId) return;
+      currentRoleParams = `?role=student&id=${encodeURIComponent(studentId)}`;
+      const roleSelect = document.getElementById('roleLoginSelect');
+      if (roleSelect) roleSelect.value = `student-${studentId.toLowerCase()}`;
+      
+      const bannerTitle = document.getElementById('rbacBannerTitle');
+      const bannerUser = document.getElementById('rbacBannerUser');
+      const roleScopeBadge = document.getElementById('roleScopeBadge');
+      if (bannerTitle) bannerTitle.textContent = `Student Portal: Confidential Record (${studentId})`;
+      if (bannerUser) bannerUser.textContent = `Student ${studentId}`;
+      if (roleScopeBadge) roleScopeBadge.textContent = `Student: ${studentId}`;
+
+      const newUrl = `${window.location.pathname}?role=student&id=${encodeURIComponent(studentId)}`;
+      window.history.pushState({ path: newUrl }, '', newUrl);
+
+      fetchStudents();
+    }
+
+    // Load student directory to populate all 50 students in header & portal dropdowns
+    async function loadStudentDirectory() {
+      try {
+        let res = await fetch('/api/students/directory');
+        if (!res.ok) res = await fetch('/api/students');
+        const json = await res.json();
+        const dirList = json.students || json.data || [];
+        if (!dirList || dirList.length === 0) return;
+
+        // 1. Populate stuPortalSwitcherSelect
+        const swSelect = document.getElementById('stuPortalSwitcherSelect');
+        if (swSelect) {
+          swSelect.innerHTML = '';
+          dirList.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s.id;
+            const classAttn = s.classAttendance !== undefined ? s.classAttendance : (s.categories ? (s.categories.attendance.classes !== undefined ? s.categories.attendance.classes : s.categories.attendance.overall) : 80);
+            const isAlert = s.attendanceRiskAlert !== undefined ? s.attendanceRiskAlert : (classAttn < 75);
+            const tag = isAlert ? '⚠️ Attn Alert' : `${s.riskFlag || 'Normal'} Risk`;
+            const cgpa = s.cgpa !== undefined ? s.cgpa : (s.categories ? s.categories.academic.cgpa : 8.0);
+            opt.textContent = `${s.id} • ${s.name} (${s.department} • Class ${s.class || 'A'} • CGPA: ${cgpa} • ${tag})`;
+            swSelect.appendChild(opt);
+          });
+        }
+
+        // 2. Populate header roleLoginSelect optgroup
+        const headerOptgroup = document.getElementById('headerStudentOptgroup');
+        if (headerOptgroup) {
+          headerOptgroup.innerHTML = '';
+          dirList.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = `student-${s.id.toLowerCase()}`;
+            const classAttn = s.classAttendance !== undefined ? s.classAttendance : (s.categories ? (s.categories.attendance.classes !== undefined ? s.categories.attendance.classes : s.categories.attendance.overall) : 80);
+            const isAlert = s.attendanceRiskAlert !== undefined ? s.attendanceRiskAlert : (classAttn < 75);
+            const tag = isAlert ? '⚠️ Attn Alert' : `${s.riskFlag || 'Normal'}`;
+            opt.textContent = `Student - ${s.name} (${s.id} • ${tag})`;
+            headerOptgroup.appendChild(opt);
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load student directory for dropdowns:', err);
+      }
+    }
+
+    // Render Student Portal View (when logged in as Student)
+    function renderStudentPortal(rec) {
+      const details = rec.studentDetails;
+      const initials = details.name.split(' ').map(n => n[0]).join('').toUpperCase();
+      
+      const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+      const setHtml = (id, val) => { const el = document.getElementById(id); if (el) el.innerHTML = val; };
+
+      setTxt('stuPortalAvatar', initials);
+      setTxt('stuPortalName', details.name);
+      setTxt('stuPortalMeta', `ID: ${details.id} • ${details.department} • Batch ${details.batch} • Section ${details.class} • ${details.school || 'School of Engineering & Computing'}`);
+      setTxt('stuPortalScore', `${Math.round(rec.successScore)}/100`);
+      setTxt('stuPortalCgpa', rec.marks ? rec.marks.cgpa.toFixed(2) : '8.50');
+
+      // Risk Badge
+      const riskBadge = document.getElementById('stuPortalRiskBadge');
+      if (riskBadge) {
+        riskBadge.textContent = `${rec.riskFlag} Risk`;
+        let themeColor = '#2563eb';
+        if (rec.riskFlag === 'High') {
+          themeColor = '#ba1a1a';
+          riskBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-error-container text-on-error-container';
+        } else if (rec.riskFlag === 'Low') {
+          themeColor = '#007d55';
+          riskBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-tertiary/10 text-tertiary';
+        } else {
+          themeColor = '#565e74';
+          riskBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200 font-medium';
+        }
+      }
+
+      // Attendance Risk Alert
+      const alertBox = document.getElementById('stuPortalAlertBox');
+      const alertMsg = document.getElementById('stuPortalAlertMsg');
+      if (alertBox && alertMsg) {
+        if (rec.attendanceRiskAlert) {
+          alertBox.classList.remove('hidden');
+          alertMsg.textContent = rec.attendanceRiskMessage;
+        } else {
+          alertBox.classList.add('hidden');
+        }
+      }
+
+      // Weaknesses list
+      const weakList = document.getElementById('stuPortalWeaknesses');
+      if (weakList) {
+        if (rec.weaknesses && rec.weaknesses.length > 0) {
+          weakList.innerHTML = rec.weaknesses.map(w => `<li class="flex items-start gap-1.5"><span class="text-error font-bold leading-none mt-0.5">•</span><span>${w}</span></li>`).join('');
+        } else {
+          weakList.innerHTML = '<li class="text-tertiary font-medium">No critical weaknesses identified. Excellent academic & placement standing!</li>';
+        }
+      }
+
+      // Examination Marks
+      if (rec.marks) {
+        setTxt('stuPortalMarksCgpa', `${rec.marks.cgpa.toFixed(2)} / 10.0`);
+        setTxt('stuPortalMarksBacklogs', `${rec.marks.backlogs} Active Backlog(s)`);
+        if (rec.marks.exam_scores) {
+          setTxt('stuPortalMarksMidsem', `${rec.marks.exam_scores.midsem} / 100`);
+          setTxt('stuPortalMarksEndsem', `${rec.marks.exam_scores.endsem} / 100`);
+        }
+      }
+
+      // Granular Attendance Breakdown
+      const att = rec.attendance || { classes: 85, overall: 85, events: 85, remedial: 85, extracurricular: 85 };
+      const classEl = document.getElementById('stuPortalAttnClasses');
+      if (classEl) {
+        classEl.textContent = `${att.classes}%`;
+        classEl.className = att.classes < 75 ? 'font-data-mono font-bold text-error' : 'font-data-mono font-bold text-tertiary';
+      }
+      setTxt('stuPortalAttnOverall', `${att.overall}%`);
+      setTxt('stuPortalAttnEvents', `${att.events}%`);
+      setTxt('stuPortalAttnRemedial', `${att.remedial}%`);
+      setTxt('stuPortalAttnExtra', `${att.extracurricular}%`);
+
+      // Enrolled Professional Certifications
+      const certs = (rec.skillsAndCertifications && rec.skillsAndCertifications.certifications) || [];
+      setTxt('stuPortalCertsCount', `${certs.length} Professional Certification(s) Active`);
+      const certsListEl = document.getElementById('stuPortalCertsList');
+      if (certsListEl) {
+        if (certs.length > 0) {
+          certsListEl.innerHTML = certs.map(c => `
+            <div class="py-2 border-b border-outline-variant/15 flex flex-col gap-1 last:border-b-0">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-on-surface text-xs truncate max-w-[210px]" title="${c.course_name}">${c.course_name}</span>
+                <span class="px-2 py-0.5 rounded text-xs font-bold ${c.completion_status === 'Completed' ? 'bg-tertiary/10 text-tertiary' : 'bg-slate-100 text-slate-700 border border-slate-200 font-medium'}">${c.completion_status}</span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-secondary">
+                <span>Accreditation Score:</span>
+                <strong class="font-data-mono text-primary font-bold">${c.score}/100</strong>
+              </div>
+            </div>
+          `).join('');
+        } else {
+          certsListEl.innerHTML = '<p class="text-secondary text-xs italic">No enrolled certifications on record.</p>';
+        }
+      }
+
+      // Placement & Technical Skills
+      const mockScore = rec.placement?.mockInterviewScore ?? rec.categories?.placement?.mockInterviewScore ?? '--';
+      const codingScore = rec.skillsAndCertifications?.codingAssessmentScore ?? rec.categories?.skills?.codingAssessmentScore ?? '--';
+      const leetcodeSolved = rec.skillsAndCertifications?.leetcodeProblemsSolved ?? rec.categories?.skills?.leetcodeProblemsSolved ?? 0;
+      const langs = rec.skillsAndCertifications?.primaryLanguages || rec.categories?.skills?.primaryLanguages || ['C++', 'Python'];
+      const readiness = rec.placement?.readinessStatus || rec.categories?.placement?.readinessStatus || 'Evaluation Complete';
+
+      if (document.getElementById('stuPortalMockScore')) document.getElementById('stuPortalMockScore').textContent = `${mockScore} / 100`;
+      if (document.getElementById('stuPortalCodingScore')) document.getElementById('stuPortalCodingScore').textContent = `${codingScore} / 100`;
+      if (document.getElementById('stuPortalLeetcode')) document.getElementById('stuPortalLeetcode').textContent = `${leetcodeSolved} Solved`;
+      if (document.getElementById('stuPortalTechStack')) document.getElementById('stuPortalTechStack').textContent = langs.join(', ');
+      if (document.getElementById('stuPortalReadinessStatus')) document.getElementById('stuPortalReadinessStatus').textContent = `Readiness: ${readiness}`;
+
+      // LMS Activity & Faculty Feedback
+      const lmsOnTime = rec.lms?.assignmentsSubmittedOnTimePercentage ?? rec.categories?.lms?.assignmentsSubmittedOnTimePercentage ?? '--';
+      const lmsHours = rec.lms?.weeklyHours ?? rec.categories?.lms?.weeklyHours ?? '--';
+      const facultyNote = rec.feedback?.facultyFeedback || rec.categories?.feedback?.facultyFeedback || 'Academic performance meets expectations.';
+      const mentorNote = rec.feedback?.mentorFeedback || rec.categories?.feedback?.mentorFeedback || 'Mentoring sessions active.';
+      const strengthsArr = rec.strengths || rec.categories?.feedback?.strengths || [];
+
+      if (document.getElementById('stuPortalLmsOnTime')) document.getElementById('stuPortalLmsOnTime').textContent = `${lmsOnTime}%`;
+      if (document.getElementById('stuPortalLmsHours')) document.getElementById('stuPortalLmsHours').textContent = `${lmsHours} hrs/wk`;
+      if (document.getElementById('stuPortalFacultyFeedback')) document.getElementById('stuPortalFacultyFeedback').textContent = `"${facultyNote}"`;
+      if (document.getElementById('stuPortalMentorFeedback')) document.getElementById('stuPortalMentorFeedback').textContent = `"${mentorNote}"`;
+      if (document.getElementById('stuPortalStrengths')) document.getElementById('stuPortalStrengths').textContent = `Strengths: ${strengthsArr.length > 0 ? strengthsArr.join(' • ') : 'Consistent performance'}`;
+
+      // Campus Engagement & Activities
+      const hackathons = rec.engagement?.hackathonsParticipated ?? rec.categories?.engagement?.hackathonsParticipated ?? 0;
+      const hackathonWins = rec.engagement?.hackathonWins ?? rec.categories?.engagement?.hackathonWins ?? 0;
+      const loginFreq = rec.lms?.loginFrequency || rec.categories?.lms?.loginFrequency || 'Daily (5-7 days/wk)';
+      const forumContrib = rec.lms?.forumContributionsCount ?? rec.categories?.lms?.forumContributionsCount ?? 0;
+      const clubs = rec.engagement?.clubsOrActivities || rec.categories?.engagement?.clubsOrActivities || [];
+
+      if (document.getElementById('stuPortalHackathons')) document.getElementById('stuPortalHackathons').textContent = `${hackathons} Events`;
+      if (document.getElementById('stuPortalHackathonWins')) document.getElementById('stuPortalHackathonWins').textContent = `${hackathonWins} Podium`;
+      if (document.getElementById('stuPortalLoginFreq')) document.getElementById('stuPortalLoginFreq').textContent = loginFreq;
+      if (document.getElementById('stuPortalForumContrib')) document.getElementById('stuPortalForumContrib').textContent = `${forumContrib} posts`;
+      if (document.getElementById('stuPortalPersonaInfo')) document.getElementById('stuPortalPersonaInfo').textContent = `Persona Profile: ${details.persona || 'General Cohort'}`;
+
+      const clubsEl = document.getElementById('stuPortalClubs');
+      if (clubsEl) {
+        clubsEl.innerHTML = clubs.length > 0
+          ? clubs.map(cl => `<span class="px-2 py-0.5 rounded bg-surface-container-high text-xs font-semibold text-primary">${cl}</span>`).join('')
+          : '<span class="text-secondary text-xs italic">No extracurricular clubs recorded</span>';
+      }
+
+      // Personal 7-Vector Competency Radar & Normalized Dimensions
+      const comp = rec.analytics?.componentScores || {
+        academic: Math.min(100, rec.marks.cgpa * 10),
+        placement: mockScore !== '--' ? mockScore : 50,
+        attendance: att.overall,
+        skills: codingScore !== '--' ? codingScore : 50,
+        lms: lmsOnTime !== '--' ? lmsOnTime : 75,
+        engagement: 60,
+        feedback: 80
+      };
+
+      updateRadarPolygon([
+        comp.academic,
+        comp.placement,
+        comp.attendance,
+        comp.skills,
+        comp.lms,
+        comp.engagement,
+        comp.feedback
+      ], themeColor, 'stuPortalRadarPolygon');
+
+      // Update 7 Evaluated Dimensions Progress Bars
+      if (document.getElementById('stuPortalDimAcademic')) document.getElementById('stuPortalDimAcademic').textContent = `${Math.round(comp.academic)}%`;
+      if (document.getElementById('stuPortalBarAcademic')) document.getElementById('stuPortalBarAcademic').style.width = `${Math.min(100, comp.academic)}%`;
+
+      if (document.getElementById('stuPortalDimPlacement')) document.getElementById('stuPortalDimPlacement').textContent = `${Math.round(comp.placement)}%`;
+      if (document.getElementById('stuPortalBarPlacement')) document.getElementById('stuPortalBarPlacement').style.width = `${Math.min(100, comp.placement)}%`;
+
+      if (document.getElementById('stuPortalDimAttendance')) document.getElementById('stuPortalDimAttendance').textContent = `${Math.round(comp.attendance)}%`;
+      if (document.getElementById('stuPortalBarAttendance')) document.getElementById('stuPortalBarAttendance').style.width = `${Math.min(100, comp.attendance)}%`;
+
+      if (document.getElementById('stuPortalDimSkills')) document.getElementById('stuPortalDimSkills').textContent = `${Math.round(comp.skills)}%`;
+      if (document.getElementById('stuPortalBarSkills')) document.getElementById('stuPortalBarSkills').style.width = `${Math.min(100, comp.skills)}%`;
+
+      if (document.getElementById('stuPortalDimLms')) document.getElementById('stuPortalDimLms').textContent = `${Math.round(comp.lms)}%`;
+      if (document.getElementById('stuPortalBarLms')) document.getElementById('stuPortalBarLms').style.width = `${Math.min(100, comp.lms)}%`;
+
+      if (document.getElementById('stuPortalDimEngagement')) document.getElementById('stuPortalDimEngagement').textContent = `${Math.round(comp.engagement)}%`;
+      if (document.getElementById('stuPortalBarEngagement')) document.getElementById('stuPortalBarEngagement').style.width = `${Math.min(100, comp.engagement)}%`;
+
+      if (document.getElementById('stuPortalDimFeedback')) document.getElementById('stuPortalDimFeedback').textContent = `${Math.round(comp.feedback)}%`;
+      if (document.getElementById('stuPortalBarFeedback')) document.getElementById('stuPortalBarFeedback').style.width = `${Math.min(100, comp.feedback)}%`;
+
+      if (document.getElementById('stuPortalCompositeScore')) {
+        document.getElementById('stuPortalCompositeScore').textContent = `Overall Composite: ${Math.round(rec.successScore)} / 100 (${rec.riskFlag} Risk)`;
+      }
+
+      // Sync both dropdown selectors to this student
+      const swSelect = document.getElementById('stuPortalSwitcherSelect');
+      if (swSelect) swSelect.value = details.id;
+      const roleSelect = document.getElementById('roleLoginSelect');
+      if (roleSelect) roleSelect.value = `student-${details.id.toLowerCase()}`;
+
+      // Update top KPI cards to reflect this student's context
+      const totalEl = document.getElementById('kpiTotalCount') || document.getElementById('kpiTotalStudents'); 
+      if (totalEl) totalEl.textContent = '1 (Personal)';
+      const hrRateEl = document.getElementById('kpiHighRiskRate');
+      if (hrRateEl) hrRateEl.textContent = rec.riskFlag === 'High' ? '100%' : '0%';
+      const hrCountEl = document.getElementById('kpiHighRiskCount');
+      if (hrCountEl) hrCountEl.textContent = `${rec.riskFlag} Risk Level`;
+      const plReadyEl = document.getElementById('kpiPlacementReady');
+      if (plReadyEl) plReadyEl.textContent = `${mockScore !== '--' ? mockScore : 50}%`;
+      const avgScoreEl = document.getElementById('kpiAvgSuccessScore');
+      if (avgScoreEl) avgScoreEl.innerHTML = `${Math.round(rec.successScore)} <span class="text-xs font-normal text-secondary">/ 100</span>`;
+      const avgBarEl = document.getElementById('kpiAvgScoreBar');
+      if (avgBarEl) avgBarEl.style.width = `${Math.min(100, rec.successScore)}%`;
+
+      // Populate single student in table
+      renderTable([rec.analytics ? { ...details, categories: rec.analytics.componentScores ? rec : {}, analytics: rec.analytics } : rec]);
+    }
+
+    // Update top KPI cards and quadrant counts
+    function updateKpis(apiResponse) {
+      const total = apiResponse.totalStudentsInDb !== undefined ? apiResponse.totalStudentsInDb : (apiResponse.totalStudents !== undefined ? apiResponse.totalStudents : students.length);
+      const riskSummary = apiResponse.riskSummary || { high: 0, medium: 0, low: 0 };
+      
+      const highRiskCount = total > 0 ? (riskSummary.high !== undefined ? riskSummary.high : students.filter(s => s.analytics?.riskFlag === 'High').length) : 0;
+      const highRiskRate = total > 0 ? ((highRiskCount / total) * 100).toFixed(1) : '0.0';
+
+      const placementReadyCount = total > 0 ? students.filter(s => (s.categories?.placement?.mockInterviewScore || 0) >= 60).length : 0;
+      const placementReadyRate = total > 0 ? ((placementReadyCount / total) * 100).toFixed(1) : '0.0';
+
+      const avgSuccess = total > 0 ? (students.reduce((acc, s) => acc + (s.analytics?.successScore || 0), 0) / total).toFixed(1) : '0';
+
+      // DOM Updates
+      const totalEl = document.getElementById('kpiTotalCount') || document.getElementById('kpiTotalStudents');
+      if (totalEl) totalEl.textContent = total;
+
+      const hrRateEl = document.getElementById('kpiHighRiskRate');
+      if (hrRateEl) hrRateEl.textContent = `${highRiskRate}%`;
+      const hrCountEl = document.getElementById('kpiHighRiskCount');
+      if (hrCountEl) hrCountEl.textContent = `${highRiskCount} Flagged High Risk`;
+      const hrBarEl = document.getElementById('kpiHighRiskBar');
+      if (hrBarEl) hrBarEl.style.width = `${highRiskRate}%`;
+
+      const plReadyEl = document.getElementById('kpiPlacementReady');
+      if (plReadyEl) plReadyEl.textContent = `${placementReadyRate}%`;
+      const plCountEl = document.getElementById('kpiPlacementCount');
+      if (plCountEl) plCountEl.textContent = `${placementReadyCount} Verified`;
+      const plBarEl = document.getElementById('kpiPlacementBar');
+      if (plBarEl) plBarEl.style.width = `${placementReadyRate}%`;
+
+      const avgScoreEl = document.getElementById('kpiAvgSuccessScore');
+      if (avgScoreEl) avgScoreEl.innerHTML = `${avgSuccess} <span class="text-xs font-normal text-slate-400">/ 100</span>`;
+      const avgBarEl = document.getElementById('kpiAvgScoreBar');
+      if (avgBarEl) avgBarEl.style.width = `${total > 0 ? Math.min(100, parseFloat(avgSuccess)) : 0}%`;
+
+      // Persona & Quadrant counts
+      const p1Count = total > 0 ? students.filter(s => s.persona === 'High Academic / Low Placement').length : 0;
+      const p2Count = total > 0 ? students.filter(s => s.persona === 'Low Attendance / High Skills').length : 0;
+      const p3Count = total > 0 ? students.filter(s => s.persona === 'Average All-Rounders').length : 0;
+
+      const qAll = document.getElementById('quadCountAll');
+      if (qAll) qAll.textContent = total;
+      const qP1 = document.getElementById('quadCountP1');
+      if (qP1) qP1.textContent = p1Count;
+      const qP2 = document.getElementById('quadCountP2');
+      if (qP2) qP2.textContent = p2Count;
+      const qP3 = document.getElementById('quadCountP3');
+      if (qP3) qP3.textContent = p3Count;
+      const qRisk = document.getElementById('quadCountRisk');
+      if (qRisk) qRisk.textContent = highRiskCount;
+
+      const cP1 = document.getElementById('cardCountP1');
+      if (cP1) cP1.textContent = `${p1Count} Students`;
+      const cP2 = document.getElementById('cardCountP2');
+      if (cP2) cP2.textContent = `${p2Count} Students`;
+      const cP3 = document.getElementById('cardCountP3');
+      if (cP3) cP3.textContent = `${p3Count} Students`;
+
+      const quickBtn = document.getElementById('quickHighRiskBtnText');
+      if (quickBtn) quickBtn.textContent = `Triage High Risk (${highRiskCount})`;
+
+      // Update Top & Weak Performers section for current scope
+      updatePerformersSection(students);
+
+      // Render management charts for upper management
+      updateManagementCharts(students);
+    }
+
+    // Performance Triage & Scope Logic for Top and Weak Performers
+    function updatePerformersSection(studentList) {
+      const scopeBadge = document.getElementById('performersScopeBadge');
+      const scopeSubtitle = document.getElementById('performersScopeSubtitle');
+      const topContainer = document.getElementById('topPerformersList');
+      const weakContainer = document.getElementById('weakPerformersList');
+      const topBadge = document.getElementById('topPerformersCountBadge');
+      const weakBadge = document.getElementById('weakPerformersCountBadge');
+
+      if (!studentList || studentList.length === 0) {
+        if (scopeBadge) scopeBadge.textContent = 'No Dataset Active (0 Students)';
+        if (scopeSubtitle) scopeSubtitle.textContent = 'Upload a student dataset (.csv or .json) to evaluate performance.';
+        if (topBadge) topBadge.textContent = '0 in Scope';
+        if (weakBadge) weakBadge.textContent = '0 in Scope';
+        if (topContainer) {
+          topContainer.innerHTML = '<div class="py-6 text-center text-xs text-slate-500">No student records loaded. Click "Upload" to ingest a dataset.</div>';
+        }
+        if (weakContainer) {
+          weakContainer.innerHTML = '<div class="py-6 text-center text-xs text-slate-500">No student records loaded. Click "Upload" to ingest a dataset.</div>';
+        }
+        return;
+      }
+
+      const roleSelect = document.getElementById('roleLoginSelect');
+      const selectedRole = roleSelect ? roleSelect.value : 'admin';
+
+      let scopeLabel = `All School (${studentList.length} Students)`;
+      let scopeSub = 'Evaluating complete student cohort across all campus departments.';
+
+      if (selectedRole === 'hod') {
+        scopeLabel = 'HOD Scope (CSE Department)';
+        scopeSub = 'Top and intervention students restricted to Computer Science & Engineering.';
+      } else if (selectedRole === 'hod-it') {
+        scopeLabel = 'HOD Scope (IT Department)';
+        scopeSub = 'Top and intervention students restricted to Information Technology.';
+      } else if (selectedRole && selectedRole.startsWith('batch')) {
+        const batchYear = selectedRole.includes('2022') ? '2022-2026' : '2021-2025';
+        scopeLabel = `Batch Head Scope (${batchYear})`;
+        scopeSub = `Top and intervention students restricted to Class of ${batchYear}.`;
+      } else if (selectedRole && selectedRole.startsWith('mentor')) {
+        const sectionName = selectedRole.includes('itb') ? 'IT-B' : 'CSE-A';
+        scopeLabel = `Mentor Scope (Section ${sectionName})`;
+        scopeSub = `Class advisory analysis restricted to mentees in Section ${sectionName}.`;
+      }
+
+      if (scopeBadge) scopeBadge.textContent = scopeLabel;
+      if (scopeSubtitle) scopeSubtitle.textContent = scopeSub;
+
+      // 1. Sort Top Performers: Highest Success Score, then Highest CGPA
+      const sortedTop = [...studentList].sort((a, b) => {
+        if (b.analytics.successScore !== a.analytics.successScore) {
+          return b.analytics.successScore - a.analytics.successScore;
+        }
+        return b.categories.academic.cgpa - a.categories.academic.cgpa;
+      });
+
+      const topCount = Math.min(5, sortedTop.length);
+      const topList = sortedTop.slice(0, topCount);
+      if (topBadge) topBadge.textContent = `Top ${topCount} in Scope`;
+
+      if (topContainer) {
+        topContainer.innerHTML = topList.map((s, idx) => {
+          const medals = ['🥇 #1', '🥈 #2', '🥉 #3', '#4', '#5'];
+          const medalBadge = medals[idx] || `#${idx + 1}`;
+          const mock = s.categories.placement?.mockInterviewScore || 80;
+          const strengths = s.categories.feedback?.strengths?.slice(0, 2).join(' • ') || 'Exemplary academic and technical standing';
+
+          return `
+            <div class="py-2.5 px-3 rounded-lg hover:bg-slate-50 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-outline-variant/10 last:border-b-0 group">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg ${idx === 0 ? 'bg-amber-100 text-amber-800' : idx === 1 ? 'bg-slate-200 text-slate-700' : idx === 2 ? 'bg-orange-100 text-orange-800' : 'bg-surface-container-high text-secondary'} flex items-center justify-center font-bold text-xs flex-shrink-0">
+                  ${medalBadge}
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-xs text-on-surface">${s.name}</span>
+                    <span class="text-xs text-secondary font-data-mono">${s.id}</span>
+                    <span class="px-1.5 py-0.2 rounded bg-tertiary/10 text-tertiary text-xs font-bold">${s.class || 'CSE-A'}</span>
+                  </div>
+                  <p class="text-xs text-secondary mt-0.5">${strengths}</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 self-end sm:self-auto flex-shrink-0">
+                <div class="text-right">
+                  <div class="text-xs font-bold text-tertiary font-data-mono">${s.analytics.successScore.toFixed(1)} <span class="text-xs text-secondary font-normal">Score</span></div>
+                  <div class="text-xs text-secondary font-data-mono">CGPA ${s.categories.academic.cgpa.toFixed(2)} • Mock ${mock}</div>
+                </div>
+                <button onclick="selectStudentAndScroll('${s.id}')" class="px-2.5 py-1 rounded bg-tertiary/10 hover:bg-tertiary hover:text-white text-tertiary text-xs font-bold transition-colors flex items-center gap-1 shadow-2xs" title="Inspect profile of ${s.name}">
+                  <span>Inspect</span>
+                  <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // 2. Identify Weak / Critical Support Performers
+      const sortedWeak = [...studentList].sort((a, b) => {
+        const aRisk = a.analytics.riskFlag === 'High' ? 2 : a.analytics.riskFlag === 'Medium' ? 1 : 0;
+        const bRisk = b.analytics.riskFlag === 'High' ? 2 : b.analytics.riskFlag === 'Medium' ? 1 : 0;
+        if (bRisk !== aRisk) return bRisk - aRisk;
+
+        const aAttn = (a.categories.attendance?.classes !== undefined ? a.categories.attendance.classes : 80);
+        const bAttn = (b.categories.attendance?.classes !== undefined ? b.categories.attendance.classes : 80);
+        if ((aAttn < 75) !== (bAttn < 75)) {
+          return aAttn < 75 ? -1 : 1;
+        }
+
+        return a.analytics.successScore - b.analytics.successScore;
+      });
+
+      const weakCount = Math.min(5, sortedWeak.length);
+      const weakList = sortedWeak.slice(0, weakCount);
+      if (weakBadge) weakBadge.textContent = `${weakList.filter(s => s.analytics.riskFlag === 'High').length} High Risk in Scope`;
+
+      if (weakContainer) {
+        weakContainer.innerHTML = weakList.map(s => {
+          const classAttn = s.categories.attendance?.classes !== undefined ? s.categories.attendance.classes : (s.categories.attendance?.overall || 80);
+          const isAttnAlert = classAttn < 75;
+          const isHighRisk = s.analytics.riskFlag === 'High';
+          const backlogs = s.categories.academic?.backlogs || 0;
+          const reasons = s.analytics.riskReasons || [];
+          const primaryReason = reasons[0] || (isAttnAlert ? `Classes Attendance ${classAttn}% < 75% Requirement` : `Academic deficit (${backlogs} active backlogs)`);
+
+          return `
+            <div class="py-2.5 px-3 rounded-lg ${isHighRisk ? 'bg-rose-50/50' : 'hover:bg-slate-50'} transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-outline-variant/10 last:border-b-0 group">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg ${isHighRisk ? 'bg-error text-white' : 'bg-error-container text-error'} flex items-center justify-center font-bold text-xs flex-shrink-0">
+                  <span class="material-symbols-outlined text-base">priority_high</span>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-xs text-on-surface">${s.name}</span>
+                    <span class="text-xs text-secondary font-data-mono">${s.id}</span>
+                    <span class="px-1.5 py-0.2 rounded ${isHighRisk ? 'bg-error/10 text-error' : 'bg-slate-100 text-slate-700 border border-slate-200 font-medium'} text-xs font-bold">${s.class || 'CSE-A'}</span>
+                    ${isAttnAlert ? '<span class="px-1.5 py-0.2 rounded bg-error-container text-error text-xs font-bold">Attn &lt;75%</span>' : ''}
+                  </div>
+                  <p class="text-xs text-error font-medium mt-0.5 truncate max-w-[280px]" title="${primaryReason}">${primaryReason}</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 self-end sm:self-auto flex-shrink-0">
+                <div class="text-right">
+                  <div class="text-xs font-bold text-error font-data-mono">${s.analytics.successScore.toFixed(1)} <span class="text-xs text-secondary font-normal">Score</span></div>
+                  <div class="text-xs text-secondary font-data-mono">Attn <strong class="${isAttnAlert ? 'text-error' : ''}">${classAttn}%</strong> • ${backlogs} BL</div>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <button onclick="event.stopPropagation(); triggerGenerateIntervention('${s.id}')" class="px-2 py-1 rounded bg-error text-white hover:bg-error/90 text-xs font-bold transition-all flex items-center gap-1 shadow-2xs active:scale-95" title="Generate LLM Intervention Plan for ${s.name}">
+                    <span class="material-symbols-outlined text-sm">bolt</span>
+                    <span>Intervention</span>
+                  </button>
+                  <button onclick="selectStudentAndScroll('${s.id}')" class="px-2.5 py-1 rounded bg-error-container hover:bg-error hover:text-white text-error text-xs font-bold transition-colors flex items-center gap-1 shadow-2xs" title="Triage mentoring for ${s.name}">
+                    <span>Triage</span>
+                    <span class="material-symbols-outlined text-sm">flag</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    // Helper: Select student and scroll to score breakdown panel
+    function selectStudentAndScroll(studentId) {
+      selectStudent(studentId);
+      const target = document.getElementById('explainablePanel');
+      if (target) {
+        const yOffset = -80;
+        const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+        target.classList.add('ring-2', 'ring-primary');
+        setTimeout(() => target.classList.remove('ring-2', 'ring-primary'), 1500);
+      }
+    }
+
+    // Subject Filter State & Scoring Logic
+    let activeSubject = 'core';
+
+    function computeStudentSubjectScore(s, subject) {
+      const cat = s.categories || {};
+      const acad = cat.academic || {};
+      const exam = acad.exam_scores || { midsem: Math.round((acad.cgpa || 7.5) * 9.2), endsem: Math.round((acad.cgpa || 7.5) * 9.5) };
+      const mid = exam.midsem !== undefined ? exam.midsem : 75;
+      const end = exam.endsem !== undefined ? exam.endsem : 80;
+      const cgpa = acad.cgpa !== undefined ? acad.cgpa : 7.5;
+      const skills = cat.skills || {};
+      const coding = skills.codingAssessmentScore !== undefined ? skills.codingAssessmentScore : 70;
+      const certCount = skills.certifications?.length || 1;
+      const attObj = cat.attendance || {};
+      const classAttn = attObj.classes !== undefined ? attObj.classes : (attObj.overall || 80);
+
+      let val = 0;
+      switch (subject) {
+        case 'dsa':
+          val = (coding * 0.50) + (mid * 0.25) + (end * 0.25);
+          break;
+        case 'dbms':
+          val = (mid * 0.40) + (end * 0.40) + (cgpa * 2.0);
+          break;
+        case 'os':
+          val = (mid * 0.45) + (end * 0.45) + (classAttn >= 75 ? 4 : -4);
+          break;
+        case 'cn':
+          val = (end * 0.50) + (mid * 0.40) + (cgpa * 1.0);
+          break;
+        case 'fullstack':
+          val = (coding * 0.45) + (end * 0.35) + (certCount * 4) + 6;
+          break;
+        case 'ml':
+          val = (coding * 0.40) + (cgpa * 4.0) + (end * 0.20);
+          break;
+        case 'core':
+        default:
+          val = (mid * 0.35) + (end * 0.45) + (cgpa * 2.0);
+          break;
+      }
+      return Math.max(30, Math.min(100, Math.round(val)));
+    }
+
+    function handleSubjectChange(newSub) {
+      activeSubject = newSub;
+      updateManagementCharts(students);
+      showToast(`Filtered by subject: ${getSubjectDisplayName(newSub)}`);
+    }
+
+    function getSubjectDisplayName(subKey) {
+      const map = {
+        'core': 'Overall Core Average',
+        'dsa': 'Data Structures & Algorithms',
+        'dbms': 'DBMS',
+        'os': 'Operating Systems',
+        'cn': 'Computer Networks',
+        'fullstack': 'Full-Stack Web Dev',
+        'ml': 'Machine Learning & AI'
+      };
+      return map[subKey] || 'Overall Core Average';
+    }
+
+    // Chart.js instances
+    let barChartInstance = null;
+    let spiderChartInstance = null;
+
+    // Render Management Charts: Class Average Scores & Combined Institutional Radar
+    function updateManagementCharts(studentList) {
+      if (!studentList || studentList.length === 0) {
+        if (barChartInstance) {
+          barChartInstance.destroy();
+          barChartInstance = null;
+        }
+        if (spiderChartInstance) {
+          spiderChartInstance.destroy();
+          spiderChartInstance = null;
+        }
+        const badgeEl = document.getElementById('spiderCompositeBadge');
+        if (badgeEl) badgeEl.textContent = 'Composite Index: 0/100';
+        return;
+      }
+
+      const n = studentList.length;
+
+      // 1. Group students by class section
+      const classMap = {};
+      studentList.forEach(s => {
+        const cls = s.class || s.department || 'General';
+        if (!classMap[cls]) classMap[cls] = [];
+        classMap[cls].push(s);
+      });
+
+      const classNames = Object.keys(classMap).sort();
+
+      // 2. Compute metrics for each class
+      const classSubjectScores = [];
+      const classAttendanceScores = [];
+      const classEndsemScores = [];
+      const classSummaryData = [];
+
+      classNames.forEach(cls => {
+        const group = classMap[cls];
+        const gn = group.length;
+
+        const avgSubject = Math.round(group.reduce((acc, s) => acc + computeStudentSubjectScore(s, activeSubject), 0) / gn);
+        const avgAttn = Math.round(group.reduce((acc, s) => {
+          const a = s.categories.attendance?.classes !== undefined ? s.categories.attendance.classes : (s.categories.attendance?.overall || 80);
+          return acc + a;
+        }, 0) / gn);
+        const avgEndsem = Math.round(group.reduce((acc, s) => {
+          const e = s.categories.academic?.exam_scores?.endsem || 80;
+          return acc + e;
+        }, 0) / gn);
+        const highRiskInClass = group.filter(s => s.analytics.riskFlag === 'High').length;
+
+        classSubjectScores.push(avgSubject);
+        classAttendanceScores.push(avgAttn);
+        classEndsemScores.push(avgEndsem);
+
+        classSummaryData.push({
+          name: cls,
+          count: gn,
+          subjectAvg: avgSubject,
+          attnAvg: avgAttn,
+          endsemAvg: avgEndsem,
+          highRiskCount: highRiskInClass
+        });
+      });
+
+      // 3. Render Bar Chart: Class Average Scores for Selected Subject
+      const barCanvas = document.getElementById('subjectBenchmarkChart') || document.getElementById('managementBarChart');
+      if (barCanvas && window.Chart) {
+        if (barChartInstance) barChartInstance.destroy();
+
+        const subjectLabel = `${getSubjectDisplayName(activeSubject)} Avg (/100)`;
+
+        barChartInstance = new Chart(barCanvas.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: classNames,
+            datasets: [
+              {
+                label: subjectLabel,
+                data: classSubjectScores,
+                backgroundColor: 'rgba(0, 74, 198, 0.85)',
+                borderColor: '#004ac6',
+                borderWidth: 1,
+                borderRadius: 4
+              },
+              {
+                label: 'Class Attendance Avg (%)',
+                data: classAttendanceScores,
+                backgroundColor: 'rgba(0, 98, 66, 0.75)',
+                borderColor: '#006242',
+                borderWidth: 1,
+                borderRadius: 4
+              },
+              {
+                label: 'Endsem Exam Avg (/100)',
+                data: classEndsemScores,
+                backgroundColor: 'rgba(124, 58, 237, 0.75)',
+                borderColor: '#7c3aed',
+                borderWidth: 1,
+                borderRadius: 4
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 100,
+                ticks: { font: { size: 10 } }
+              },
+              x: {
+                ticks: { font: { size: 11, weight: 'bold' } }
+              }
+            },
+            plugins: {
+              legend: {
+                position: 'top',
+                labels: { boxWidth: 12, font: { size: 10 } }
+              },
+              tooltip: {
+                callbacks: {
+                  afterBody: function(context) {
+                    const idx = context[0].dataIndex;
+                    const item = classSummaryData[idx];
+                    return `Enrolled: ${item.count} students | High Risk: ${item.highRiskCount}`;
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+
+      // 4. Populate Class Summary Container below Bar Chart
+      const summaryContainer = document.getElementById('classSubjectSummaryContainer');
+      if (summaryContainer) {
+        summaryContainer.innerHTML = classSummaryData.map(c => `
+          <div class="p-2.5 rounded-lg bg-surface-container-lowest/80 flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-xs text-on-surface">${c.name}</span>
+              <span class="text-xs text-secondary font-semibold">${c.count} students</span>
+            </div>
+            <div class="flex items-center justify-between text-xs mt-1 pt-1 border-t border-outline-variant/10">
+              <span class="text-secondary font-medium">Subj Avg:</span>
+              <strong class="font-data-mono text-primary font-bold">${c.subjectAvg}/100</strong>
+            </div>
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-secondary font-medium">Attn Avg:</span>
+              <strong class="font-data-mono ${c.attnAvg < 75 ? 'text-error' : 'text-tertiary'} font-bold">${c.attnAvg}%</strong>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // 5. Spider / Radar Chart for Upper Management (Combined Institutional 7-Vectors)
+      const spiderCanvas = document.getElementById('managementSpiderChart');
+      if (spiderCanvas && window.Chart) {
+        if (spiderChartInstance) spiderChartInstance.destroy();
+
+        // Compute institutional average for each of the 7 dimensions
+        const avgScores = {
+          academic: Math.round(studentList.reduce((acc, s) => acc + (s.analytics.componentScores?.academic || 75), 0) / n),
+          placement: Math.round(studentList.reduce((acc, s) => acc + (s.analytics.componentScores?.placement || 65), 0) / n),
+          attendance: Math.round(studentList.reduce((acc, s) => acc + (s.analytics.componentScores?.attendance || 80), 0) / n),
+          skills: Math.round(studentList.reduce((acc, s) => acc + (s.analytics.componentScores?.skills || 70), 0) / n),
+          lms: Math.round(studentList.reduce((acc, s) => acc + (s.analytics.componentScores?.lms || 85), 0) / n),
+          engagement: Math.round(studentList.reduce((acc, s) => acc + (s.analytics.componentScores?.engagement || 45), 0) / n),
+          feedback: Math.round(studentList.reduce((acc, s) => acc + (s.analytics.componentScores?.feedback || 65), 0) / n)
+        };
+
+        const overallComposite = Math.round(studentList.reduce((acc, s) => acc + s.analytics.successScore, 0) / n);
+        const badgeEl = document.getElementById('spiderCompositeBadge');
+        if (badgeEl) badgeEl.textContent = `Composite Index: ${overallComposite}/100`;
+
+        spiderChartInstance = new Chart(spiderCanvas.getContext('2d'), {
+          type: 'radar',
+          data: {
+            labels: [
+              `Academic (30%)\n[${avgScores.academic}%]`,
+              `Placement (20%)\n[${avgScores.placement}%]`,
+              `Attendance (15%)\n[${avgScores.attendance}%]`,
+              `Skills (15%)\n[${avgScores.skills}%]`,
+              `LMS (10%)\n[${avgScores.lms}%]`,
+              `Engagement (5%)\n[${avgScores.engagement}%]`,
+              `Feedback (5%)\n[${avgScores.feedback}%]`
+            ],
+            datasets: [
+              {
+                label: 'Current Institutional Average',
+                data: [
+                  avgScores.academic,
+                  avgScores.placement,
+                  avgScores.attendance,
+                  avgScores.skills,
+                  avgScores.lms,
+                  avgScores.engagement,
+                  avgScores.feedback
+                ],
+                backgroundColor: 'rgba(0, 74, 198, 0.25)',
+                borderColor: '#004ac6',
+                pointBackgroundColor: '#004ac6',
+                pointBorderColor: '#ffffff',
+                pointHoverBackgroundColor: '#ffffff',
+                pointHoverBorderColor: '#004ac6',
+                borderWidth: 2
+              },
+              {
+                label: 'Accreditation Benchmark (Target)',
+                data: [75, 70, 75, 70, 80, 50, 70],
+                backgroundColor: 'rgba(0, 98, 66, 0.1)',
+                borderColor: '#006242',
+                borderDash: [4, 4],
+                pointBackgroundColor: '#006242',
+                borderWidth: 1.5
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+              padding: { top: 10, bottom: 10, left: 20, right: 20 }
+            },
+            scales: {
+              r: {
+                angleLines: { color: '#e2e8f0' },
+                grid: { color: '#e2e8f0' },
+                suggestedMin: 20,
+                suggestedMax: 100,
+                pointLabels: {
+                  font: { size: 9, weight: 'bold' },
+                  padding: 8
+                },
+                ticks: {
+                  display: false,
+                  stepSize: 20
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                position: 'top',
+                labels: { boxWidth: 10, font: { size: 10 } }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    // Populate department select options
+    function populateDepartmentDropdown(studentList) {
+      const select = document.getElementById('departmentFilter');
+      const uniqueDepts = Array.from(new Set(studentList.map(s => s.department))).sort();
+      
+      select.innerHTML = '<option value="All">All Departments</option>';
+      uniqueDepts.forEach(dept => {
+        const opt = document.createElement('option');
+        opt.value = dept;
+        opt.textContent = dept;
+        select.appendChild(opt);
+      });
+    }
+
+    // Render Table Rows
+    function renderTable(list) {
+      const tbody = document.getElementById('cohortTableBody');
+      const countNotice = document.getElementById('tableFilterCountNotice');
+      const footNotice = document.getElementById('tableFootCount');
+
+      if (countNotice) countNotice.textContent = students.length === 0 ? '0 students in database' : `Showing ${list.length} of ${students.length} students`;
+      if (footNotice) footNotice.textContent = students.length === 0 ? '0 student profiles loaded' : `Showing ${list.length} student profiles`;
+
+      if (list.length === 0) {
+        if (!students || students.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7" class="py-12 text-center text-slate-500">
+                <div class="flex flex-col items-center justify-center gap-2">
+                  <span class="material-symbols-outlined text-4xl text-slate-300">cloud_upload</span>
+                  <span class="font-bold text-slate-800 text-sm">No student records in database (0 students)</span>
+                  <p class="text-xs text-slate-500 max-w-md mx-auto">Database is currently reset to 0. The system will activate retention diagnostics, radar modeling, and triage once you upload a dataset.</p>
+                  <button onclick="openUploadModal()" class="mt-2 px-3.5 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold inline-flex items-center gap-1.5 shadow-xs transition-colors">
+                    <span class="material-symbols-outlined text-base">upload_file</span>
+                    <span>Upload Student Dataset</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        } else {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7" class="py-8 text-center text-slate-500">
+                No students found matching your search and filter criteria.
+              </td>
+            </tr>
+          `;
+        }
+        return;
+      }
+
+      tbody.innerHTML = list.map(s => {
+        const isSelected = s.id === activeStudentId;
+        const nameParts = s.name.split(' ');
+        const initials = (nameParts[0][0] + (nameParts[1] ? nameParts[1][0] : '')).toUpperCase();
+        const risk = s.analytics.riskFlag;
+        
+        let avatarClass = 'bg-slate-100 text-slate-700';
+        let scorePillClass = 'bg-slate-100 text-slate-700 border border-slate-200 font-medium';
+        let riskBadgeClass = 'bg-slate-100 text-slate-700 border border-slate-200 font-medium';
+        let pulseDot = '<span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>';
+
+        if (risk === 'High') {
+          avatarClass = 'bg-rose-50 text-rose-700';
+          scorePillClass = 'bg-rose-50 text-rose-700 border border-rose-200 font-semibold';
+          riskBadgeClass = 'bg-rose-50 text-rose-700 border border-rose-200 font-semibold';
+          pulseDot = '<span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span>';
+        } else if (risk === 'Low') {
+          avatarClass = 'bg-emerald-50 text-emerald-800';
+          scorePillClass = 'bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold';
+          riskBadgeClass = 'bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold';
+          pulseDot = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>';
+        } else {
+          avatarClass = 'bg-amber-50 text-amber-800';
+          scorePillClass = 'bg-amber-50 text-amber-700 border border-amber-200 font-semibold';
+          riskBadgeClass = 'bg-amber-50 text-amber-700 border border-amber-200 font-semibold';
+          pulseDot = '<span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>';
+        }
+
+        const exam = s.categories.academic.exam_scores || { midsem: Math.round(s.categories.academic.cgpa * 9.2), endsem: Math.round(s.categories.academic.cgpa * 9.5) };
+        const att = s.categories.attendance;
+        const classAttn = att.classes !== undefined ? att.classes : (att.overall || 80);
+        const isClassAlert = s.analytics.attendanceRiskAlert || (classAttn < 75);
+
+        const rowBg = isSelected ? 'bg-brand-50/70 ring-1 ring-brand-500/30' : 'hover:bg-slate-50/80';
+
+        return `
+          <tr id="row-${s.id}" onclick="selectStudent('${s.id}')" class="${rowBg} cursor-pointer transition-colors group">
+            <td class="py-3 px-3">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg ${avatarClass} text-xs font-bold flex items-center justify-center flex-shrink-0">
+                  ${initials}
+                </div>
+                <div>
+                  <div class="font-bold text-slate-900 leading-tight flex items-center gap-1.5">
+                    <span>${s.name}</span>
+                    ${isSelected ? '<span class="bg-brand-600 text-white text-xs uppercase font-bold tracking-wider px-1.5 py-0.5 rounded">Inspecting</span>' : ''}
+                  </div>
+                  <span class="text-slate-500 font-data-mono text-xs">${s.id}</span>
+                </div>
+              </div>
+            </td>
+            <td class="py-3 px-2">
+              <div class="text-slate-900 font-medium leading-tight truncate max-w-[140px]" title="${s.department}">${s.department}</div>
+              <span class="text-slate-500 text-xs font-semibold">${s.class || 'CSE-A'} • ${s.batch || '2021-25'}</span>
+            </td>
+            <td class="py-3 px-2 text-right font-data-mono font-bold text-slate-900">
+              ${s.categories.academic.cgpa.toFixed(2)}
+            </td>
+            <td class="py-3 px-2 text-right font-data-mono text-xs">
+              <span class="text-slate-900 font-semibold">${exam.midsem}</span> / <span class="text-brand-600 font-bold">${exam.endsem}</span>
+            </td>
+            <td class="py-3 px-2 text-center font-data-mono">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full ${isClassAlert ? 'bg-rose-50 text-rose-700 font-bold text-xs border border-rose-200' : 'bg-slate-100 text-slate-700 text-xs'}">
+                ${isClassAlert ? '<span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span>' : ''}
+                ${classAttn}%
+              </span>
+            </td>
+            <td class="py-3 px-2 text-right">
+              <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full ${scorePillClass} font-data-mono text-xs">
+                ${Math.round(s.analytics.successScore)}/100
+              </span>
+            </td>
+            <td class="py-3 px-3 text-center">
+              <div class="flex items-center justify-center gap-1.5">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded ${riskBadgeClass} text-xs">
+                  ${pulseDot}
+                  ${risk}
+                </span>
+                <button onclick="event.stopPropagation(); selectStudent('${s.id}');" class="px-2 py-1 rounded text-xs font-semibold ${isSelected ? 'bg-brand-600 text-white' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'} transition-colors ml-1">
+                  Inspect
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Clear inspector panel when no student is selected or database is empty
+    function clearStudentInspector() {
+      activeStudentId = null;
+      const avatar = document.getElementById('panelAvatar');
+      if (avatar) {
+        avatar.textContent = '-';
+        avatar.className = 'w-12 h-12 rounded-xl bg-slate-100 text-slate-400 inline-flex items-center justify-center font-bold text-base shadow-xs';
+      }
+      const pName = document.getElementById('panelStudentName');
+      if (pName) pName.textContent = 'No Student Selected';
+      const pSub = document.getElementById('panelStudentSub');
+      if (pSub) pSub.textContent = 'Upload a dataset (.csv or .json) to inspect records';
+      const pTag = document.getElementById('panelPersonaTag');
+      if (pTag) pTag.textContent = 'Database Empty';
+
+      const riskBadge = document.getElementById('panelRiskBadge');
+      if (riskBadge) {
+        riskBadge.textContent = 'Empty';
+        riskBadge.className = 'px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200';
+      }
+
+      const scoreVal = document.getElementById('panelScoreVal');
+      if (scoreVal) scoreVal.textContent = '-';
+      const scoreBadge = document.getElementById('panelScoreBadge');
+      if (scoreBadge) {
+        scoreBadge.className = 'w-12 h-12 rounded-full ring-2 ring-slate-200 inline-flex flex-col items-center justify-center text-center shadow-xs text-slate-400';
+      }
+
+      const alertBox = document.getElementById('panelRiskAlertBox');
+      const alertTitle = document.getElementById('panelRiskAlertTitle');
+      const alertText = document.getElementById('panelRiskReasonsText');
+      if (alertBox) {
+        alertBox.className = 'p-3.5 text-xs flex flex-col gap-1 bg-slate-50/80 rounded-lg border-l-2 border-slate-300 text-slate-700';
+      }
+      if (alertTitle) alertTitle.innerHTML = '<span class="material-symbols-outlined text-base text-slate-400">info</span><span>Retention Risk Diagnosis</span>';
+      if (alertText) alertText.textContent = 'Upload a student dataset to view predictive retention diagnostics.';
+
+      const advNote = document.getElementById('panelAdvisorNote');
+      if (advNote) advNote.textContent = 'No student record active.';
+
+      const breakdownEl = document.getElementById('panelBreakdownList');
+      if (breakdownEl) {
+        breakdownEl.innerHTML = '<div class="py-4 text-center text-xs text-slate-400 italic">No dimension telemetry available (0 records).</div>';
+      }
+
+      const poly = document.getElementById('panelPolygon');
+      if (poly) {
+        poly.setAttribute('points', '120,100 120,100 120,100 120,100 120,100 120,100 120,100');
+        poly.setAttribute('fill', '#94a3b8');
+        poly.setAttribute('stroke', '#94a3b8');
+      }
+    }
+
+    // Select and inspect a specific student
+    function selectStudent(studentId) {
+      activeStudentId = studentId;
+      if (!studentId || !students || students.length === 0) {
+        clearStudentInspector();
+        return;
+      }
+      const student = students.find(s => s.id === studentId);
+      if (!student) {
+        clearStudentInspector();
+        return;
+      }
+
+      // Update row highlights
+      const rows = document.querySelectorAll('#cohortTableBody tr');
+      rows.forEach(r => r.classList.remove('bg-brand-50/70', 'ring-1', 'ring-brand-500/30'));
+      const activeRow = document.getElementById(`row-${studentId}`);
+      if (activeRow) activeRow.classList.add('bg-brand-50/70', 'ring-1', 'ring-brand-500/30');
+
+      // 1. Header & Avatar
+      const nameParts = student.name.split(' ');
+      const initials = (nameParts[0][0] + (nameParts[1] ? nameParts[1][0] : '')).toUpperCase();
+      const avatar = document.getElementById('panelAvatar');
+      if (avatar) avatar.textContent = initials;
+
+      const risk = student.analytics.riskFlag;
+      const score = Math.round(student.analytics.successScore);
+
+      // Color theme
+      let themeColor = '#2563eb';
+      if (risk === 'High') {
+        themeColor = '#e11d48';
+        if (avatar) avatar.className = 'w-12 h-12 rounded-xl flex items-center justify-center font-bold text-base shadow-xs bg-rose-50 text-rose-700';
+      } else if (risk === 'Low') {
+        themeColor = '#059669';
+        if (avatar) avatar.className = 'w-12 h-12 rounded-xl flex items-center justify-center font-bold text-base shadow-xs bg-emerald-50 text-emerald-800';
+      } else {
+        themeColor = '#d97706';
+        if (avatar) avatar.className = 'w-12 h-12 rounded-xl flex items-center justify-center font-bold text-base shadow-xs bg-amber-50 text-amber-800';
+      }
+
+      const pName = document.getElementById('panelStudentName');
+      if (pName) pName.textContent = student.name;
+      const pSub = document.getElementById('panelStudentSub');
+      if (pSub) pSub.textContent = `${student.department} • Term ${student.categories.academic.semester} (${student.id})`;
+      const pTag = document.getElementById('panelPersonaTag');
+      if (pTag) pTag.textContent = `Persona: ${student.persona}`;
+
+      // Risk Badge
+      const riskBadge = document.getElementById('panelRiskBadge');
+      if (riskBadge) {
+        riskBadge.textContent = `${risk} Risk`;
+        if (risk === 'High') riskBadge.className = 'px-2 py-0.5 rounded text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200';
+        else if (risk === 'Low') riskBadge.className = 'px-2 py-0.5 rounded text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200';
+        else riskBadge.className = 'px-2 py-0.5 rounded text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200';
+      }
+
+      // Score Radial Badge
+      const scoreBadge = document.getElementById('panelScoreBadge');
+      const scoreVal = document.getElementById('panelScoreVal');
+      if (scoreVal) scoreVal.textContent = score;
+      if (scoreBadge) {
+        if (risk === 'High') {
+          scoreBadge.className = 'w-12 h-12 rounded-full ring-2 ring-rose-500 bg-rose-50 text-rose-700 inline-flex flex-col items-center justify-center text-center shadow-xs';
+        } else if (risk === 'Low') {
+          scoreBadge.className = 'w-12 h-12 rounded-full ring-2 ring-emerald-500 bg-emerald-50 text-emerald-700 inline-flex flex-col items-center justify-center text-center shadow-xs';
+        } else {
+          scoreBadge.className = 'w-12 h-12 rounded-full ring-2 ring-amber-500 bg-amber-50 text-amber-700 inline-flex flex-col items-center justify-center text-center shadow-xs';
+        }
+      }
+
+      // Risk Reasons Box
+      const alertBox = document.getElementById('panelRiskAlertBox');
+      const alertTitle = document.getElementById('panelRiskAlertTitle');
+      const alertText = document.getElementById('panelRiskReasonsText');
+
+      if (alertBox) {
+        if (risk === 'High') {
+          alertBox.className = 'p-3.5 text-xs flex flex-col gap-1 bg-rose-50/80 rounded-lg border-l-2 border-rose-500 text-rose-900';
+          if (alertTitle) {
+            alertTitle.innerHTML = `
+              <div class="flex items-center justify-between w-full">
+                <div class="flex items-center gap-1.5 font-bold">
+                  <span class="material-symbols-outlined text-base text-rose-600">warning</span>
+                  <span>Critical Risk Flag Active</span>
+                </div>
+                <button onclick="event.stopPropagation(); triggerGenerateIntervention('${student.id}')" class="bg-rose-600 hover:bg-rose-700 text-white px-2 py-0.5 rounded text-xs font-bold inline-flex items-center gap-1 shadow-xs transition-all active:scale-95" title="Generate LLM Intervention Plan">
+                  <span class="material-symbols-outlined text-xs">bolt</span>
+                  <span>Intervention</span>
+                </button>
+              </div>
+            `;
+          }
+        } else if (risk === 'Medium') {
+          alertBox.className = 'p-3.5 text-xs flex flex-col gap-1 bg-amber-50/80 rounded-lg border-l-2 border-amber-500 text-amber-900';
+          if (alertTitle) alertTitle.innerHTML = '<span class="material-symbols-outlined text-base text-amber-600">info</span><span>Moderate Advisory Watch</span>';
+        } else {
+          alertBox.className = 'p-3.5 text-xs flex flex-col gap-1 bg-emerald-50/80 rounded-lg border-l-2 border-emerald-500 text-emerald-900';
+          if (alertTitle) alertTitle.innerHTML = '<span class="material-symbols-outlined text-base text-emerald-600">verified</span><span>Good Academic & Placement Standing</span>';
+        }
+      }
+
+      const reasons = student.analytics.riskReasons || [];
+      if (alertText) alertText.innerHTML = reasons.length > 0 ? reasons.map(r => `&bull; ${r}`).join('<br>') : 'All indicators meeting or exceeding baseline.';
+
+      // Advisor note
+      const facultyNote = student.categories.feedback.facultyFeedback || '';
+      const mentorNote = student.categories.feedback.mentorFeedback || '';
+      const advNote = document.getElementById('panelAdvisorNote');
+      if (advNote) advNote.textContent = `"${mentorNote || facultyNote || 'Academic progress monitored.'}"`;
+
+      // 7 Dimensions breakdown
+      const comp = student.analytics.componentScores;
+      const cat = student.categories;
+      const classAttn = cat.attendance.classes !== undefined ? cat.attendance.classes : (cat.attendance.overall !== undefined ? cat.attendance.overall : cat.attendance.overallPercentage);
+
+      // Populate dynamic progress bars in inspector panel
+      const breakdownEl = document.getElementById('panelBreakdownList');
+      if (breakdownEl) {
+        breakdownEl.innerHTML = `
+          <div class="space-y-2.5">
+            <div>
+              <div class="flex justify-between text-xs font-medium text-slate-700">
+                <span>1. Academic (30%)</span>
+                <span class="font-bold font-data-mono">${Math.round(comp.academic)}% (CGPA ${cat.academic.cgpa})</span>
+              </div>
+              <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-1">
+                <div class="bg-brand-600 h-full rounded-full" style="width: ${Math.min(100, comp.academic)}%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-medium text-slate-700">
+                <span>2. Placement (20%)</span>
+                <span class="font-bold font-data-mono">${Math.round(comp.placement)}% (Mock: ${cat.placement.mockInterviewScore}/100)</span>
+              </div>
+              <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-1">
+                <div class="bg-brand-600 h-full rounded-full" style="width: ${Math.min(100, comp.placement)}%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-medium text-slate-700">
+                <span>3. Attendance (15%)</span>
+                <span class="font-bold font-data-mono ${classAttn < 75 ? 'text-rose-600 font-bold' : ''}">${Math.round(comp.attendance)}% (Classes: ${classAttn}%)</span>
+              </div>
+              <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-1">
+                <div class="${classAttn < 75 ? 'bg-rose-500' : 'bg-brand-600'} h-full rounded-full" style="width: ${Math.min(100, comp.attendance)}%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-medium text-slate-700">
+                <span>4. Technical Skills (15%)</span>
+                <span class="font-bold font-data-mono">${Math.round(comp.skills)}% (Coding: ${cat.skills.codingAssessmentScore}/100)</span>
+              </div>
+              <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-1">
+                <div class="bg-brand-600 h-full rounded-full" style="width: ${Math.min(100, comp.skills)}%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-medium text-slate-700">
+                <span>5. LMS Activity (10%)</span>
+                <span class="font-bold font-data-mono">${Math.round(comp.lms)}% (${cat.lms.assignmentsSubmittedOnTimePercentage}% On-Time)</span>
+              </div>
+              <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-1">
+                <div class="bg-brand-600 h-full rounded-full" style="width: ${Math.min(100, comp.lms)}%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-medium text-slate-700">
+                <span>6. Campus Engagement (5%)</span>
+                <span class="font-bold font-data-mono">${Math.round(comp.engagement)}% (${cat.engagement.hackathonsParticipated} Events)</span>
+              </div>
+              <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-1">
+                <div class="bg-brand-600 h-full rounded-full" style="width: ${Math.min(100, comp.engagement)}%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-medium text-slate-700">
+                <span>7. Faculty Feedback (5%)</span>
+                <span class="font-bold font-data-mono">${Math.round(comp.feedback)}%</span>
+              </div>
+              <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-1">
+                <div class="bg-brand-600 h-full rounded-full" style="width: ${Math.min(100, comp.feedback)}%"></div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Dynamically calculate Radar Polygon points based on the 7 scores
+      updateRadarPolygon([
+        comp.academic,
+        comp.placement,
+        comp.attendance,
+        comp.skills,
+        comp.lms,
+        comp.engagement,
+        comp.feedback
+      ], themeColor, 'panelPolygon');
+    }
+
+    // Dynamic 7-point radar SVG math
+    function updateRadarPolygon(scores, color, elementId = 'radarPolygon') {
+      const poly = document.getElementById(elementId) || document.getElementById('panelPolygon') || document.getElementById('radarPolygon');
+      if (!poly) return;
+
+      const cx = 120;
+      const cy = 100;
+      const maxR = 75; // outer radius
+      const numPoints = 7;
+      const points = [];
+
+      for (let i = 0; i < numPoints; i++) {
+        // angle: start from top (-PI/2) and rotate clockwise
+        const angle = -Math.PI / 2 + (i * 2 * Math.PI / numPoints);
+        const score = Math.max(10, Math.min(100, scores[i] || 50));
+        const r = (score / 100) * maxR;
+        const x = Math.round(cx + r * Math.cos(angle));
+        const y = Math.round(cy + r * Math.sin(angle));
+        points.push(`${x},${y}`);
+      }
+
+      poly.setAttribute('points', points.join(' '));
+      poly.setAttribute('fill', color);
+      poly.setAttribute('stroke', color);
+    }
+
+    // Filter Table based on Search, Dept, Risk, Quadrant, Attendance, CGPA, Placement, Backlogs & Sort
+    function filterTable() {
+      const searchVal = (document.getElementById('studentSearch')?.value || '').toLowerCase().trim();
+      const deptVal = document.getElementById('departmentFilter')?.value || 'All';
+      const riskVal = document.getElementById('riskFilter')?.value || 'All';
+      const attendanceVal = document.getElementById('attendanceFilter')?.value || 'All';
+      const cgpaVal = document.getElementById('cgpaFilter')?.value || 'All';
+      const placementVal = document.getElementById('placementFilter')?.value || 'All';
+      const backlogsVal = (document.getElementById('backlogsFilter')?.value || document.getElementById('backlogFilter')?.value || 'All');
+      const sortByVal = document.getElementById('sortByFilter')?.value || 'default';
+
+      let activeFilterCount = 0;
+      if (searchVal) activeFilterCount++;
+      if (deptVal !== 'All') activeFilterCount++;
+      if (riskVal !== 'All') activeFilterCount++;
+      if (activeQuad !== 'all') activeFilterCount++;
+      if (attendanceVal !== 'All') activeFilterCount++;
+      if (cgpaVal !== 'All') activeFilterCount++;
+      if (placementVal !== 'All') activeFilterCount++;
+      if (backlogsVal !== 'All') activeFilterCount++;
+
+      currentFiltered = students.filter(s => {
+        // 1. Search filter
+        const matchSearch = !searchVal ||
+          s.name.toLowerCase().includes(searchVal) ||
+          s.id.toLowerCase().includes(searchVal) ||
+          s.email.toLowerCase().includes(searchVal);
+
+        // 2. Department filter
+        const matchDept = (deptVal === 'All') || (s.department === deptVal);
+
+        // 3. Risk filter
+        const matchRisk = (riskVal === 'All') || (s.analytics.riskFlag === riskVal);
+
+        // 4. Quadrant / Persona filter
+        let matchQuad = true;
+        if (activeQuad === 'high-academic') matchQuad = (s.persona === 'High Academic / Low Placement');
+        else if (activeQuad === 'low-attendance') matchQuad = (s.persona === 'Low Attendance / High Skills');
+        else if (activeQuad === 'average') matchQuad = (s.persona === 'Average All-Rounders');
+        else if (activeQuad === 'high-risk') matchQuad = (s.analytics.riskFlag === 'High');
+
+        // 5. Attendance Tier Filter
+        const attn = s.categories.attendance.overallPercentage;
+        let matchAttendance = true;
+        if (attendanceVal === 'warning') matchAttendance = (attn < 75);
+        else if (attendanceVal === 'standard') matchAttendance = (attn >= 75 && attn <= 85);
+        else if (attendanceVal === 'excellent') matchAttendance = (attn > 85);
+
+        // 6. CGPA Tier Filter
+        const cgpa = s.categories.academic.cgpa;
+        let matchCgpa = true;
+        if (cgpaVal === 'high') matchCgpa = (cgpa >= 8.5);
+        else if (cgpaVal === 'medium') matchCgpa = (cgpa >= 7.0 && cgpa < 8.5);
+        else if (cgpaVal === 'low') matchCgpa = (cgpa < 7.0);
+
+        // 7. Placement Readiness Tier Filter
+        const mockScore = s.categories.placement.mockInterviewScore;
+        let matchPlacement = true;
+        if (placementVal === 'ready') matchPlacement = (mockScore >= 80);
+        else if (placementVal === 'progress') matchPlacement = (mockScore >= 60 && mockScore < 80);
+        else if (placementVal === 'critical') matchPlacement = (mockScore < 60);
+
+        // 8. Backlogs Filter
+        const bl = s.categories.academic.backlogs;
+        let matchBacklogs = true;
+        if (backlogsVal === 'zero') matchBacklogs = (bl === 0);
+        else if (backlogsVal === 'hasBacklogs') matchBacklogs = (bl > 0);
+
+        return matchSearch && matchDept && matchRisk && matchQuad && matchAttendance && matchCgpa && matchPlacement && matchBacklogs;
+      });
+
+      // Sorting
+      currentFiltered.sort((a, b) => {
+        switch (sortByVal) {
+          case 'cgpa-desc':
+            return b.categories.academic.cgpa - a.categories.academic.cgpa;
+          case 'cgpa-asc':
+            return a.categories.academic.cgpa - b.categories.academic.cgpa;
+          case 'attendance-asc':
+            return a.categories.attendance.overallPercentage - b.categories.attendance.overallPercentage;
+          case 'attendance-desc':
+            return b.categories.attendance.overallPercentage - a.categories.attendance.overallPercentage;
+          case 'placement-desc':
+            return b.categories.placement.mockInterviewScore - a.categories.placement.mockInterviewScore;
+          case 'skills-desc':
+            return b.categories.skills.codingAssessmentScore - a.categories.skills.codingAssessmentScore;
+          case 'name-asc':
+            return a.name.localeCompare(b.name);
+          case 'default':
+          default:
+            return b.analytics.successScore - a.analytics.successScore;
+        }
+      });
+
+      // Render table rows
+      renderTable(currentFiltered);
+
+      // Update Cohort Telemetry Stat Bar (with safe null-guards)
+      const count = currentFiltered.length;
+      const countEl = document.getElementById('cohortStatCount');
+      if (countEl) countEl.textContent = `Filtered: ${count} of ${students.length} Students`;
+      
+      const cgpaEl = document.getElementById('cohortStatCgpa');
+      const attnEl = document.getElementById('cohortStatAttendance');
+      const placeEl = document.getElementById('cohortStatPlacement');
+
+      if (count > 0) {
+        const avgCgpa = (currentFiltered.reduce((acc, s) => acc + (s.categories?.academic?.cgpa || 0), 0) / count).toFixed(2);
+        const avgAttn = (currentFiltered.reduce((acc, s) => acc + (s.categories?.attendance?.overallPercentage || s.categories?.attendance?.classes || 80), 0) / count).toFixed(1);
+        const avgPlace = Math.round(currentFiltered.reduce((acc, s) => acc + (s.categories?.placement?.mockInterviewScore || 0), 0) / count);
+
+        if (cgpaEl) cgpaEl.innerHTML = `Avg CGPA: <strong class="text-slate-800 font-bold">${avgCgpa}</strong>`;
+        if (attnEl) attnEl.innerHTML = `Avg Attendance: <strong class="text-slate-800 font-bold">${avgAttn}%</strong>`;
+        if (placeEl) placeEl.innerHTML = `Avg Placement: <strong class="text-slate-800 font-bold">${avgPlace}/100</strong>`;
+      } else {
+        if (cgpaEl) cgpaEl.innerHTML = `Avg CGPA: <strong class="text-slate-400">-</strong>`;
+        if (attnEl) attnEl.innerHTML = `Avg Attendance: <strong class="text-slate-400">-</strong>`;
+        if (placeEl) placeEl.innerHTML = `Avg Placement: <strong class="text-slate-400">-</strong>`;
+      }
+
+      const activeBadge = document.getElementById('cohortActiveFiltersBadge');
+      if (activeBadge) {
+        if (activeFilterCount > 0) {
+          activeBadge.textContent = `${activeFilterCount} Active Filter${activeFilterCount === 1 ? '' : 's'}`;
+          activeBadge.className = 'text-xs text-primary font-bold px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20';
+        } else {
+          activeBadge.textContent = 'All 50 Visible';
+          activeBadge.className = 'text-xs text-secondary font-medium';
+        }
+      }
+
+      // If current selected student is not in filtered list, select the first filtered student
+      if (currentFiltered.length > 0 && !currentFiltered.some(s => s.id === activeStudentId)) {
+        selectStudent(currentFiltered[0].id);
+      }
+    }
+
+    // Reset all filter dropdowns and search inputs to default
+    function clearAllFilters() {
+      const search = document.getElementById('studentSearch');
+      if (search) search.value = '';
+      const headerSearch = document.getElementById('headerSearch');
+      if (headerSearch) headerSearch.value = '';
+
+      const dept = document.getElementById('departmentFilter');
+      if (dept) dept.value = 'All';
+
+      const risk = document.getElementById('riskFilter');
+      if (risk) risk.value = 'All';
+
+      const attn = document.getElementById('attendanceFilter');
+      if (attn) attn.value = 'All';
+
+      const cgpa = document.getElementById('cgpaFilter');
+      if (cgpa) cgpa.value = 'All';
+
+      const place = document.getElementById('placementFilter');
+      if (place) place.value = 'All';
+
+      const backlogs = document.getElementById('backlogsFilter');
+      if (backlogs) backlogs.value = 'All';
+
+      const sort = document.getElementById('sortByFilter');
+      if (sort) sort.value = 'default';
+
+      activeQuad = 'all';
+      activeKpiFilter = null;
+      clearAllKpiCardHighlights();
+
+      const buttons = document.querySelectorAll('#quadrantButtonsContainer .quad-btn');
+      buttons.forEach((b, idx) => {
+        b.className = idx === 0 
+          ? 'quad-btn px-3 py-1.5 rounded text-xs font-semibold bg-primary text-on-primary transition-all shadow-sm'
+          : 'quad-btn px-3 py-1.5 rounded text-xs font-medium bg-surface-container-low text-on-surface hover:bg-surface-container transition-all';
+      });
+
+      filterTable();
+      showToast('All filters cleared to default');
+    }
+
+    // Interactive KPI Card Filter Handler
+    let activeKpiFilter = null;
+
+    function filterByKpiCard(kpiType, cardElement) {
+      // Toggle off if already active
+      if (activeKpiFilter === kpiType && kpiType !== 'total') {
+        activeKpiFilter = null;
+        clearAllKpiCardHighlights();
+        filterTable();
+        showToast('KPI filter reset: Showing all students in scope');
+        return;
+      }
+
+      activeKpiFilter = kpiType;
+      clearAllKpiCardHighlights();
+
+      if (cardElement) {
+        cardElement.classList.add('ring-2', 'ring-primary', 'bg-primary/5');
+      }
+
+      // Reset dropdowns that might conflict
+      const riskSelect = document.getElementById('riskFilter');
+      if (riskSelect) riskSelect.value = 'All';
+      const placementSelect = document.getElementById('placementFilter');
+      if (placementSelect) placementSelect.value = 'All';
+
+      if (kpiType === 'total') {
+        currentFiltered = [...students];
+        showToast(`Showing all ${students.length} students in current scope`);
+      } else if (kpiType === 'risk') {
+        currentFiltered = students.filter(s => {
+          const isHigh = s.analytics.riskFlag === 'High';
+          const classAttn = s.categories.attendance?.classes !== undefined ? s.categories.attendance.classes : 80;
+          return isHigh || classAttn < 75;
+        });
+        showToast(`Filtered to ${currentFiltered.length} At-Risk & Intervention students`);
+      } else if (kpiType === 'placement') {
+        currentFiltered = students.filter(s => (s.categories.placement?.mockInterviewScore || 0) >= 60);
+        showToast(`Filtered to ${currentFiltered.length} Placement Ready students (Mock Score ≥ 60)`);
+      } else if (kpiType === 'success') {
+        const avgScore = students.reduce((acc, s) => acc + s.analytics.successScore, 0) / (students.length || 1);
+        currentFiltered = students.filter(s => s.analytics.successScore >= avgScore);
+        showToast(`Filtered to ${currentFiltered.length} Top Performing students (Score ≥ ${avgScore.toFixed(1)})`);
+      }
+
+      renderTable(currentFiltered);
+      if (currentFiltered.length > 0) {
+        selectStudent(currentFiltered[0].id);
+      }
+
+      const countNotice = document.getElementById('tableFilterCountNotice');
+      if (countNotice) {
+        countNotice.textContent = `KPI Filter Active: ${currentFiltered.length} of ${students.length} students`;
+      }
+
+      // Smooth scroll to directory table
+      const target = document.getElementById('directorySection');
+      if (target) {
+        const yOffset = -70;
+        const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      }
+    }
+
+    function clearAllKpiCardHighlights() {
+      const cards = document.querySelectorAll('.kpi-card');
+      cards.forEach(c => {
+        c.classList.remove('ring-2', 'ring-primary', 'bg-primary/5');
+      });
+    }
+
+    // Filter by quadrant/persona buttons
+    function filterTableByQuad(quadType, btn) {
+      activeQuad = quadType;
+      
+      const buttons = document.querySelectorAll('#quadrantButtonsContainer .quad-btn');
+      buttons.forEach(b => {
+        b.className = 'quad-btn px-3 py-1.5 rounded text-xs font-medium bg-surface-container-low text-on-surface hover:bg-surface-container transition-all';
+      });
+
+      if (btn) {
+        btn.className = 'quad-btn px-3 py-1.5 rounded text-xs font-semibold bg-primary text-on-primary transition-all shadow-sm';
+      }
+
+      filterTable();
+      showToast(`Filtered by cohort: ${quadType.replace('-', ' ').toUpperCase()}`);
+    }
+
+    // Quick filter by risk
+    function filterByRisk(riskLevel) {
+      const riskSelect = document.getElementById('riskFilter');
+      if (riskSelect) riskSelect.value = riskLevel;
+      filterTable();
+      showToast(`Showing all ${riskLevel} Risk students`);
+    }
+
+    // Sidebar Navigation Handler
+    function navigateTo(sectionId, btn) {
+      // 1. Update button styling
+      const buttons = document.querySelectorAll('#sidebarNav .nav-item');
+      buttons.forEach(b => {
+        b.className = 'nav-item flex items-center gap-3 px-3 py-2 rounded text-sm text-on-surface-variant hover:bg-surface-container-high transition-all w-full text-left';
+      });
+      if (btn) {
+        btn.className = 'nav-item flex items-center gap-3 px-3 py-2 rounded transition-all bg-primary-container text-on-primary font-semibold text-sm w-full text-left shadow-sm';
+      }
+
+      // 2. Smoothly scroll to the target section
+      const target = document.getElementById(sectionId);
+      if (target) {
+        const yOffset = -80; // offset to clear the fixed top header
+        const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+
+        // Highlight effect when targeted
+        if (sectionId === 'explainablePanel') {
+          target.classList.add('ring-2', 'ring-primary');
+          setTimeout(() => target.classList.remove('ring-2', 'ring-primary'), 1500);
+          showToast('Viewing Score Breakdown Panel', 'analytics');
+        } else if (sectionId === 'overviewSection') {
+          showToast('Navigated to Overview & Retention', 'insights');
+        } else if (sectionId === 'cohortMatrixSection') {
+          showToast('Navigated to Persona Matrix', 'grid_view');
+        } else if (sectionId === 'performersTriageSection') {
+          showToast('Navigated to Top & Weak Performers', 'military_tech');
+        } else if (sectionId === 'analyticsChartsSection') {
+          showToast('Navigated to Class Management Analytics', 'bar_chart');
+        } else if (sectionId === 'directorySection') {
+          showToast('Navigated to Student Directory', 'groups');
+        }
+      }
+    }
+
+    // Scroll Spy: dynamically highlight active button while scrolling
+    window.addEventListener('scroll', () => {
+      const sections = ['overviewSection', 'cohortMatrixSection', 'performersTriageSection', 'analyticsChartsSection', 'directorySection', 'explainablePanel'];
+      const scrollPos = window.pageYOffset + 140;
+
+      let currentSection = 'overviewSection';
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= scrollPos) {
+          currentSection = id;
+        }
+      });
+
+      const buttons = document.querySelectorAll('#sidebarNav .nav-item');
+      buttons.forEach(b => {
+        const target = b.getAttribute('data-target');
+        if (target === currentSection) {
+          b.className = 'nav-item flex items-center gap-3 px-3 py-2 rounded transition-all bg-primary-container text-on-primary font-semibold text-sm w-full text-left shadow-sm';
+        } else {
+          b.className = 'nav-item flex items-center gap-3 px-3 py-2 rounded text-sm text-on-surface-variant hover:bg-surface-container-high transition-all w-full text-left';
+        }
+      });
+    }, { passive: true });
+
+    // =======================================================================
+    // DATASET UPLOAD & RESET HANDLERS
+    // =======================================================================
+    let uploadedFileText = '';
+    let uploadedFileType = 'auto';
+
+    function openUploadModal() {
+      const modal = document.getElementById('uploadDatasetModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        clearSelectedFile();
+      }
+    }
+
+    function closeUploadModal() {
+      const modal = document.getElementById('uploadDatasetModal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function handleDragOver(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const dropZone = document.getElementById('dropZone');
+      if (dropZone) dropZone.classList.add('ring-2', 'ring-brand-500', 'bg-brand-50/50');
+    }
+
+    function handleDragLeave(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const dropZone = document.getElementById('dropZone');
+      if (dropZone) dropZone.classList.remove('ring-2', 'ring-brand-500', 'bg-brand-50/50');
+    }
+
+    function handleFileDrop(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const dropZone = document.getElementById('dropZone');
+      if (dropZone) dropZone.classList.remove('ring-2', 'ring-brand-500', 'bg-brand-50/50');
+      if (e && e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+        processSelectedFile(e.dataTransfer.files[0]);
+      }
+    }
+
+    function handleFileSelect(e) {
+      if (e && e.target && e.target.files && e.target.files.length) {
+        processSelectedFile(e.target.files[0]);
+      }
+    }
+
+    function processSelectedFile(file) {
+      if (!file) return;
+
+      const fileName = file.name || 'dataset';
+      const fileExt = fileName.split('.').pop().toLowerCase();
+      if (fileExt !== 'csv' && fileExt !== 'json') {
+        showUploadStatus('Please select a valid .CSV or .JSON file.', 'error');
+        return;
+      }
+
+      uploadedFileType = fileExt;
+      const nameEl = document.getElementById('selectedFileName');
+      if (nameEl) nameEl.textContent = fileName;
+      const sizeEl = document.getElementById('selectedFileSize');
+      if (sizeEl) sizeEl.textContent = `${(file.size / 1024).toFixed(1)} KB • ${fileExt.toUpperCase()} file`;
+      const infoEl = document.getElementById('fileSelectedInfo');
+      if (infoEl) infoEl.classList.remove('hidden');
+      const iconEl = document.getElementById('fileTypeIcon');
+      if (iconEl) iconEl.textContent = fileExt === 'csv' ? 'table_chart' : 'data_object';
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        uploadedFileText = evt.target.result;
+        
+        let estimatedRows = 0;
+        if (fileExt === 'json') {
+          try {
+            const parsed = JSON.parse(uploadedFileText);
+            estimatedRows = Array.isArray(parsed) ? parsed.length : (parsed.data || []).length;
+          } catch(e) {
+            showUploadStatus('Invalid JSON syntax: ' + e.message, 'error');
+            const submitBtn = document.getElementById('btnSubmitUpload');
+            if (submitBtn) submitBtn.disabled = true;
+            return;
+          }
+        } else {
+          const lines = uploadedFileText.trim().split(/\r?\n/).filter(l => l.trim().length);
+          estimatedRows = Math.max(0, lines.length - 1);
+        }
+
+        const submitBtn = document.getElementById('btnSubmitUpload');
+        if (estimatedRows > 0) {
+          showUploadStatus(`Detected ${estimatedRows} student rows ready to import.`, 'success');
+          if (submitBtn) submitBtn.disabled = false;
+        } else {
+          showUploadStatus('File appears to be empty or lacks data rows.', 'warning');
+          if (submitBtn) submitBtn.disabled = true;
+        }
+      };
+
+      reader.onerror = function() {
+        showUploadStatus('Failed to read file from disk.', 'error');
+      };
+
+      reader.readAsText(file);
+    }
+
+    function clearSelectedFile(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      uploadedFileText = '';
+      uploadedFileType = 'auto';
+      const fileInput = document.getElementById('fileInput');
+      if (fileInput) fileInput.value = '';
+      const selectedInfo = document.getElementById('fileSelectedInfo');
+      if (selectedInfo) selectedInfo.classList.add('hidden');
+      const previewStatus = document.getElementById('uploadPreviewStatus');
+      if (previewStatus) previewStatus.classList.add('hidden');
+      const submitBtn = document.getElementById('btnSubmitUpload');
+      if (submitBtn) submitBtn.disabled = true;
+    }
+
+    function showUploadStatus(msg, type = 'info') {
+      const banner = document.getElementById('uploadPreviewStatus');
+      if (!banner) return;
+      banner.classList.remove('hidden');
+      
+      if (type === 'error') {
+        banner.className = 'text-xs rounded-lg p-2.5 border bg-rose-50 text-rose-700 border-rose-200 font-medium';
+      } else if (type === 'success') {
+        banner.className = 'text-xs rounded-lg p-2.5 border bg-emerald-50 text-emerald-700 border-emerald-200 font-medium';
+      } else {
+        banner.className = 'text-xs rounded-lg p-2.5 border bg-slate-50 text-slate-700 border-slate-200 font-medium';
+      }
+      banner.innerHTML = msg;
+    }
+
+    // Submit uploaded dataset to POST /api/upload
+    async function submitUploadedDataset() {
+      if (!uploadedFileText) {
+        showUploadStatus('Please select a file first.', 'error');
+        return;
+      }
+
+      const submitBtn = document.getElementById('btnSubmitUpload');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span> Ingesting...';
+      }
+
+      try {
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fileContent: uploadedFileText,
+            fileType: uploadedFileType
+          })
+        });
+
+        const json = await response.json();
+        if (!response.ok) {
+          throw new Error(json.error || `Upload failed with status ${response.status}`);
+        }
+
+        students = json.data || [];
+        currentFiltered = [...students];
+
+        updateKpis(json);
+        populateDepartmentDropdown(students);
+        filterTable();
+
+        if (students.length > 0) {
+          selectStudent(students[0].id);
+        } else {
+          clearStudentInspector();
+        }
+
+        closeUploadModal();
+        showToast(`Successfully ingested ${json.totalStudents} students from dataset!`, 'cloud_done');
+      } catch (err) {
+        console.error('Upload Error:', err);
+        showUploadStatus(`Import failed: ${err.message}`, 'error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span class="material-symbols-outlined text-sm">cloud_done</span> Load & Update Dashboard';
+        }
+      }
+    }
+
+    // Reset database to 0 students via POST /api/reset (ready for dataset upload)
+    async function resetToDefaultData(bypassConfirm = false) {
+      if (!bypassConfirm) {
+        try {
+          const userConfirmed = confirm('Are you sure you want to reset the database? This will clear all student records to 0 so the system only works with your uploaded dataset.');
+          if (!userConfirmed) return;
+        } catch (e) {
+          console.warn('Confirm dialog bypassed:', e);
+        }
+      }
+
+      const resetBtn = document.getElementById('btnResetDataset');
+      if (resetBtn) {
+        resetBtn.disabled = true;
+        resetBtn.innerHTML = '<span class="material-symbols-outlined text-base animate-spin text-slate-400">sync</span><span class="inline">Resetting...</span>';
+      }
+
+      try {
+        const res = await fetch('/api/reset', { method: 'POST' });
+        const json = await res.json();
+        
+        students = [];
+        currentFiltered = [];
+        activeStudentId = null;
+
+        updateKpis({ totalStudentsInDb: 0, riskSummary: { high: 0, medium: 0, low: 0 }, data: [] });
+        populateDepartmentDropdown([]);
+        renderTable([]);
+        clearStudentInspector();
+
+        showToast('Database reset to 0 students. Ready for dataset upload!', 'restart_alt');
+      } catch (err) {
+        console.error('Reset error:', err);
+        showToast(`Reset failed: ${err.message}`, 'error');
+      } finally {
+        if (resetBtn) {
+          resetBtn.disabled = false;
+          resetBtn.innerHTML = '<span class="material-symbols-outlined text-base text-slate-400">restart_alt</span><span class="inline">Reset</span>';
+        }
+      }
+    }
+
+    // Explicitly expose handlers to window for reliable onclick bubbling
+    window.openUploadModal = openUploadModal;
+    window.closeUploadModal = closeUploadModal;
+    window.clearSelectedFile = clearSelectedFile;
+    window.processSelectedFile = processSelectedFile;
+    window.submitUploadedDataset = submitUploadedDataset;
+    window.resetToDefaultData = resetToDefaultData;
+
+    // =======================================================================
+    // INTERVENTION MODAL & LLM ACTION PLAN HANDLERS
+    // =======================================================================
+    async function triggerGenerateIntervention(studentId) {
+      const modal = document.getElementById('interventionModal');
+      const loadingState = document.getElementById('interventionLoadingState');
+      const contentArea = document.getElementById('interventionContentArea');
+      const draftTextarea = document.getElementById('interventionDraftText');
+      const nameEl = document.getElementById('interventionModalStudentName');
+      const idEl = document.getElementById('interventionModalStudentId');
+      const badgeEl = document.getElementById('interventionModalRiskBadge');
+      const timestampEl = document.getElementById('interventionModalTimestamp');
+      const subtitleEl = document.getElementById('interventionModalSubtitle');
+      const copyBtnText = document.getElementById('copyBtnText');
+      const sendEmailBtn = document.getElementById('sendEmailBtn');
+      const sendEmailBtnText = document.getElementById('sendEmailBtnText');
+
+      if (!modal) return;
+
+      // Reset button states
+      if (copyBtnText) copyBtnText.textContent = 'Copy to Clipboard';
+      if (sendEmailBtn) {
+        sendEmailBtn.disabled = false;
+        sendEmailBtn.className = 'flex-1 sm:flex-none px-4 py-2 rounded-xl bg-primary hover:bg-on-primary-fixed-variant text-on-primary text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95';
+      }
+      if (sendEmailBtnText) sendEmailBtnText.textContent = 'Send Email';
+
+      // Prepopulate known student info if in memory
+      const s = students.find(st => st.id === studentId);
+      if (s) {
+        if (nameEl) nameEl.textContent = s.name;
+        if (idEl) idEl.textContent = s.id;
+        if (badgeEl) badgeEl.textContent = `${s.analytics?.riskFlag || 'High'} Risk`;
+        if (subtitleEl) subtitleEl.textContent = `Personalized academic recovery draft for ${s.name} (${s.department})`;
+      } else {
+        if (nameEl) nameEl.textContent = 'Student ' + studentId;
+        if (idEl) idEl.textContent = studentId;
+      }
+      if (timestampEl) timestampEl.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      // Show modal & set loading state
+      modal.classList.remove('hidden');
+      if (loadingState) loadingState.classList.remove('hidden');
+      if (contentArea) contentArea.classList.add('hidden');
+      if (draftTextarea) draftTextarea.value = '';
+
+      try {
+        const response = await fetch(`/api/generate-intervention/${studentId}`);
+        if (!response.ok) {
+          throw new Error(`Failed to generate intervention (status ${response.status})`);
+        }
+        const data = await response.json();
+        
+        if (nameEl) nameEl.textContent = data.studentName || (s ? s.name : studentId);
+        if (draftTextarea) {
+          draftTextarea.value = data.intervention_draft || 'No intervention text returned.';
+        }
+      } catch (err) {
+        console.error('Error generating intervention:', err);
+        if (draftTextarea) {
+          draftTextarea.value = `Error generating intervention plan for ${studentId}: ${err.message}\n\nPlease check server connection or verify student telemetry.`;
+        }
+        showToast(`Failed to generate intervention: ${err.message}`, 'error');
+      } finally {
+        if (loadingState) loadingState.classList.add('hidden');
+        if (contentArea) contentArea.classList.remove('hidden');
+      }
+    }
+
+    function closeInterventionModal() {
+      const modal = document.getElementById('interventionModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function copyInterventionToClipboard() {
+      const draftTextarea = document.getElementById('interventionDraftText');
+      const copyBtnText = document.getElementById('copyBtnText');
+      if (!draftTextarea || !draftTextarea.value) return;
+
+      try {
+        await navigator.clipboard.writeText(draftTextarea.value);
+        if (copyBtnText) copyBtnText.textContent = 'Copied to Clipboard!';
+        showToast('Intervention notice copied to clipboard', 'content_copy');
+        setTimeout(() => {
+          if (copyBtnText) copyBtnText.textContent = 'Copy to Clipboard';
+        }, 2500);
+      } catch (err) {
+        draftTextarea.select();
+        document.execCommand('copy');
+        if (copyBtnText) copyBtnText.textContent = 'Copied!';
+        showToast('Intervention notice copied to clipboard', 'content_copy');
+        setTimeout(() => {
+          if (copyBtnText) copyBtnText.textContent = 'Copy to Clipboard';
+        }, 2500);
+      }
+    }
+
+    function sendInterventionEmail() {
+      const sendEmailBtn = document.getElementById('sendEmailBtn');
+      const sendEmailBtnText = document.getElementById('sendEmailBtnText');
+      const nameEl = document.getElementById('interventionModalStudentName');
+      const studentName = nameEl ? nameEl.textContent : 'the student';
+
+      if (sendEmailBtn) {
+        sendEmailBtn.disabled = true;
+        sendEmailBtn.className = 'flex-1 sm:flex-none px-4 py-2 rounded-xl bg-tertiary text-on-tertiary text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm opacity-90 cursor-default';
+      }
+      if (sendEmailBtnText) sendEmailBtnText.textContent = 'Email Dispatched!';
+
+      showToast(`Official Intervention Notice sent to ${studentName} & Faculty Advisor!`, 'outgoing_mail');
+
+      setTimeout(() => {
+        closeInterventionModal();
+      }, 1400);
+    }
+
+    // Auto-init on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadStudentDirectory();
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('role')) {
+        initRoleFromUrl();
+      } else {
+        fetchStudents();
+      }
+    });
+  </script>
+
+  <script id="offline-data-bundle">
+    window.__OFFLINE_PAYLOAD__ = {"success": true, "activeRole": "dean", "totalStudentsInDb": 0, "filteredCount": 0, "riskSummary": {"high": 0, "medium": 0, "low": 0}, "data": []};
+  </script>
+
+</body>
+</html>

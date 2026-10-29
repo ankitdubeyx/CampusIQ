@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>CampusIQ — Institutional Workspace Sign In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Figtree', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      color: #0f172a;
+      background-color: #f8fafc;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: 2rem; line-height: 1.25; font-weight: 700; letter-spacing: -0.025em; }
+    h2 { font-size: 1.25rem; line-height: 1.35; font-weight: 600; letter-spacing: -0.015em; }
+    h3 { font-size: 1rem; line-height: 1.4; font-weight: 600; }
+    p { font-size: 0.875rem; line-height: 1.55; color: #475569; max-width: 70ch; }
+    ::selection { background-color: #2563eb; color: #ffffff; }
+    :focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+  <!-- Minimal Navigation Bar -->
+  <header class="w-full bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-brand-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+          Ω
+        </div>
+        <div>
+          <span class="font-bold text-base text-slate-900 tracking-tight leading-tight block">CampusIQ</span>
+          <span class="text-xs text-slate-500 font-medium">Student Retention Intelligence</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>RBAC Gateway</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Hero & Role Selection -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-6 py-12 flex flex-col items-center justify-center">
+    
+    <div class="text-center max-w-2xl mb-12">
+      <h1 class="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
+        Sign in to your Institutional Workspace
+      </h1>
+      <p class="text-sm text-slate-600 mt-3 leading-relaxed">
+        Select your designated campus role. Each portal provides tailor-made telemetry, predictive retention triggers, granular attendance allocations, and confidential performance records.
+      </p>
+    </div>
+
+    <!-- Role Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+
+      <!-- 1. DEAN -->
+      <div class="bg-white rounded-xl p-6 border border-slate-200 hover:border-brand-600 hover:shadow-md transition-all flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-10 h-10 rounded-lg bg-brand-50 text-brand-600 inline-flex items-center justify-center">
+              <span class="material-symbols-outlined text-2xl">account_balance</span>
+            </span>
+            <span class="text-xs uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-brand-50 text-brand-700 border border-brand-100">
+              Institution
+            </span>
+          </div>
+          <h2 class="text-lg font-bold text-slate-900">Dean / Provost</h2>
+          <p class="text-xs text-slate-600 mt-2">
+            Governance over all 50 undergraduate students, cross-departmental retention analytics, accreditation benchmarks, and dataset management.
+          </p>
+          <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-500 space-y-1">
+            <div class="flex items-center gap-1.5"><span class="text-brand-600 font-bold">•</span> School of Engineering & Computing</div>
+            <div class="flex items-center gap-1.5"><span class="text-brand-600 font-bold">•</span> Institutional 7-Vector Radar Analytics</div>
+          </div>
+        </div>
+        <div class="mt-6">
+          <a href="/dashboard?role=dean" onclick="if(window.location.protocol==='file:'){this.href='index.html?role=dean';}" onclick="if(window.location.protocol==='file:'){this.href='index.html?role=dean';}" class="w-full min-h-[44px] px-4 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition-colors">
+            <span>Enter as Dean</span>
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 2. HOD -->
+      <div class="bg-white rounded-xl p-6 border border-slate-200 hover:border-brand-600 hover:shadow-md transition-all flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-10 h-10 rounded-lg bg-slate-100 text-slate-700 inline-flex items-center justify-center">
+              <span class="material-symbols-outlined text-2xl">domain</span>
+            </span>
+            <span class="text-xs uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
+              Department
+            </span>
+          </div>
+          <h2 class="text-lg font-bold text-slate-900">Department Head (HOD)</h2>
+          <p class="text-xs text-slate-600 mt-2">
+            Department-scoped analytics. Examination performance tracking, backlog audits, and student attendance benchmarking strictly within your branch.
+          </p>
+          <div class="mt-4 pt-3 border-t border-slate-100">
+            <label for="hodDeptSelect" class="block text-xs font-semibold text-slate-700 mb-1.5">Select Department</label>
+            <select id="hodDeptSelect" class="w-full min-h-[44px] bg-slate-50 text-xs rounded-lg px-3 py-2 border border-slate-200 text-slate-900 font-medium focus:border-brand-600 outline-none">
+              <option value="CSE">Computer Science & Engineering (CSE)</option>
+              <option value="IT">Information Technology (IT)</option>
+              <option value="ECE">Electronics & Communication (ECE)</option>
+              <option value="DSAI">Data Science & AI (DSAI)</option>
+            </select>
+          </div>
+        </div>
+        <div class="mt-6">
+          <button onclick="loginAsHod()" class="w-full min-h-[44px] px-4 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition-colors">
+            <span>Enter as HOD</span>
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. BATCH HEAD -->
+      <div class="bg-white rounded-xl p-6 border border-slate-200 hover:border-brand-600 hover:shadow-md transition-all flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-10 h-10 rounded-lg bg-slate-100 text-slate-700 inline-flex items-center justify-center">
+              <span class="material-symbols-outlined text-2xl">school</span>
+            </span>
+            <span class="text-xs uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
+              Graduating Class
+            </span>
+          </div>
+          <h2 class="text-lg font-bold text-slate-900">Batch Head</h2>
+          <p class="text-xs text-slate-600 mt-2">
+            Supervise an entire graduating class across sections. Compare Midsem vs. Endsem exam progression and placement readiness cohorts.
+          </p>
+          <div class="mt-4 pt-3 border-t border-slate-100">
+            <label for="batchYearSelect" class="block text-xs font-semibold text-slate-700 mb-1.5">Select Batch Year</label>
+            <select id="batchYearSelect" class="w-full min-h-[44px] bg-slate-50 text-xs rounded-lg px-3 py-2 border border-slate-200 text-slate-900 font-medium focus:border-brand-600 outline-none">
+              <option value="2021-2025">Class of 2021-2025 (4th Year Seniors)</option>
+              <option value="2022-2026">Class of 2022-2026 (3rd Year Juniors)</option>
+            </select>
+          </div>
+        </div>
+        <div class="mt-6">
+          <button onclick="loginAsBatchHead()" class="w-full min-h-[44px] px-4 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition-colors">
+            <span>Enter as Batch Head</span>
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. CLASS MENTOR -->
+      <div class="bg-white rounded-xl p-6 border border-slate-200 hover:border-brand-600 hover:shadow-md transition-all flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-10 h-10 rounded-lg bg-slate-100 text-slate-700 inline-flex items-center justify-center">
+              <span class="material-symbols-outlined text-2xl">supervisor_account</span>
+            </span>
+            <span class="text-xs uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
+              Class Advisory
+            </span>
+          </div>
+          <h2 class="text-lg font-bold text-slate-900">Class Mentor</h2>
+          <p class="text-xs text-slate-600 mt-2">
+            Classroom level advisory. Deep dive into attendance shortages (&lt;75%), faculty counseling notes, and targeted interventions for assigned mentees.
+          </p>
+          <div class="mt-4 pt-3 border-t border-slate-100">
+            <label for="mentorSectionSelect" class="block text-xs font-semibold text-slate-700 mb-1.5">Select Assigned Section</label>
+            <select id="mentorSectionSelect" class="w-full min-h-[44px] bg-slate-50 text-xs rounded-lg px-3 py-2 border border-slate-200 text-slate-900 font-medium focus:border-brand-600 outline-none">
+              <option value="CSE-A">Section CSE-A (Mentor Prof. Sharma)</option>
+              <option value="CSE-B">Section CSE-B (Mentor Prof. Nair)</option>
+              <option value="IT-A">Section IT-A (Mentor Prof. Kapoor)</option>
+              <option value="IT-B">Section IT-B (Mentor Prof. Rao)</option>
+              <option value="ECE-A">Section ECE-A (Mentor Prof. Bose)</option>
+              <option value="DSAI-A">Section DSAI-A (Mentor Prof. Sen)</option>
+            </select>
+          </div>
+        </div>
+        <div class="mt-6">
+          <button onclick="loginAsMentor()" class="w-full min-h-[44px] px-4 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition-colors">
+            <span>Enter as Mentor</span>
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 5. STUDENT PORTAL (Spanning 2 columns on wide screens) -->
+      <div class="bg-white rounded-xl p-6 border-2 border-brand-600/30 hover:border-brand-600 hover:shadow-lg transition-all flex flex-col justify-between md:col-span-2 lg:col-span-2">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-10 h-10 rounded-lg bg-brand-600 text-white inline-flex items-center justify-center shadow-xs">
+              <span class="material-symbols-outlined text-2xl">person</span>
+            </span>
+            <span class="text-xs uppercase font-bold tracking-wider px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+              Confidential Single-Record Portal
+            </span>
+          </div>
+
+          <h2 class="text-xl font-bold text-slate-900">Student Portal Login</h2>
+          <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+            Strict RBAC Privacy: Students access <strong>only</strong> their individual record. View your personal 7-vector competency radar, course progress, exam milestones, and active attendance deficit alerts with zero peer leakage.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-5 border-t border-slate-100">
+            <div>
+              <label for="studentPresetSelect" class="block text-xs font-semibold text-slate-700 mb-1.5">Select Sample Student Account</label>
+              <select id="studentPresetSelect" onchange="document.getElementById('studentIdInput').value = this.value" class="w-full min-h-[44px] bg-slate-50 text-xs rounded-lg px-3 py-2 border border-slate-200 text-slate-900 font-medium focus:border-brand-600 outline-none">
+                <option value="STU001">STU001 • Aarav Chopra (Information Technology • Good Standing)</option>
+              </select>
+            </div>
+            <div>
+              <label for="studentIdInput" class="block text-xs font-semibold text-slate-700 mb-1.5">Or Enter Student Roll / ID</label>
+              <div class="flex items-center gap-2">
+                <input id="studentIdInput" type="text" value="STU001" placeholder="e.g. STU001" class="flex-1 min-h-[44px] bg-slate-50 text-xs rounded-lg px-3 py-2 border border-slate-200 text-slate-900 font-mono font-semibold uppercase focus:border-brand-600 outline-none">
+                <button onclick="loginAsStudent()" class="min-h-[44px] px-5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors whitespace-nowrap">
+                  <span>Sign In</span>
+                  <span class="material-symbols-outlined text-sm">login</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-2">
+          <span>🔒 Protected by institutional role-scoping middleware</span>
+          <span class="text-brand-600 font-semibold">Immediate remediation triggers active for classes &lt; 75%</span>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Minimal Footer -->
+  <footer class="w-full border-t border-slate-200 py-4 px-6 bg-white text-center text-xs text-slate-500">
+    CampusIQ Student Retention System • Developed by Ankit Kumar Dubey (Reg. No: 251302058) • <a href="/api" class="text-brand-600 hover:underline font-semibold">REST API Documentation</a>
+  </footer>
+
+  <script>
+    function loginAsHod() {
+      const dept = document.getElementById('hodDeptSelect').value;
+      const base = window.location.protocol === 'file:' ? 'index.html' : '/dashboard'; window.location.href = `${base}?role=hod&department=${encodeURIComponent(dept)}`;
+    }
+
+    function loginAsBatchHead() {
+      const batch = document.getElementById('batchYearSelect').value;
+      const base = window.location.protocol === 'file:' ? 'index.html' : '/dashboard'; window.location.href = `${base}?role=batch_head&batch=${encodeURIComponent(batch)}`;
+    }
+
+    function loginAsMentor() {
+      const sec = document.getElementById('mentorSectionSelect').value;
+      const base = window.location.protocol === 'file:' ? 'index.html' : '/dashboard'; window.location.href = `${base}?role=mentor&class=${encodeURIComponent(sec)}`;
+    }
+
+    function loginAsStudent() {
+      let id = document.getElementById('studentIdInput').value.trim().toUpperCase();
+      if (!id) id = 'STU001';
+      if (!id.startsWith('STU')) id = 'STU' + id.padStart(3, '0');
+      const base = window.location.protocol === 'file:' ? 'index.html' : '/dashboard'; window.location.href = `${base}?role=student&id=${encodeURIComponent(id)}`;
+    }
+
+    // Populate all 50 students into dropdown dynamically
+    async function loadAllStudentsForLogin() {
+      try {
+        let res = await fetch('/api/students/directory');
+        if (!res.ok) res = await fetch('/api/students');
+        const json = await res.json();
+        const students = json.students || json.data || [];
+        const select = document.getElementById('studentPresetSelect');
+        if (select && students.length > 0) {
+          select.innerHTML = '';
+          students.forEach((s) => {
+            const opt = document.createElement('option');
+            opt.value = s.id;
+            const classAttn = s.classAttendance !== undefined ? s.classAttendance : (s.categories ? (s.categories.attendance.classes !== undefined ? s.categories.attendance.classes : s.categories.attendance.overall) : 80);
+            const isAlert = s.attendanceRiskAlert !== undefined ? s.attendanceRiskAlert : (classAttn < 75);
+            const tag = isAlert ? '⚠️ Low Attendance (<75%)' : 'Good Standing';
+            const cgpa = s.cgpa !== undefined ? s.cgpa : (s.categories ? s.categories.academic.cgpa : 8.0);
+            opt.textContent = `${s.id} • ${s.name} (${s.department} • Class ${s.class || 'A'} • CGPA: ${cgpa} • ${tag})`;
+            select.appendChild(opt);
+          });
+          if (document.getElementById('studentIdInput')) {
+            document.getElementById('studentIdInput').value = select.value || 'STU001';
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load student list for login:', err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadAllStudentsForLogin);
+  </script>
+</body>
+</html>
