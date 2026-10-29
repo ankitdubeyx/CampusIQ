@@ -47,6 +47,11 @@
     ::selection { background-color: #2563eb; color: #ffffff; }
     :focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
   </style>
+  <script>
+    // Route seamlessly to the unified 3-step CampusIQ dynamic role selection gateway
+    const dest = window.location.protocol === 'file:' ? 'index.html?step=roles' : '/?step=roles';
+    window.location.replace(dest);
+  </script>
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 

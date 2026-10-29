@@ -27,7 +27,11 @@ const {
   assignRiskFlag,
   enrichStudent
 } = require('./utils/scoring');
-const { parseAndNormalizeDataset } = require('./utils/dataParser');
+const {
+  parseAndNormalizeDataset,
+  normalizeStudentRecord,
+  extractHierarchy
+} = require('./utils/dataParser');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -151,7 +155,7 @@ app.get('/', (req, res) => {
  * Serves the Role Selection Gateway for institutional access
  */
 app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+  res.redirect('/?step=roles');
 });
 
 /**
@@ -517,45 +521,73 @@ app.get('/api/students', (req, res) => {
     }
 
     // ROLE: Dean
-    // Dean returns all school data (optionally filtered by school query)
+    // Dean returns all institutional / school data (optionally filtered by specific dean or school)
     else if (normalizedRole === 'dean') {
-      const targetSchool = school || req.query.faculty;
-      if (targetSchool) {
-        const qSchool = targetSchool.toLowerCase();
-        result = result.filter(s => (s.school || '').toLowerCase().includes(qSchool));
+      const targetDean = (req.query.dean || req.query.dean_name || '').trim().toLowerCase();
+      const targetSchool = (school || req.query.faculty || '').trim().toLowerCase();
+      if (targetDean && targetDean !== 'all') {
+        result = result.filter(s =>
+          (s.dean && s.dean.toLowerCase().includes(targetDean)) ||
+          (s.school && s.school.toLowerCase().includes(targetDean))
+        );
+      } else if (targetSchool && targetSchool !== 'all') {
+        result = result.filter(s => (s.school || '').toLowerCase().includes(targetSchool));
       }
     }
 
     // ROLE: HOD (Head of Department)
-    // Returns only their department
+    // Returns students belonging to their department or specific HOD name
     else if (normalizedRole === 'hod' || normalizedRole === 'headofdepartment') {
-      const targetDept = department || req.query.dept || 'CSE';
-      const cleanDept = targetDept.trim().toLowerCase();
-      const mappedDept = deptAliasMap[cleanDept] ? deptAliasMap[cleanDept].toLowerCase() : cleanDept;
+      const targetHod = (req.query.hod || req.query.hod_name || '').trim().toLowerCase();
+      const targetDept = (department || req.query.dept || '').trim().toLowerCase();
 
-      result = result.filter(s =>
-        s.department.toLowerCase().includes(mappedDept) ||
-        (cleanDept === 'cse' && s.department.toLowerCase().includes('computer science')) ||
-        (cleanDept === 'it' && s.department.toLowerCase().includes('information technology')) ||
-        (cleanDept === 'ece' && s.department.toLowerCase().includes('electronics')) ||
-        (cleanDept === 'dsai' && s.department.toLowerCase().includes('data science'))
-      );
+      if (targetHod) {
+        result = result.filter(s =>
+          (s.hod && s.hod.toLowerCase().includes(targetHod)) ||
+          (targetDept && s.department.toLowerCase().includes(targetDept))
+        );
+      } else if (targetDept && targetDept !== 'all') {
+        const cleanDept = targetDept;
+        const mappedDept = deptAliasMap[cleanDept] ? deptAliasMap[cleanDept].toLowerCase() : cleanDept;
+        result = result.filter(s =>
+          s.department.toLowerCase().includes(mappedDept) ||
+          (cleanDept === 'cse' && s.department.toLowerCase().includes('computer science')) ||
+          (cleanDept === 'it' && s.department.toLowerCase().includes('information technology')) ||
+          (cleanDept === 'ece' && s.department.toLowerCase().includes('electronics')) ||
+          (cleanDept === 'dsai' && s.department.toLowerCase().includes('data science'))
+        );
+      }
     }
 
     // ROLE: Batch Head
-    // Returns only their batch
+    // Returns students belonging to their batch or specific batch head name
     else if (normalizedRole === 'batchhead') {
-      const targetBatch = batch || req.query.batch_year || '2021-2025';
-      const qBatch = targetBatch.trim().toLowerCase();
-      result = result.filter(s => (s.batch || '').toLowerCase().includes(qBatch));
+      const targetBatchHead = (req.query.batch_head || req.query.batchHead || '').trim().toLowerCase();
+      const targetBatch = (batch || req.query.batch_year || '').trim().toLowerCase();
+      if (targetBatchHead) {
+        result = result.filter(s =>
+          (s.batchHead && s.batchHead.toLowerCase().includes(targetBatchHead)) ||
+          (targetBatch && (s.batch || '').toLowerCase().includes(targetBatch))
+        );
+      } else if (targetBatch && targetBatch !== 'all') {
+        result = result.filter(s => (s.batch || '').toLowerCase().includes(targetBatch));
+      }
     }
 
     // ROLE: Mentor
-    // Returns only their class
+    // Returns students assigned to this mentor or section
     else if (normalizedRole === 'mentor') {
-      const targetClass = queryClass || req.query.section || 'CSE-A';
-      const qClass = targetClass.trim().toLowerCase();
-      result = result.filter(s => (s.class || '').toLowerCase() === qClass);
+      const targetMentor = (req.query.mentor || req.query.mentor_name || '').trim().toLowerCase();
+      const targetClass = (queryClass || req.query.section || '').trim().toLowerCase();
+
+      if (targetMentor) {
+        result = result.filter(s =>
+          (s.mentor && s.mentor.toLowerCase().includes(targetMentor)) ||
+          (targetClass && (s.class || '').toLowerCase() === targetClass)
+        );
+      } else if (targetClass && targetClass !== 'all') {
+        result = result.filter(s => (s.class || '').toLowerCase() === targetClass);
+      }
     }
   }
 
@@ -956,6 +988,7 @@ app.post('/api/upload', (req, res) => {
     saveStudentsToFile(normalized);
 
     const enriched = getEnrichedStudents();
+    const hierarchy = extractHierarchy(enriched);
     const riskSummary = {
       high: enriched.filter(s => s.analytics.riskFlag === 'High').length,
       medium: enriched.filter(s => s.analytics.riskFlag === 'Medium').length,
@@ -969,6 +1002,7 @@ app.post('/api/upload', (req, res) => {
       message: `Successfully ingested and calculated analytics for ${normalized.length} students!`,
       totalStudents: normalized.length,
       riskSummary,
+      hierarchy,
       data: enriched
     });
   } catch (err) {
@@ -977,6 +1011,49 @@ app.post('/api/upload', (req, res) => {
       success: false,
       error: `Failed to process uploaded dataset: ${err.message}`
     });
+  }
+});
+
+/**
+ * GET /api/hierarchy
+ * Returns the dynamic organizational hierarchy, personnel identities,
+ * and scoped counts extracted directly from the uploaded dataset.
+ */
+app.get('/api/hierarchy', (req, res) => {
+  const enriched = getEnrichedStudents();
+  const hierarchy = extractHierarchy(enriched);
+  res.json({
+    success: true,
+    totalStudents: enriched.length,
+    hierarchy
+  });
+});
+
+/**
+ * POST /api/load-sample
+ * One-click helper to load the sample template dataset
+ */
+app.post('/api/load-sample', (req, res) => {
+  try {
+    const samplePath = path.join(__dirname, 'data', 'default-students.json');
+    if (fs.existsSync(samplePath)) {
+      const sampleData = JSON.parse(fs.readFileSync(samplePath, 'utf-8'));
+      rawStudents = sampleData.map((s, i) => normalizeStudentRecord(s, i + 1));
+      saveStudentsToFile(rawStudents);
+      const enriched = getEnrichedStudents();
+      const hierarchy = extractHierarchy(enriched);
+      return res.json({
+        success: true,
+        message: `Sample dataset loaded with ${rawStudents.length} students!`,
+        totalStudents: rawStudents.length,
+        hierarchy,
+        data: enriched
+      });
+    } else {
+      return res.status(404).json({ success: false, error: 'Default sample file not found.' });
+    }
+  } catch (err) {
+    return res.status(500).json({ success: false, error: `Failed to load sample: ${err.message}` });
   }
 });
 

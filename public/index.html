@@ -93,9 +93,14 @@
 
       <!-- Action Buttons Toolbar -->
       <div class="flex items-center gap-2">
-        <button id="btnOpenUploadModal" onclick="openUploadModal()" class="min-h-[38px] px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer" title="Ingest CSV or JSON student dataset">
+        <button id="btnOpenUploadModal" onclick="showUploadView()" class="min-h-[38px] px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer" title="Ingest CSV or JSON student dataset">
           <span class="material-symbols-outlined text-base">cloud_upload</span>
           <span class="inline">Upload</span>
+        </button>
+
+        <button id="btnSwitchRole" onclick="showRoleLandingView()" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer" title="Switch active institutional role">
+          <span class="material-symbols-outlined text-sm">switch_account</span>
+          <span class="inline">Switch Role</span>
         </button>
 
         <button onclick="fetchStudents()" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer" title="Reload live data">
@@ -108,15 +113,10 @@
           <span class="inline">Reset</span>
         </button>
 
-        <button onclick="filterByRisk('High')" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors">
+        <button id="btnTriageHighRisk" onclick="filterByRisk('High')" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer">
           <span class="material-symbols-outlined text-base">warning</span>
           <span id="quickHighRiskBtnText">Triage High Risk</span>
         </button>
-
-        <a href="/login" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors" title="Switch active institutional role">
-          <span class="material-symbols-outlined text-sm">switch_account</span>
-          <span class="hidden sm:inline">Switch Role</span>
-        </a>
       </div>
     </div>
   </header>
@@ -139,6 +139,416 @@
       <span id="rbacBannerTitle">Administrator / Dean Active</span>
       <span id="rbacBannerDesc">Viewing full institutional analytics</span>
     </div>
+
+    <!-- ======================================================================= -->
+    <!-- STAGE 1: UPLOAD GATEWAY (First Required Step Before Landing)            -->
+    <!-- ======================================================================= -->
+    <section id="viewUploadGate" class="w-full max-w-4xl mx-auto flex flex-col items-center justify-center py-6 gap-6">
+      
+      <!-- Stage 1 Pill & Hero Header -->
+      <div class="text-center max-w-2xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-200 text-xs font-semibold text-brand-700 mb-3">
+          <span class="w-2 h-2 rounded-full bg-brand-600 animate-pulse"></span>
+          <span>Step 1 of 3: Academic Dataset Ingestion</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
+          Upload Cohort Dataset to Begin
+        </h1>
+        <p class="text-sm text-slate-600 mt-2.5 leading-relaxed mx-auto">
+          Please upload your institutional student dataset in <strong>.CSV</strong> or <strong>.JSON</strong> format.
+          CampusIQ dynamically scans all columns to extract <strong>Deans, HODs, Mentors, and Batches</strong> with <em>zero hardcoded assumptions</em>.
+        </p>
+      </div>
+
+      <!-- Main Upload Dropzone Card -->
+      <div class="w-full bg-white rounded-2xl border-2 border-dashed border-slate-300 hover:border-brand-600 p-8 sm:p-10 transition-all shadow-xs flex flex-col items-center justify-center text-center group cursor-pointer relative" id="gateDropZone" ondragover="handleGateDragOver(event)" ondragleave="handleGateDragLeave(event)" ondrop="handleGateFileDrop(event)" onclick="document.getElementById('gateFileInput').click()">
+        
+        <input type="file" id="gateFileInput" class="hidden" accept=".csv, .json, text/csv, application/json" onchange="handleGateFileSelect(event)">
+        
+        <div class="w-16 h-16 rounded-2xl bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white flex items-center justify-center transition-all mb-4 shadow-xs">
+          <span class="material-symbols-outlined text-3xl">cloud_upload</span>
+        </div>
+
+        <h3 class="text-lg font-bold text-slate-900 mb-1">
+          Drag and drop your dataset here
+        </h3>
+        <p class="text-xs text-slate-500 max-w-md mb-4">
+          Accepts CSV or JSON files. Custom columns for Dean, HOD, Mentor, and Department are automatically mapped without rigid schemas.
+        </p>
+
+        <div class="flex items-center gap-3">
+          <button type="button" class="min-h-[42px] px-5 rounded-xl bg-brand-600 group-hover:bg-brand-700 text-white text-xs font-semibold flex items-center gap-2 shadow-xs transition-colors">
+            <span class="material-symbols-outlined text-base">folder_open</span>
+            <span>Browse Files</span>
+          </button>
+        </div>
+
+        <!-- Selected File Status Badge (Hidden until file chosen) -->
+        <div id="gateFileSelectedBadge" class="hidden mt-6 w-full max-w-md bg-slate-50 rounded-xl p-3.5 border border-slate-200 text-left flex items-center justify-between gap-3" onclick="event.stopPropagation()">
+          <div class="flex items-center gap-3 truncate">
+            <span class="w-9 h-9 rounded-lg bg-white border border-slate-200 text-brand-600 flex items-center justify-center">
+              <span class="material-symbols-outlined text-xl" id="gateFileIcon">description</span>
+            </span>
+            <div class="truncate">
+              <div class="text-xs font-bold text-slate-900 truncate" id="gateFileName">filename.csv</div>
+              <div class="text-[11px] text-slate-500" id="gateFileSize">0 KB</div>
+            </div>
+          </div>
+          <button type="button" onclick="clearGateSelectedFile(event)" class="text-slate-400 hover:text-rose-600 p-1" title="Remove file">
+            <span class="material-symbols-outlined text-lg">close</span>
+          </button>
+        </div>
+
+        <!-- Preview / Notification Message inside Card -->
+        <div id="gatePreviewStatus" class="hidden mt-4 w-full max-w-md text-xs rounded-lg p-2.5 border"></div>
+
+        <!-- Submit Process Button (Inside Dropzone Card) -->
+        <div id="gateSubmitContainer" class="hidden mt-6 w-full max-w-md" onclick="event.stopPropagation()">
+          <button id="btnGateSubmit" onclick="submitGateDataset()" class="w-full min-h-[46px] rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer">
+            <span>Analyze Dataset & Go to Role Gateway</span>
+            <span class="material-symbols-outlined text-base">arrow_forward</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Quick Action: Load Sample Reference Dataset -->
+      <div class="w-full max-w-4xl bg-slate-50 rounded-2xl border border-slate-200/80 p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3.5 text-left">
+          <span class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-amber-600 flex items-center justify-center shadow-xs shrink-0">
+            <span class="material-symbols-outlined text-2xl">auto_fix_high</span>
+          </span>
+          <div>
+            <div class="text-xs font-bold text-slate-900">Don't have a file ready right now?</div>
+            <div class="text-xs text-slate-500">Test immediately with our reference university dataset (50 students across 4 Depts, 4 Mentors, 2 Batches).</div>
+          </div>
+        </div>
+        <button onclick="loadSampleDataset()" class="min-h-[40px] px-4 rounded-xl bg-white border border-slate-300 hover:border-brand-600 hover:text-brand-600 text-slate-800 text-xs font-semibold flex items-center gap-2 shadow-xs transition-all shrink-0 cursor-pointer">
+          <span class="material-symbols-outlined text-base text-amber-500">bolt</span>
+          <span>Load Sample Dataset</span>
+        </button>
+      </div>
+
+      <!-- Templates & Schema Independence Explanations -->
+      <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+        <div class="bg-white p-4 rounded-xl border border-slate-200">
+          <div class="font-bold text-slate-900 flex items-center gap-1.5 mb-1 text-xs">
+            <span class="material-symbols-outlined text-base text-brand-600">tune</span>
+            <span>Zero Predefined Schema</span>
+          </div>
+          <p class="text-[11px] text-slate-500 leading-normal">
+            Use any custom column names (`dean`, `dean_name`, `hod`, `department_head`, `mentor`, `advisor`, `batch`). All roles and names are auto-discovered dynamically.
+          </p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200">
+          <div class="font-bold text-slate-900 flex items-center gap-1.5 mb-1 text-xs">
+            <span class="material-symbols-outlined text-base text-emerald-600">radar</span>
+            <span>7-Vector Diagnostic Radar</span>
+          </div>
+          <p class="text-[11px] text-slate-500 leading-normal">
+            Automatically calculates weighted Student Success Scores (0-100), statutory attendance warnings (<75%), and placement readiness indices.
+          </p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 flex flex-col justify-between">
+          <div>
+            <div class="font-bold text-slate-900 flex items-center gap-1.5 mb-1 text-xs">
+              <span class="material-symbols-outlined text-base text-slate-700">download</span>
+              <span>Sample Templates</span>
+            </div>
+            <p class="text-[11px] text-slate-500 leading-normal">
+              Download pre-formatted templates with sample dean, hod, and mentor columns:
+            </p>
+          </div>
+          <div class="flex items-center gap-2 mt-2 pt-2 border-t border-slate-100">
+            <a href="/api/sample-template.csv" download class="text-[11px] font-semibold text-brand-600 hover:underline flex items-center gap-1">
+              <span>.CSV Template</span>
+            </a>
+            <span class="text-slate-300">•</span>
+            <a href="/api/sample-template.json" download class="text-[11px] font-semibold text-brand-600 hover:underline flex items-center gap-1">
+              <span>.JSON Template</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- STAGE 2: ROLE SELECTION LANDING PAGE (Dynamic Schema Names from Dataset)-->
+    <!-- ======================================================================= -->
+    <section id="viewRoleLanding" class="hidden w-full max-w-6xl mx-auto flex flex-col gap-8 py-4">
+
+      <!-- Top Dataset Info Bar -->
+      <div class="w-full bg-white rounded-xl border border-slate-200 p-4 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+            <span class="material-symbols-outlined text-xl">dataset</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-slate-900" id="landingActiveDatasetTitle">Cohort Dataset Loaded</span>
+              <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
+            </div>
+            <div class="text-xs text-slate-500 mt-0.5" id="landingActiveDatasetSubtitle">
+              <span id="landingTotalStudents">50</span> students across <span id="landingTotalDepts">4</span> departments & <span id="landingTotalMentors">4</span> mentors
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="showUploadView()" class="min-h-[36px] px-3.5 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 flex items-center gap-1.5 transition-colors cursor-pointer" title="Upload a different dataset">
+            <span class="material-symbols-outlined text-sm">cloud_upload</span>
+            <span>Change Dataset</span>
+          </button>
+          <button onclick="resetToDefaultData()" class="min-h-[36px] px-3 rounded-lg bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200 text-xs font-semibold text-slate-600 hover:text-rose-700 flex items-center gap-1.5 transition-colors cursor-pointer" title="Reset dataset to 0">
+            <span class="material-symbols-outlined text-sm text-slate-400">restart_alt</span>
+            <span>Reset</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Landing Hero -->
+      <div class="text-center max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 mb-3">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>Step 2 of 3: Select Institutional Workspace</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
+          Select Your Campus Role
+        </h1>
+        <p class="text-sm text-slate-600 mt-2.5 leading-relaxed">
+          Choose a role to access tailored telemetry, attendance audits, and confidential performance records.
+          All personnel names below are <strong>dynamically extracted from your uploaded dataset</strong> with zero hardcoded values.
+        </p>
+      </div>
+
+      <!-- 6-Role Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+
+        <!-- 1. DEAN / PROVOST -->
+        <div class="bg-white rounded-xl p-6 border border-slate-200 hover:border-brand-600 hover:shadow-md transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="w-10 h-10 rounded-lg bg-brand-50 text-brand-600 inline-flex items-center justify-center">
+                <span class="material-symbols-outlined text-2xl">account_balance</span>
+              </span>
+              <span class="text-xs uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-brand-50 text-brand-700 border border-brand-100">
+                Institutional Executive
+              </span>
+            </div>
+            <h2 class="text-lg font-bold text-slate-900">Dean / Provost</h2>
+            <div class="mt-2" id="landingDeanInfoBox">
+              <div class="text-sm font-bold text-slate-800" id="landingDeanName">Dr. Arthur Pendelton</div>
+              <div class="text-xs text-slate-500" id="landingDeanSchool">School of Engineering & Computing</div>
+            </div>
+            <p class="text-xs text-slate-600 mt-2">
+              Governance over all students in scope, cross-departmental retention analytics, accreditation benchmarks, and dataset management.
+            </p>
+            <div class="mt-3" id="landingDeanSelectWrapper" style="display: none;">
+              <label for="landingDeanSelect" class="block text-xs font-semibold text-slate-700 mb-1">Select Dean:</label>
+              <select id="landingDeanSelect" onchange="updateDeanPreview()" class="w-full min-h-[40px] bg-slate-50 text-xs rounded-lg px-3 py-2 border border-slate-200 text-slate-900 font-semibold focus:border-brand-600 outline-none"></select>
+            </div>
+            <div class="mt-3 p-2.5 rounded-lg bg-slate-50 border border-slate-100 text-xs text-slate-600 space-y-1" id="landingDeanStats">
+              <div class="flex items-center justify-between"><span class="text-slate-500">Students in Scope:</span><strong id="landingDeanStudentCount" class="font-data-mono">50</strong></div>
+              <div class="flex items-center justify-between"><span class="text-slate-500">Average CGPA:</span><strong id="landingDeanCgpa" class="font-data-mono">8.01</strong></div>
+              <div class="flex items-center justify-between"><span class="text-slate-500">High Risk Cohorts:</span><strong id="landingDeanRisk" class="font-data-mono text-rose-600">17</strong></div>
+            </div>
+          </div>
+          <div class="mt-6">
+            <button onclick="loginFromLandingAsDean()" class="w-full min-h-[44px] px-4 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer">
+              <span>Enter as Dean</span>
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. HOD (HEAD OF DEPARTMENT) -->
+        <div class="bg-white rounded-xl p-6 border border-slate-200 hover:border-brand-600 hover:shadow-md transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="w-10 h-10 rounded-lg bg-slate-100 text-slate-700 inline-flex items-center justify-center">
+                <span class="material-symbols-outlined text-2xl">domain</span>
+              </span>
+              <span class="text-xs uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
+                Department Scope
+              </span>
+            </div>
+            <h2 class="text-lg font-bold text-slate-900">Department Head (HOD)</h2>
+            <p class="text-xs text-slate-600 mt-2">
+              Department-scoped analytics. Track examination scores, backlogs, and attendance benchmarking strictly within your branch.
+            </p>
+            <div class="mt-3">
+              <label for="landingHodSelect" class="block text-xs font-semibold text-slate-700 mb-1.5">Select Department & HOD Name:</label>
+              <select id="landingHodSelect" onchange="updateHodCardPreview()" class="w-full min-h-[44px] bg-slate-50 text-xs rounded-lg px-3 py-2 border border-slate-200 text-slate-900 font-semibold focus:border-brand-600 outline-none">
+                <!-- Dynamically populated from uploaded dataset -->
+              </select>
+            </div>
+            <div class="mt-3 p-2.5 rounded-lg bg-slate-50 border border-slate-100 text-xs text-slate-600" id="landingHodPreviewBox">
+              <div class="flex items-center justify-between"><span class="text-slate-500">Designated HOD:</span><strong id="landingHodPreviewName" class="text-slate-800">Dr. Kavita Verma</strong></div>
+              <div class="flex items-center justify-between mt-1"><span class="text-slate-500">Department Students:</span><strong id="landingHodPreviewCount" class="font-data-mono">12</strong></div>
+            </div>
+          </div>
+          <div class="mt-6">
+            <button onclick="loginFromLandingAsHod()" class="w-full min-h-[44px] px-4 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer">
+              <span>Enter as HOD</span>
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. BATCH HEAD -->
+        <div class="bg-white rounded-xl p-6 border border-slate-200 hover:border-brand-600 hover:shadow-md transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="w-10 h-10 rounded-lg bg-slate-100 text-slate-700 inline-flex items-center justify-center">
+                <span class="material-symbols-outlined text-2xl">school</span>
+              </span>
+              <span class="text-xs uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
+                Graduating Class
+              </span>
+            </div>
+            <h2 class="text-lg font-bold text-slate-900">Batch Coordinator</h2>
+            <p class="text-xs text-slate-600 mt-2">
+              Supervise an entire graduating class across sections. Compare Midsem vs. Endsem exam progression and placement readiness cohorts.
+            </p>
+            <div class="mt-3">
+              <label for="landingBatchSelect" class="block text-xs font-semibold text-slate-700 mb-1.5">Select Graduating Batch:</label>
+              <select id="landingBatchSelect" onchange="updateBatchCardPreview()" class="w-full min-h-[44px] bg-slate-50 text-xs rounded-lg px-3 py-2 border border-slate-200 text-slate-900 font-semibold focus:border-brand-600 outline-none">
+                <!-- Dynamically populated from uploaded dataset -->
+              </select>
+            </div>
+            <div class="mt-3 p-2.5 rounded-lg bg-slate-50 border border-slate-100 text-xs text-slate-600" id="landingBatchPreviewBox">
+              <div class="flex items-center justify-between"><span class="text-slate-500">Coordinator:</span><strong id="landingBatchPreviewName" class="text-slate-800">Prof. Suresh Raina</strong></div>
+              <div class="flex items-center justify-between mt-1"><span class="text-slate-500">Cohort Size:</span><strong id="landingBatchPreviewCount" class="font-data-mono">40 Students</strong></div>
+            </div>
+          </div>
+          <div class="mt-6">
+            <button onclick="loginFromLandingAsBatchHead()" class="w-full min-h-[44px] px-4 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer">
+              <span>Enter as Batch Head</span>
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. CLASS MENTOR / ADVISOR -->
+        <div class="bg-white rounded-xl p-6 border border-slate-200 hover:border-brand-600 hover:shadow-md transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="w-10 h-10 rounded-lg bg-slate-100 text-slate-700 inline-flex items-center justify-center">
+                <span class="material-symbols-outlined text-2xl">supervisor_account</span>
+              </span>
+              <span class="text-xs uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
+                Class Advisory
+              </span>
+            </div>
+            <h2 class="text-lg font-bold text-slate-900">Class Mentor</h2>
+            <p class="text-xs text-slate-600 mt-2">
+              Classroom level advisory. Deep dive into attendance shortages (<75%), faculty counseling notes, and targeted interventions for assigned mentees.
+            </p>
+            <div class="mt-3">
+              <label for="landingMentorSelect" class="block text-xs font-semibold text-slate-700 mb-1.5">Select Mentor from Dataset:</label>
+              <select id="landingMentorSelect" onchange="updateMentorCardPreview()" class="w-full min-h-[44px] bg-slate-50 text-xs rounded-lg px-3 py-2 border border-slate-200 text-slate-900 font-semibold focus:border-brand-600 outline-none">
+                <!-- Dynamically populated from uploaded dataset -->
+              </select>
+            </div>
+            <div class="mt-3 p-2.5 rounded-lg bg-slate-50 border border-slate-100 text-xs text-slate-600" id="landingMentorPreviewBox">
+              <div class="flex items-center justify-between"><span class="text-slate-500">Mentor Name:</span><strong id="landingMentorPreviewName" class="text-slate-800">Prof. Amit Sharma</strong></div>
+              <div class="flex items-center justify-between mt-1"><span class="text-slate-500">Assigned Mentees:</span><strong id="landingMentorPreviewCount" class="font-data-mono">12 Students</strong></div>
+            </div>
+          </div>
+          <div class="mt-6">
+            <button onclick="loginFromLandingAsMentor()" class="w-full min-h-[44px] px-4 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer">
+              <span>Enter as Mentor</span>
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 5. STUDENT PORTAL (Spanning 2 columns on wide screens) -->
+        <div class="bg-white rounded-xl p-6 border-2 border-brand-600/30 hover:border-brand-600 hover:shadow-lg transition-all flex flex-col justify-between md:col-span-2 lg:col-span-2">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="w-10 h-10 rounded-lg bg-brand-600 text-white inline-flex items-center justify-center shadow-xs">
+                <span class="material-symbols-outlined text-2xl">person</span>
+              </span>
+              <span class="text-xs uppercase font-bold tracking-wider px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                Confidential Single-Record Portal
+              </span>
+            </div>
+
+            <h2 class="text-xl font-bold text-slate-900">Student Portal Login</h2>
+            <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+              Strict RBAC Privacy: Access <strong>only</strong> your individual authenticated record. View your personal 7-vector competency radar, course progress, exam milestones, and active attendance deficit alerts with zero peer leakage.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 pt-4 border-t border-slate-100">
+              <div>
+                <label for="landingStudentSelect" class="block text-xs font-semibold text-slate-700 mb-1.5">Select Student from Uploaded Dataset:</label>
+                <select id="landingStudentSelect" onchange="document.getElementById('landingStudentIdInput').value = this.value" class="w-full min-h-[44px] bg-slate-50 text-xs rounded-lg px-3 py-2 border border-slate-200 text-slate-900 font-semibold focus:border-brand-600 outline-none">
+                  <!-- Dynamically populated from uploaded dataset -->
+                </select>
+              </div>
+              <div>
+                <label for="landingStudentIdInput" class="block text-xs font-semibold text-slate-700 mb-1.5">Or Enter Student Roll / ID:</label>
+                <div class="flex items-center gap-2">
+                  <input id="landingStudentIdInput" type="text" value="STU001" placeholder="e.g. STU001" class="flex-1 min-h-[44px] bg-slate-50 text-xs rounded-lg px-3 py-2 border border-slate-200 text-slate-900 font-mono font-semibold uppercase focus:border-brand-600 outline-none">
+                  <button onclick="loginFromLandingAsStudent()" class="min-h-[44px] px-5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors whitespace-nowrap cursor-pointer">
+                    <span>Sign In</span>
+                    <span class="material-symbols-outlined text-sm">login</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-2">
+            <span>🔒 Confidentiality enforced by institutional role-scoping middleware</span>
+            <span class="text-brand-600 font-semibold">Immediate remediation triggers active for classes &lt; 75%</span>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- STAGE 3: ROLE-SCOPED DASHBOARD                                          -->
+    <!-- ======================================================================= -->
+    <section id="viewDashboard" class="hidden flex flex-col gap-8">
+      
+      <!-- Active Role Scoped Header Banner -->
+      <div id="dashboardActiveRoleBanner" class="w-full bg-white rounded-xl border border-slate-200 p-4 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center font-bold text-lg" id="dashboardRoleAvatar">
+            <span class="material-symbols-outlined" id="dashboardRoleIcon">badge</span>
+          </span>
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-sm font-bold text-slate-900" id="dashboardActiveRoleTitle">Active Role: Administrator</span>
+              <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 border border-brand-200" id="dashboardRoleBadge">Scoped Access</span>
+            </div>
+            <div class="text-xs text-slate-500 mt-0.5" id="dashboardActiveRoleSubtitle">
+              Viewing cohort metrics and interventions
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <button onclick="showRoleLandingView()" class="min-h-[38px] px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer" title="Return to Role Selection Gateway">
+            <span class="material-symbols-outlined text-sm">switch_account</span>
+            <span>Switch Role</span>
+          </button>
+          <button onclick="showUploadView()" class="min-h-[38px] px-3.5 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 flex items-center gap-1.5 transition-colors cursor-pointer" title="Upload a different dataset">
+            <span class="material-symbols-outlined text-sm text-slate-500">cloud_upload</span>
+            <span class="hidden sm:inline">Change Dataset</span>
+          </button>
+          <button onclick="resetToDefaultData()" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200 text-xs font-semibold text-slate-600 hover:text-rose-700 flex items-center gap-1.5 transition-colors cursor-pointer" title="Reset dataset to 0">
+            <span class="material-symbols-outlined text-sm text-slate-400">restart_alt</span>
+            <span class="hidden sm:inline">Reset</span>
+          </button>
+        </div>
+      </div>
 
     <!-- ------------------------------------------------------------------- -->
     <!-- SECTION A: STUDENT PERSONAL RECORD PORTAL VIEW (When Role = Student)-->
@@ -1028,6 +1438,8 @@
 
     </div>
 
+    </section>
+
   </main>
 
   <!-- ======================================================================= -->
@@ -1242,258 +1654,525 @@
       }
     }
 
-    // Current active role configuration
-    let currentRole = 'admin';
+    // View Routing State: 'upload' | 'roles' | 'dashboard'
+    let currentView = 'upload';
+    let currentHierarchy = null;
+    let currentRole = 'dean';
     let currentRoleParams = '';
+    let activeRoleInfo = { role: 'Dean', name: '', subtitle: 'Full Campus Clearance' };
 
-    // Handle RBAC Role Switching (Dean, HOD, Batch Head, Mentor, Student)
-    function handleRoleChange(selectedKey) {
-      currentRole = selectedKey;
-      const banner = document.getElementById('rbacBanner');
-      const bannerTitle = document.getElementById('rbacBannerTitle');
-      const bannerTag = document.getElementById('rbacBannerTag');
-      const bannerDesc = document.getElementById('rbacBannerDesc');
-      const bannerUser = document.getElementById('rbacBannerUser');
-      const roleScopeBadge = document.getElementById('roleScopeBadge');
-      const studentPersonalView = document.getElementById('studentPersonalView');
-      const adminCanvasElements = ['cohortMatrixSection', 'performersTriageSection', 'analyticsChartsSection', 'directorySection'];
+    // Toggle between Stage 1 (Upload Gate), Stage 2 (Role Landing), and Stage 3 (Dashboard)
+    function setView(viewName) {
+      currentView = viewName;
+      const vGate = document.getElementById('viewUploadGate');
+      const vLanding = document.getElementById('viewRoleLanding');
+      const vDash = document.getElementById('viewDashboard');
 
-      // Configure API query based on chosen role
-      if (selectedKey === 'admin') {
-        currentRoleParams = '?role=dean';
-        bannerTitle.textContent = 'Administrator / Dean Active';
-        bannerTag.textContent = 'Full Campus Clearance';
-        bannerDesc.textContent = 'Viewing full institutional analytics for all 50 students across all schools, departments, and cohorts.';
-        bannerUser.textContent = 'Dean Office';
-        roleScopeBadge.textContent = 'Dean View (All Records)';
-        studentPersonalView.classList.add('hidden');
-        studentPersonalView.classList.remove('flex');
-        adminCanvasElements.forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.classList.remove('hidden');
-        });
-      } else if (selectedKey === 'hod') {
-        currentRoleParams = '?role=hod&department=CSE';
-        bannerTitle.textContent = 'HOD Active: Computer Science & Engineering';
-        bannerTag.textContent = 'Department Scope (CSE Only)';
-        bannerDesc.textContent = 'Restricted departmental view: Only students enrolled in Computer Science & Engineering are accessible.';
-        bannerUser.textContent = 'HOD CSE';
-        roleScopeBadge.textContent = 'HOD View (CSE Only)';
-        studentPersonalView.classList.add('hidden');
-        studentPersonalView.classList.remove('flex');
-        adminCanvasElements.forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.classList.remove('hidden');
-        });
-      } else if (selectedKey === 'hod-it') {
-        currentRoleParams = '?role=hod&department=IT';
-        bannerTitle.textContent = 'HOD Active: Information Technology';
-        bannerTag.textContent = 'Department Scope (IT Only)';
-        bannerDesc.textContent = 'Restricted departmental view: Only students enrolled in Information Technology are accessible.';
-        bannerUser.textContent = 'HOD IT';
-        roleScopeBadge.textContent = 'HOD View (IT Only)';
-        studentPersonalView.classList.add('hidden');
-        studentPersonalView.classList.remove('flex');
-        adminCanvasElements.forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.classList.remove('hidden');
-        });
-      } else if (selectedKey === 'batch-2021') {
-        currentRoleParams = '?role=batch_head&batch=2021-2025';
-        bannerTitle.textContent = 'Batch Head Active: Class of 2021-2025';
-        bannerTag.textContent = 'Batch Scope (2021-2025)';
-        bannerDesc.textContent = 'Restricted cohort view: Access limited strictly to 4th-year graduating seniors (2021-2025).';
-        bannerUser.textContent = 'Batch Head 2021';
-        roleScopeBadge.textContent = 'Batch 2021-2025';
-        studentPersonalView.classList.add('hidden');
-        studentPersonalView.classList.remove('flex');
-        adminCanvasElements.forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.classList.remove('hidden');
-        });
-      } else if (selectedKey === 'batch-2022') {
-        currentRoleParams = '?role=batch_head&batch=2022-2026';
-        bannerTitle.textContent = 'Batch Head Active: Class of 2022-2026';
-        bannerTag.textContent = 'Batch Scope (2022-2026)';
-        bannerDesc.textContent = 'Restricted cohort view: Access limited strictly to 3rd-year juniors (2022-2026).';
-        bannerUser.textContent = 'Batch Head 2022';
-        roleScopeBadge.textContent = 'Batch 2022-2026';
-        studentPersonalView.classList.add('hidden');
-        studentPersonalView.classList.remove('flex');
-        adminCanvasElements.forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.classList.remove('hidden');
-        });
-      } else if (selectedKey === 'mentor-csea') {
-        currentRoleParams = '?role=mentor&class=CSE-A';
-        bannerTitle.textContent = 'Mentor Active: Section CSE-A';
-        bannerTag.textContent = 'Class Section Scope';
-        bannerDesc.textContent = 'Restricted class advisory view: Access limited strictly to mentee students in Section CSE-A.';
-        bannerUser.textContent = 'Class Mentor (CSE-A)';
-        roleScopeBadge.textContent = 'Mentor CSE-A';
-        studentPersonalView.classList.add('hidden');
-        studentPersonalView.classList.remove('flex');
-        adminCanvasElements.forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.classList.remove('hidden');
-        });
-      } else if (selectedKey === 'mentor-itb') {
-        currentRoleParams = '?role=mentor&class=IT-B';
-        bannerTitle.textContent = 'Mentor Active: Section IT-B';
-        bannerTag.textContent = 'Class Section Scope';
-        bannerDesc.textContent = 'Restricted class advisory view: Access limited strictly to mentee students in Section IT-B.';
-        bannerUser.textContent = 'Class Mentor (IT-B)';
-        roleScopeBadge.textContent = 'Mentor IT-B';
-        studentPersonalView.classList.add('hidden');
-        studentPersonalView.classList.remove('flex');
-        adminCanvasElements.forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.classList.remove('hidden');
-        });
-      } else if (selectedKey.startsWith('student')) {
-        let sid = selectedKey.replace(/^student-?/, '').toUpperCase();
-        if (!sid) sid = 'STU001';
-        if (!sid.startsWith('STU')) sid = 'STU' + sid.padStart(3, '0');
-        currentRoleParams = `?role=student&id=${encodeURIComponent(sid)}`;
-        bannerTitle.textContent = `Student Portal: Confidential Record (${sid})`;
-        bannerTag.textContent = 'Confidential Personal Scope';
-        bannerDesc.textContent = 'RBAC Enforcement: Students can ONLY access their single confidential record with specific weaknesses, marks, and attendance.';
-        bannerUser.textContent = `Student ${sid}`;
-        roleScopeBadge.textContent = `Student: ${sid}`;
-        studentPersonalView.classList.remove('hidden');
-        studentPersonalView.classList.add('flex');
-        const sw = document.getElementById('stuPortalSwitcherSelect');
-        if (sw) sw.value = sid;
+      if (vGate) vGate.classList.toggle('hidden', viewName !== 'upload');
+      if (vLanding) vLanding.classList.toggle('hidden', viewName !== 'roles');
+      if (vDash) vDash.classList.toggle('hidden', viewName !== 'dashboard');
+
+      // Update header banner pill & action buttons
+      const pillUser = document.getElementById('rbacBannerUser');
+      const pillTag = document.getElementById('rbacBannerTag');
+      const btnSwitch = document.getElementById('btnSwitchRole');
+
+      if (viewName === 'upload') {
+        if (pillUser) pillUser.textContent = 'Upload Dataset';
+        if (pillTag) pillTag.textContent = 'Step 1 of 3';
+        if (btnSwitch) btnSwitch.style.display = 'none';
+      } else if (viewName === 'roles') {
+        if (pillUser) pillUser.textContent = 'Role Gateway';
+        if (pillTag) pillTag.textContent = 'Step 2 of 3';
+        if (btnSwitch) btnSwitch.style.display = 'none';
+      } else if (viewName === 'dashboard') {
+        if (pillUser) pillUser.textContent = activeRoleInfo.role + (activeRoleInfo.name ? ` (${activeRoleInfo.name})` : '');
+        if (pillTag) pillTag.textContent = 'Active Scope';
+        if (btnSwitch) btnSwitch.style.display = 'inline-flex';
       }
+    }
 
-      // Hide or show admin-only sections for student role
-      if (selectedKey.startsWith('student')) {
-        adminCanvasElements.forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.classList.add('hidden');
-        });
-        const chartsSection = document.getElementById('analyticsChartsSection');
-        if (chartsSection) chartsSection.classList.add('hidden');
-      } else {
-        const chartsSection = document.getElementById('analyticsChartsSection');
-        if (chartsSection) chartsSection.classList.remove('hidden');
+    function showUploadView() {
+      setView('upload');
+      window.history.pushState({}, '', '/?step=upload');
+    }
+
+    function showRoleLandingView() {
+      if (!students || students.length === 0) {
+        showToast('Please upload a dataset or load the sample data first.', 'info');
+        showUploadView();
+        return;
       }
+      setView('roles');
+      renderRoleLanding(currentHierarchy);
+      window.history.pushState({}, '', '/?step=roles');
+    }
 
-      // Re-fetch data using active role
+    function showDashboardView(queryParams = '') {
+      if (!students || students.length === 0) {
+        showToast('Please upload a dataset first.', 'info');
+        showUploadView();
+        return;
+      }
+      setView('dashboard');
+      currentRoleParams = queryParams;
+      const newUrl = queryParams ? `/?${queryParams.replace(/^\?/, '')}` : '/?role=dean';
+      window.history.pushState({}, '', newUrl);
       fetchStudents();
     }
 
-    // Initialize Role from URL Query Parameters (e.g. from /login redirect)
+    /**
+     * Flexible Client-Side Hierarchy Extractor
+     * Extracts Deans, HODs, Mentors, and Batches directly from dataset with zero predefined assumptions.
+     */
+    function extractHierarchyClient(studentList = []) {
+      if (!studentList || studentList.length === 0) {
+        return {
+          totalStudents: 0,
+          deans: [],
+          hods: [],
+          batchHeads: [],
+          mentors: [],
+          departments: [],
+          batches: [],
+          classes: [],
+          students: []
+        };
+      }
+
+      const deanMap = new Map();
+      const hodMap = new Map();
+      const batchMap = new Map();
+      const mentorMap = new Map();
+
+      studentList.forEach(s => {
+        const cgpa = s.categories?.academic?.cgpa ?? 0;
+        const attn = s.categories?.attendance?.classes ?? s.categories?.attendance?.overallPercentage ?? s.categories?.attendance?.overall ?? 0;
+        const isHighRisk = s.analytics?.riskFlag === 'High' || (attn < 75 && attn > 0);
+
+        // Dean
+        const rawDean = (s.dean || s.dean_name || '').trim();
+        const school = (s.school || 'School of Engineering & Computing').trim();
+        const deanKey = rawDean || `Dean of ${school}`;
+        const deanDisplayName = rawDean || `Dean (${school})`;
+        if (!deanMap.has(deanKey)) {
+          deanMap.set(deanKey, {
+            name: deanDisplayName,
+            rawName: rawDean,
+            school,
+            studentCount: 0,
+            highRiskCount: 0,
+            cgpaSum: 0,
+            attnSum: 0,
+            departments: new Set()
+          });
+        }
+        const d = deanMap.get(deanKey);
+        d.studentCount++;
+        d.cgpaSum += cgpa;
+        d.attnSum += attn;
+        if (isHighRisk) d.highRiskCount++;
+        if (s.department) d.departments.add(s.department.trim());
+
+        // HOD
+        const dept = (s.department || 'General').trim();
+        const rawHod = (s.hod || s.hod_name || '').trim();
+        const hodKey = dept;
+        const hodDisplayName = rawHod || `Head of ${dept}`;
+        if (!hodMap.has(hodKey)) {
+          hodMap.set(hodKey, {
+            name: hodDisplayName,
+            rawName: rawHod,
+            department: dept,
+            studentCount: 0,
+            highRiskCount: 0,
+            cgpaSum: 0,
+            attnSum: 0,
+            mentors: new Set(),
+            classes: new Set()
+          });
+        }
+        const h = hodMap.get(hodKey);
+        h.studentCount++;
+        h.cgpaSum += cgpa;
+        h.attnSum += attn;
+        if (isHighRisk) h.highRiskCount++;
+        if (s.mentor) h.mentors.add(s.mentor.trim());
+        if (s.class) h.classes.add(s.class.trim());
+
+        // Batch Head
+        const batch = (s.batch || '2021-2025').trim();
+        const rawBatchHead = (s.batchHead || s.batch_head || '').trim();
+        const batchKey = batch;
+        const batchHeadDisplayName = rawBatchHead || `Batch Coordinator (${batch})`;
+        if (!batchMap.has(batchKey)) {
+          batchMap.set(batchKey, {
+            name: batchHeadDisplayName,
+            rawName: rawBatchHead,
+            batch,
+            studentCount: 0,
+            highRiskCount: 0,
+            cgpaSum: 0,
+            attnSum: 0
+          });
+        }
+        const b = batchMap.get(batchKey);
+        b.studentCount++;
+        b.cgpaSum += cgpa;
+        b.attnSum += attn;
+        if (isHighRisk) b.highRiskCount++;
+
+        // Mentor
+        const rawMentor = (s.mentor || s.mentor_name || '').trim();
+        const studentClass = (s.class || 'A').trim();
+        const mentorKey = rawMentor || `${dept} — Class ${studentClass}`;
+        const mentorDisplayName = rawMentor || `Class Advisor (Section ${studentClass})`;
+        if (!mentorMap.has(mentorKey)) {
+          mentorMap.set(mentorKey, {
+            name: mentorDisplayName,
+            rawName: rawMentor,
+            class: studentClass,
+            department: dept,
+            studentCount: 0,
+            highRiskCount: 0,
+            cgpaSum: 0,
+            attnSum: 0,
+            studentIds: []
+          });
+        }
+        const m = mentorMap.get(mentorKey);
+        m.studentCount++;
+        m.cgpaSum += cgpa;
+        m.attnSum += attn;
+        m.studentIds.push(s.id);
+        if (isHighRisk) m.highRiskCount++;
+      });
+
+      const round = (val) => (val > 0 ? Number(val.toFixed(2)) : 0);
+
+      return {
+        totalStudents: studentList.length,
+        deans: Array.from(deanMap.values()).map(d => ({
+          ...d,
+          avgCgpa: round(d.cgpaSum / d.studentCount),
+          avgAttendance: round(d.attnSum / d.studentCount),
+          departments: Array.from(d.departments)
+        })),
+        hods: Array.from(hodMap.values()).map(h => ({
+          ...h,
+          avgCgpa: round(h.cgpaSum / h.studentCount),
+          avgAttendance: round(h.attnSum / h.studentCount),
+          mentors: Array.from(h.mentors),
+          classes: Array.from(h.classes)
+        })),
+        batchHeads: Array.from(batchMap.values()).map(b => ({
+          ...b,
+          avgCgpa: round(b.cgpaSum / b.studentCount),
+          avgAttendance: round(b.attnSum / b.studentCount)
+        })),
+        mentors: Array.from(mentorMap.values()).map(m => ({
+          ...m,
+          avgCgpa: round(m.cgpaSum / m.studentCount),
+          avgAttendance: round(m.attnSum / m.studentCount)
+        })),
+        departments: Array.from(new Set(studentList.map(s => (s.department || '').trim()).filter(Boolean))),
+        batches: Array.from(new Set(studentList.map(s => (s.batch || '').trim()).filter(Boolean))),
+        classes: Array.from(new Set(studentList.map(s => (s.class || '').trim()).filter(Boolean))),
+        students: studentList.map(s => ({
+          id: s.id,
+          name: s.name,
+          department: s.department,
+          batch: s.batch,
+          class: s.class,
+          cgpa: s.categories?.academic?.cgpa ?? 0,
+          attendanceRiskAlert: (s.categories?.attendance?.classes ?? s.categories?.attendance?.overall ?? 80) < 75,
+          riskFlag: s.analytics?.riskFlag || 'Normal'
+        }))
+      };
+    }
+
+    /**
+     * Populates the Stage 2 Role Landing Page with real names extracted from dataset
+     */
+    function renderRoleLanding(hier) {
+      if (!hier) {
+        hier = extractHierarchyClient(students);
+        currentHierarchy = hier;
+      }
+
+      // Update Header counts
+      const totalStudentsEl = document.getElementById('landingTotalStudents');
+      const totalDeptsEl = document.getElementById('landingTotalDepts');
+      const totalMentorsEl = document.getElementById('landingTotalMentors');
+      if (totalStudentsEl) totalStudentsEl.textContent = hier.totalStudents || students.length;
+      if (totalDeptsEl) totalDeptsEl.textContent = (hier.departments || []).length;
+      if (totalMentorsEl) totalMentorsEl.textContent = (hier.mentors || []).length;
+
+      // 1. DEAN
+      const deans = hier.deans || [];
+      const deanNameEl = document.getElementById('landingDeanName');
+      const deanSchoolEl = document.getElementById('landingDeanSchool');
+      const deanStudentCountEl = document.getElementById('landingDeanStudentCount');
+      const deanCgpaEl = document.getElementById('landingDeanCgpa');
+      const deanRiskEl = document.getElementById('landingDeanRisk');
+      const deanSelectWrapper = document.getElementById('landingDeanSelectWrapper');
+      const deanSelect = document.getElementById('landingDeanSelect');
+
+      if (deans.length > 0) {
+        const primaryDean = deans[0];
+        if (deanNameEl) deanNameEl.textContent = primaryDean.name || 'Dean';
+        if (deanSchoolEl) deanSchoolEl.textContent = primaryDean.school || 'School of Engineering & Computing';
+        if (deanStudentCountEl) deanStudentCountEl.textContent = primaryDean.studentCount;
+        if (deanCgpaEl) deanCgpaEl.textContent = primaryDean.avgCgpa;
+        if (deanRiskEl) deanRiskEl.textContent = primaryDean.highRiskCount;
+
+        if (deans.length > 1 && deanSelect && deanSelectWrapper) {
+          deanSelectWrapper.style.display = 'block';
+          deanSelect.innerHTML = '';
+          deans.forEach(d => {
+            const opt = document.createElement('option');
+            opt.value = d.name;
+            opt.textContent = `${d.name} (${d.school} • ${d.studentCount} Students)`;
+            deanSelect.appendChild(opt);
+          });
+        } else if (deanSelectWrapper) {
+          deanSelectWrapper.style.display = 'none';
+        }
+      }
+
+      // 2. HOD
+      const hodSelect = document.getElementById('landingHodSelect');
+      if (hodSelect && hier.hods && hier.hods.length > 0) {
+        hodSelect.innerHTML = '';
+        hier.hods.forEach(h => {
+          const opt = document.createElement('option');
+          opt.value = h.department;
+          opt.dataset.hodName = h.name;
+          opt.dataset.count = h.studentCount;
+          opt.dataset.risk = h.highRiskCount;
+          opt.textContent = `${h.name} — ${h.department} (${h.studentCount} Students)`;
+          hodSelect.appendChild(opt);
+        });
+        updateHodCardPreview();
+      }
+
+      // 3. Batch Head
+      const batchSelect = document.getElementById('landingBatchSelect');
+      if (batchSelect && hier.batchHeads && hier.batchHeads.length > 0) {
+        batchSelect.innerHTML = '';
+        hier.batchHeads.forEach(b => {
+          const opt = document.createElement('option');
+          opt.value = b.batch;
+          opt.dataset.batchHeadName = b.name;
+          opt.dataset.count = b.studentCount;
+          opt.textContent = `${b.name} (${b.batch} • ${b.studentCount} Students)`;
+          batchSelect.appendChild(opt);
+        });
+        updateBatchCardPreview();
+      }
+
+      // 4. Mentors
+      const mentorSelect = document.getElementById('landingMentorSelect');
+      if (mentorSelect && hier.mentors && hier.mentors.length > 0) {
+        mentorSelect.innerHTML = '';
+        hier.mentors.forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m.name;
+          opt.dataset.mentorName = m.name;
+          opt.dataset.class = m.class;
+          opt.dataset.dept = m.department;
+          opt.dataset.count = m.studentCount;
+          opt.textContent = `${m.name} (Section ${m.class} • ${m.department} • ${m.studentCount} Mentees)`;
+          mentorSelect.appendChild(opt);
+        });
+        updateMentorCardPreview();
+      }
+
+      // 5. Students
+      const stuSelect = document.getElementById('landingStudentSelect');
+      if (stuSelect && hier.students && hier.students.length > 0) {
+        stuSelect.innerHTML = '';
+        hier.students.forEach(s => {
+          const opt = document.createElement('option');
+          opt.value = s.id;
+          const tag = s.attendanceRiskAlert ? '⚠️ Attn Alert' : `${s.riskFlag || 'Normal'} Risk`;
+          opt.textContent = `${s.id} • ${s.name} (${s.department} • Section ${s.class} • CGPA: ${s.cgpa} • ${tag})`;
+          stuSelect.appendChild(opt);
+        });
+        const stuInput = document.getElementById('landingStudentIdInput');
+        if (stuInput) stuInput.value = stuSelect.value || 'STU001';
+      }
+    }
+
+    function updateHodCardPreview() {
+      const select = document.getElementById('landingHodSelect');
+      const nameEl = document.getElementById('landingHodPreviewName');
+      const countEl = document.getElementById('landingHodPreviewCount');
+      if (!select || !select.selectedOptions[0]) return;
+      const opt = select.selectedOptions[0];
+      if (nameEl) nameEl.textContent = opt.dataset.hodName || opt.value;
+      if (countEl) countEl.textContent = `${opt.dataset.count || 0} Students (${opt.dataset.risk || 0} High Risk)`;
+    }
+
+    function updateBatchCardPreview() {
+      const select = document.getElementById('landingBatchSelect');
+      const nameEl = document.getElementById('landingBatchPreviewName');
+      const countEl = document.getElementById('landingBatchPreviewCount');
+      if (!select || !select.selectedOptions[0]) return;
+      const opt = select.selectedOptions[0];
+      if (nameEl) nameEl.textContent = opt.dataset.batchHeadName || opt.value;
+      if (countEl) countEl.textContent = `${opt.dataset.count || 0} Students in Cohort`;
+    }
+
+    function updateMentorCardPreview() {
+      const select = document.getElementById('landingMentorSelect');
+      const nameEl = document.getElementById('landingMentorPreviewName');
+      const countEl = document.getElementById('landingMentorPreviewCount');
+      if (!select || !select.selectedOptions[0]) return;
+      const opt = select.selectedOptions[0];
+      if (nameEl) nameEl.textContent = opt.dataset.mentorName || opt.value;
+      if (countEl) countEl.textContent = `${opt.dataset.count || 0} Mentees (Section ${opt.dataset.class || 'A'})`;
+    }
+
+    function updateDeanPreview() {
+      const select = document.getElementById('landingDeanSelect');
+      if (!select || !select.selectedOptions[0]) return;
+      const deanName = select.value;
+      const d = currentHierarchy?.deans?.find(item => item.name === deanName);
+      if (d) {
+        document.getElementById('landingDeanName').textContent = d.name;
+        document.getElementById('landingDeanSchool').textContent = d.school;
+        document.getElementById('landingDeanStudentCount').textContent = d.studentCount;
+        document.getElementById('landingDeanCgpa').textContent = d.avgCgpa;
+        document.getElementById('landingDeanRisk').textContent = d.highRiskCount;
+      }
+    }
+
+    // Role selection actions from Landing Cards
+    function loginFromLandingAsDean() {
+      const deanSelect = document.getElementById('landingDeanSelect');
+      const selectedDean = (deanSelect && deanSelect.value) ? deanSelect.value : (currentHierarchy?.deans?.[0]?.name || 'Dean');
+      activeRoleInfo = {
+        role: 'Dean',
+        name: selectedDean,
+        subtitle: 'Institutional Executive Oversight'
+      };
+      showDashboardView(`?role=dean&dean=${encodeURIComponent(selectedDean)}`);
+    }
+
+    function loginFromLandingAsHod() {
+      const select = document.getElementById('landingHodSelect');
+      if (!select || !select.selectedOptions[0]) return;
+      const opt = select.selectedOptions[0];
+      const dept = opt.value;
+      const hodName = opt.dataset.hodName || '';
+      activeRoleInfo = {
+        role: 'HOD',
+        name: hodName || dept,
+        subtitle: `Department of ${dept}`
+      };
+      showDashboardView(`?role=hod&department=${encodeURIComponent(dept)}&hod=${encodeURIComponent(hodName)}`);
+    }
+
+    function loginFromLandingAsBatchHead() {
+      const select = document.getElementById('landingBatchSelect');
+      if (!select || !select.selectedOptions[0]) return;
+      const opt = select.selectedOptions[0];
+      const batch = opt.value;
+      const batchHeadName = opt.dataset.batchHeadName || '';
+      activeRoleInfo = {
+        role: 'Batch Head',
+        name: batchHeadName || batch,
+        subtitle: `Graduating Class of ${batch}`
+      };
+      showDashboardView(`?role=batchhead&batch=${encodeURIComponent(batch)}&batchHead=${encodeURIComponent(batchHeadName)}`);
+    }
+
+    function loginFromLandingAsMentor() {
+      const select = document.getElementById('landingMentorSelect');
+      if (!select || !select.selectedOptions[0]) return;
+      const opt = select.selectedOptions[0];
+      const mentorName = opt.dataset.mentorName || opt.value;
+      const sec = opt.dataset.class || '';
+      activeRoleInfo = {
+        role: 'Mentor',
+        name: mentorName,
+        subtitle: `Class Advisory • Section ${sec}`
+      };
+      showDashboardView(`?role=mentor&mentor=${encodeURIComponent(mentorName)}&class=${encodeURIComponent(sec)}`);
+    }
+
+    function loginFromLandingAsStudent() {
+      let id = (document.getElementById('landingStudentIdInput').value || '').trim().toUpperCase();
+      if (!id) id = 'STU001';
+      if (!id.startsWith('STU')) id = 'STU' + id.padStart(3, '0');
+      activeRoleInfo = {
+        role: 'Student',
+        name: id,
+        subtitle: 'Confidential Single Record'
+      };
+      showDashboardView(`?role=student&id=${encodeURIComponent(id)}`);
+    }
+
+    function updateDashboardBanner(json) {
+      const avatarIcon = document.getElementById('dashboardRoleIcon');
+      const titleEl = document.getElementById('dashboardActiveRoleTitle');
+      const badgeEl = document.getElementById('dashboardRoleBadge');
+      const subEl = document.getElementById('dashboardActiveRoleSubtitle');
+
+      const count = json.filteredCount !== undefined ? json.filteredCount : (students ? students.length : 0);
+      const role = activeRoleInfo.role || 'Administrator';
+      const name = activeRoleInfo.name || '';
+
+      if (titleEl) {
+        titleEl.textContent = name ? `Active Role: ${role} — ${name}` : `Active Role: ${role}`;
+      }
+      if (badgeEl) {
+        badgeEl.textContent = `${count} Students in Scope`;
+      }
+      if (subEl) {
+        subEl.textContent = activeRoleInfo.subtitle || `Viewing telemetry, risk indicators, and performance records`;
+      }
+      if (avatarIcon) {
+        if (role === 'Dean') avatarIcon.textContent = 'account_balance';
+        else if (role === 'HOD') avatarIcon.textContent = 'domain';
+        else if (role === 'Batch Head') avatarIcon.textContent = 'school';
+        else if (role === 'Mentor') avatarIcon.textContent = 'supervisor_account';
+        else if (role === 'Student') avatarIcon.textContent = 'person';
+        else avatarIcon.textContent = 'badge';
+      }
+    }
+
+    // Initialize Role from URL Query Parameters
     function initRoleFromUrl() {
       const params = new URLSearchParams(window.location.search);
       const qRole = params.get('role');
-      const qDept = params.get('department') || params.get('dept');
-      const qBatch = params.get('batch');
-      const qClass = params.get('class');
-      const qId = params.get('id');
-
       if (!qRole) return;
 
       const normalizedRole = qRole.toLowerCase().replace(/[\s_-]+/g, '');
-      const roleSelect = document.getElementById('roleLoginSelect');
+      const qDean = params.get('dean') || '';
+      const qDept = params.get('department') || params.get('dept') || '';
+      const qHod = params.get('hod') || '';
+      const qBatch = params.get('batch') || '';
+      const qBatchHead = params.get('batchHead') || params.get('batch_head') || '';
+      const qClass = params.get('class') || '';
+      const qMentor = params.get('mentor') || '';
+      const qId = params.get('id') || '';
 
       if (normalizedRole === 'dean') {
-        if (roleSelect) roleSelect.value = 'admin';
-        handleRoleChange('admin');
+        activeRoleInfo = { role: 'Dean', name: qDean, subtitle: 'Institutional Executive Oversight' };
       } else if (normalizedRole === 'hod') {
-        const deptUpper = (qDept || 'CSE').toUpperCase();
-        currentRoleParams = `?role=hod&department=${encodeURIComponent(deptUpper)}`;
-        const bannerTitle = document.getElementById('rbacBannerTitle');
-        const bannerTag = document.getElementById('rbacBannerTag');
-        const bannerDesc = document.getElementById('rbacBannerDesc');
-        const bannerUser = document.getElementById('rbacBannerUser');
-        const roleScopeBadge = document.getElementById('roleScopeBadge');
-
-        bannerTitle.textContent = `HOD Active: Department of ${deptUpper}`;
-        bannerTag.textContent = `${deptUpper} Scope Only`;
-        bannerDesc.textContent = `Restricted departmental view: Only students enrolled in ${deptUpper} are accessible.`;
-        bannerUser.textContent = `HOD ${deptUpper}`;
-        roleScopeBadge.textContent = `HOD View (${deptUpper})`;
-
-        if (roleSelect) {
-          roleSelect.value = deptUpper === 'IT' ? 'hod-it' : 'hod';
-        }
-        fetchStudents();
+        activeRoleInfo = { role: 'HOD', name: qHod || qDept, subtitle: `Department of ${qDept}` };
       } else if (normalizedRole === 'batchhead') {
-        const batchVal = qBatch || '2021-2025';
-        currentRoleParams = `?role=batch_head&batch=${encodeURIComponent(batchVal)}`;
-        const bannerTitle = document.getElementById('rbacBannerTitle');
-        const bannerTag = document.getElementById('rbacBannerTag');
-        const bannerDesc = document.getElementById('rbacBannerDesc');
-        const bannerUser = document.getElementById('rbacBannerUser');
-        const roleScopeBadge = document.getElementById('roleScopeBadge');
-
-        bannerTitle.textContent = `Batch Head Active: Class of ${batchVal}`;
-        bannerTag.textContent = `Batch ${batchVal} Scope`;
-        bannerDesc.textContent = `Restricted cohort view: Access limited strictly to students in graduating batch ${batchVal}.`;
-        bannerUser.textContent = `Batch Head ${batchVal}`;
-        roleScopeBadge.textContent = `Batch: ${batchVal}`;
-
-        if (roleSelect) {
-          roleSelect.value = batchVal.includes('2022') ? 'batch-2022' : 'batch-2021';
-        }
-        fetchStudents();
+        activeRoleInfo = { role: 'Batch Head', name: qBatchHead || qBatch, subtitle: `Graduating Class of ${qBatch}` };
       } else if (normalizedRole === 'mentor') {
-        const classVal = (qClass || 'CSE-A').toUpperCase();
-        currentRoleParams = `?role=mentor&class=${encodeURIComponent(classVal)}`;
-        const bannerTitle = document.getElementById('rbacBannerTitle');
-        const bannerTag = document.getElementById('rbacBannerTag');
-        const bannerDesc = document.getElementById('rbacBannerDesc');
-        const bannerUser = document.getElementById('rbacBannerUser');
-        const roleScopeBadge = document.getElementById('roleScopeBadge');
-
-        bannerTitle.textContent = `Mentor Active: Section ${classVal}`;
-        bannerTag.textContent = `Section ${classVal} Scope`;
-        bannerDesc.textContent = `Restricted class advisory view: Access limited strictly to mentees in Section ${classVal}.`;
-        bannerUser.textContent = `Mentor (${classVal})`;
-        roleScopeBadge.textContent = `Mentor: ${classVal}`;
-
-        if (roleSelect) {
-          roleSelect.value = classVal === 'IT-B' ? 'mentor-itb' : 'mentor-csea';
-        }
-        fetchStudents();
+        activeRoleInfo = { role: 'Mentor', name: qMentor || qClass, subtitle: `Class Advisory • Section ${qClass}` };
       } else if (normalizedRole === 'student') {
-        let studentId = (qId || 'STU001').toUpperCase();
-        if (!studentId.startsWith('STU')) studentId = 'STU' + studentId.padStart(3, '0');
-        currentRoleParams = `?role=student&id=${encodeURIComponent(studentId)}`;
-
-        const bannerTitle = document.getElementById('rbacBannerTitle');
-        const bannerTag = document.getElementById('rbacBannerTag');
-        const bannerDesc = document.getElementById('rbacBannerDesc');
-        const bannerUser = document.getElementById('rbacBannerUser');
-        const roleScopeBadge = document.getElementById('roleScopeBadge');
-        const studentPersonalView = document.getElementById('studentPersonalView');
-
-        bannerTitle.textContent = `Student Portal: Confidential Record (${studentId})`;
-        bannerTag.textContent = `Confidential Personal Scope`;
-        bannerDesc.textContent = `RBAC Privacy Policy: Viewing solely your individual marks, certifications, weaknesses, and attendance.`;
-        bannerUser.textContent = `Student ${studentId}`;
-        roleScopeBadge.textContent = `Student: ${studentId}`;
-
-        if (studentPersonalView) {
-          studentPersonalView.classList.remove('hidden');
-          studentPersonalView.classList.add('flex');
-        }
-
-        // Hide upper management sections
-        ['cohortMatrixSection', 'performersTriageSection', 'directorySection', 'analyticsChartsSection'].forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.classList.add('hidden');
-        });
-
-        if (roleSelect) {
-          roleSelect.value = `student-${studentId.toLowerCase()}`;
-        }
-        const sw = document.getElementById('stuPortalSwitcherSelect');
-        if (sw) sw.value = studentId;
-
-        fetchStudents();
+        activeRoleInfo = { role: 'Student', name: qId, subtitle: 'Confidential Single Record' };
       }
+
+      currentRoleParams = window.location.search;
+      showDashboardView(currentRoleParams);
     }
 
     // Fetch live students from Express backend
@@ -1507,17 +2186,28 @@
         // Handle Student Role (returns single personal record object)
         if (json.role === 'Student' && json.data) {
           const rec = json.data;
+          const sView = document.getElementById('studentPersonalView');
+          const oView = document.getElementById('overviewSection');
+          if (sView) { sView.classList.remove('hidden'); sView.classList.add('flex'); }
+          if (oView) { oView.classList.add('hidden'); }
           renderStudentPortal(rec);
+          updateDashboardBanner({ filteredCount: 1 });
           showToast(`Logged in as ${rec.studentDetails.name} (Confidential View)`);
           return;
         }
 
         // Multi-student view (Dean, HOD, Batch Head, Mentor)
+        const sView = document.getElementById('studentPersonalView');
+        const oView = document.getElementById('overviewSection');
+        if (sView) { sView.classList.add('hidden'); sView.classList.remove('flex'); }
+        if (oView) { oView.classList.remove('hidden'); }
+
         students = json.data || [];
         currentFiltered = [...students];
         
-        // Update top-level metrics
+        // Update top-level metrics & banner
         updateKpis(json);
+        updateDashboardBanner(json);
         
         // Populate department filter dropdown
         populateDepartmentDropdown(students);
@@ -3289,7 +3979,191 @@
       banner.innerHTML = msg;
     }
 
-    // Submit uploaded dataset to POST /api/upload
+    // =======================================================================
+    // STAGE 1: GATE UPLOAD HANDLERS
+    // =======================================================================
+    let gateUploadedFileText = '';
+    let gateUploadedFileType = 'auto';
+
+    function handleGateDragOver(e) {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      const dropZone = document.getElementById('gateDropZone');
+      if (dropZone) dropZone.classList.add('ring-2', 'ring-brand-500', 'bg-brand-50/50');
+    }
+
+    function handleGateDragLeave(e) {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      const dropZone = document.getElementById('gateDropZone');
+      if (dropZone) dropZone.classList.remove('ring-2', 'ring-brand-500', 'bg-brand-50/50');
+    }
+
+    function handleGateFileDrop(e) {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      const dropZone = document.getElementById('gateDropZone');
+      if (dropZone) dropZone.classList.remove('ring-2', 'ring-brand-500', 'bg-brand-50/50');
+      if (e && e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+        processGateFile(e.dataTransfer.files[0]);
+      }
+    }
+
+    function handleGateFileSelect(e) {
+      if (e && e.target && e.target.files && e.target.files.length) {
+        processGateFile(e.target.files[0]);
+      }
+    }
+
+    function processGateFile(file) {
+      if (!file) return;
+      const fileName = file.name || 'dataset';
+      const fileExt = fileName.split('.').pop().toLowerCase();
+      if (fileExt !== 'csv' && fileExt !== 'json') {
+        showGateStatus('Please select a valid .CSV or .JSON dataset file.', 'error');
+        return;
+      }
+
+      gateUploadedFileType = fileExt;
+      const nameEl = document.getElementById('gateFileName');
+      const sizeEl = document.getElementById('gateFileSize');
+      const badgeEl = document.getElementById('gateFileSelectedBadge');
+      const submitContainer = document.getElementById('gateSubmitContainer');
+      const iconEl = document.getElementById('gateFileIcon');
+
+      if (nameEl) nameEl.textContent = fileName;
+      if (sizeEl) sizeEl.textContent = `${(file.size / 1024).toFixed(1)} KB • ${fileExt.toUpperCase()} file`;
+      if (badgeEl) badgeEl.classList.remove('hidden');
+      if (submitContainer) submitContainer.classList.remove('hidden');
+      if (iconEl) iconEl.textContent = fileExt === 'csv' ? 'table_chart' : 'data_object';
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        gateUploadedFileText = evt.target.result;
+        let estimatedRows = 0;
+        if (fileExt === 'json') {
+          try {
+            const parsed = JSON.parse(gateUploadedFileText);
+            estimatedRows = Array.isArray(parsed) ? parsed.length : (parsed.data || parsed.students || []).length;
+          } catch (err) {
+            showGateStatus('Invalid JSON syntax: ' + err.message, 'error');
+            const submitBtn = document.getElementById('btnGateSubmit');
+            if (submitBtn) submitBtn.disabled = true;
+            return;
+          }
+        } else {
+          const lines = gateUploadedFileText.trim().split(/\r?\n/).filter(l => l.trim().length);
+          estimatedRows = Math.max(0, lines.length - 1);
+        }
+
+        const submitBtn = document.getElementById('btnGateSubmit');
+        if (estimatedRows > 0) {
+          showGateStatus(`Detected ${estimatedRows} student rows ready to import.`, 'success');
+          if (submitBtn) submitBtn.disabled = false;
+        } else {
+          showGateStatus('File appears to be empty or lacks data rows.', 'warning');
+          if (submitBtn) submitBtn.disabled = true;
+        }
+      };
+
+      reader.onerror = function() {
+        showGateStatus('Failed to read file from disk.', 'error');
+      };
+
+      reader.readAsText(file);
+    }
+
+    function clearGateSelectedFile(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      gateUploadedFileText = '';
+      gateUploadedFileType = 'auto';
+      const fileInput = document.getElementById('gateFileInput');
+      if (fileInput) fileInput.value = '';
+      const badgeEl = document.getElementById('gateFileSelectedBadge');
+      if (badgeEl) badgeEl.classList.add('hidden');
+      const submitContainer = document.getElementById('gateSubmitContainer');
+      if (submitContainer) submitContainer.classList.add('hidden');
+      const previewStatus = document.getElementById('gatePreviewStatus');
+      if (previewStatus) previewStatus.classList.add('hidden');
+    }
+
+    function showGateStatus(msg, type = 'info') {
+      const banner = document.getElementById('gatePreviewStatus');
+      if (!banner) return;
+      banner.classList.remove('hidden');
+      if (type === 'error') {
+        banner.className = 'mt-4 w-full max-w-md text-xs rounded-lg p-2.5 border bg-rose-50 text-rose-700 border-rose-200 font-medium';
+      } else if (type === 'success') {
+        banner.className = 'mt-4 w-full max-w-md text-xs rounded-lg p-2.5 border bg-emerald-50 text-emerald-700 border-emerald-200 font-medium';
+      } else {
+        banner.className = 'mt-4 w-full max-w-md text-xs rounded-lg p-2.5 border bg-slate-50 text-slate-700 border-slate-200 font-medium';
+      }
+      banner.innerHTML = msg;
+    }
+
+    // Submit uploaded dataset from Gate to POST /api/upload
+    async function submitGateDataset() {
+      if (!gateUploadedFileText) {
+        showGateStatus('Please select a file first.', 'error');
+        return;
+      }
+
+      const submitBtn = document.getElementById('btnGateSubmit');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span> Analyzing schema & ingesting...';
+      }
+
+      try {
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fileContent: gateUploadedFileText,
+            fileType: gateUploadedFileType
+          })
+        });
+
+        const json = await response.json();
+        if (!response.ok) {
+          throw new Error(json.error || `Upload failed with status ${response.status}`);
+        }
+
+        students = json.data || [];
+        currentFiltered = [...students];
+        currentHierarchy = json.hierarchy || extractHierarchyClient(students);
+
+        showToast(`Successfully analyzed ${json.totalStudents} students! Select a role to proceed.`, 'cloud_done');
+        showRoleLandingView();
+      } catch (err) {
+        console.error('Upload Error:', err);
+        showGateStatus(`Import failed: ${err.message}`, 'error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span>Analyze Dataset & Go to Role Gateway</span><span class="material-symbols-outlined text-base">arrow_forward</span>';
+        }
+      }
+    }
+
+    // Helper: Load Reference Sample Dataset in 1 Click
+    async function loadSampleDataset() {
+      try {
+        showToast('Loading reference sample dataset...', 'sync');
+        const res = await fetch('/api/load-sample', { method: 'POST' });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || 'Failed to load sample dataset');
+
+        students = json.data || [];
+        currentFiltered = [...students];
+        currentHierarchy = json.hierarchy || extractHierarchyClient(students);
+
+        showToast(`Loaded ${students.length} students with dynamic roles!`, 'check_circle');
+        showRoleLandingView();
+      } catch (err) {
+        console.error('Failed to load sample:', err);
+        showToast(`Error loading sample: ${err.message}`, 'error');
+      }
+    }
+
+    // Submit uploaded dataset from Modal to POST /api/upload
     async function submitUploadedDataset() {
       if (!uploadedFileText) {
         showUploadStatus('Please select a file first.', 'error');
@@ -3319,19 +4193,11 @@
 
         students = json.data || [];
         currentFiltered = [...students];
-
-        updateKpis(json);
-        populateDepartmentDropdown(students);
-        filterTable();
-
-        if (students.length > 0) {
-          selectStudent(students[0].id);
-        } else {
-          clearStudentInspector();
-        }
+        currentHierarchy = json.hierarchy || extractHierarchyClient(students);
 
         closeUploadModal();
-        showToast(`Successfully ingested ${json.totalStudents} students from dataset!`, 'cloud_done');
+        showToast(`Successfully ingested ${json.totalStudents} students! Select a role to proceed.`, 'cloud_done');
+        showRoleLandingView();
       } catch (err) {
         console.error('Upload Error:', err);
         showUploadStatus(`Import failed: ${err.message}`, 'error');
@@ -3366,6 +4232,7 @@
         
         students = [];
         currentFiltered = [];
+        currentHierarchy = null;
         activeStudentId = null;
 
         updateKpis({ totalStudentsInDb: 0, riskSummary: { high: 0, medium: 0, low: 0 }, data: [] });
@@ -3373,6 +4240,7 @@
         renderTable([]);
         clearStudentInspector();
 
+        showUploadView();
         showToast('Database reset to 0 students. Ready for dataset upload!', 'restart_alt');
       } catch (err) {
         console.error('Reset error:', err);
@@ -3392,6 +4260,26 @@
     window.processSelectedFile = processSelectedFile;
     window.submitUploadedDataset = submitUploadedDataset;
     window.resetToDefaultData = resetToDefaultData;
+    window.showUploadView = showUploadView;
+    window.showRoleLandingView = showRoleLandingView;
+    window.showDashboardView = showDashboardView;
+    window.handleGateDragOver = handleGateDragOver;
+    window.handleGateDragLeave = handleGateDragLeave;
+    window.handleGateFileDrop = handleGateFileDrop;
+    window.handleGateFileSelect = handleGateFileSelect;
+    window.processGateFile = processGateFile;
+    window.clearGateSelectedFile = clearGateSelectedFile;
+    window.submitGateDataset = submitGateDataset;
+    window.loadSampleDataset = loadSampleDataset;
+    window.loginFromLandingAsDean = loginFromLandingAsDean;
+    window.loginFromLandingAsHod = loginFromLandingAsHod;
+    window.loginFromLandingAsBatchHead = loginFromLandingAsBatchHead;
+    window.loginFromLandingAsMentor = loginFromLandingAsMentor;
+    window.loginFromLandingAsStudent = loginFromLandingAsStudent;
+    window.updateHodCardPreview = updateHodCardPreview;
+    window.updateBatchCardPreview = updateBatchCardPreview;
+    window.updateMentorCardPreview = updateMentorCardPreview;
+    window.updateDeanPreview = updateDeanPreview;
 
     // =======================================================================
     // INTERVENTION MODAL & LLM ACTION PLAN HANDLERS
@@ -3511,12 +4399,43 @@
 
     // Auto-init on page load
     document.addEventListener('DOMContentLoaded', async () => {
-      await loadStudentDirectory();
-      const params = new URLSearchParams(window.location.search);
-      if (params.has('role')) {
-        initRoleFromUrl();
-      } else {
-        fetchStudents();
+      try {
+        const res = await fetch('/api/students');
+        const json = await res.json();
+        const loadedStudents = json.data || [];
+
+        if (loadedStudents.length === 0) {
+          // No dataset in database -> Stage 1 Upload Gate is mandatory
+          students = [];
+          showUploadView();
+          return;
+        }
+
+        students = loadedStudents;
+        currentFiltered = [...students];
+
+        // Fetch extracted hierarchy
+        try {
+          const hRes = await fetch('/api/hierarchy');
+          const hJson = await hRes.json();
+          currentHierarchy = hJson.hierarchy || extractHierarchyClient(students);
+        } catch (e) {
+          currentHierarchy = extractHierarchyClient(students);
+        }
+
+        await loadStudentDirectory();
+
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('step') === 'upload') {
+          showUploadView();
+        } else if (params.get('step') === 'roles' || !params.has('role')) {
+          showRoleLandingView();
+        } else {
+          initRoleFromUrl();
+        }
+      } catch (err) {
+        console.error('Initialization error:', err);
+        showUploadView();
       }
     });
   </script>
