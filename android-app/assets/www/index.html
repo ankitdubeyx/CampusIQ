@@ -1375,43 +1375,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Row B: Dedicated Full-Width Section Directory Container -->
-        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col gap-3">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-brand-600 text-lg">meeting_room</span>
-                <h3 class="text-sm font-bold text-slate-900">Class & Section Performance Directory</h3>
-                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-brand-50 text-brand-700 border border-brand-200" id="sectionCountBadge">0 Sections</span>
-              </div>
-              <p class="text-xs text-slate-500 mt-0.5">Comparative academic, endsem, and attendance performance across each class cohort. Click any section to filter directory table below.</p>
-            </div>
-            <div class="flex items-center gap-2">
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
-                <input type="text" id="sectionSearchInput" oninput="filterSectionCards()" placeholder="Search section..." class="pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500 w-36 sm:w-48">
-              </div>
-              <select id="sectionSortSelect" onchange="sortSectionCards()" class="px-2.5 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500">
-                <option value="name-asc">Section Name (A-Z)</option>
-                <option value="score-desc">Highest Score</option>
-                <option value="attn-asc">Lowest Attendance</option>
-                <option value="risk-desc">Most High Risk</option>
-                <option value="count-desc">Largest Cohort</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Dynamic Class Summary Cards Grid (Cleanly Scrollable, Perfectly Contained) -->
-          <div id="classSubjectSummaryContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2.5 max-h-72 overflow-y-auto pr-1">
-            <!-- Dynamic Summary Pills -->
-          </div>
-
-          <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-            <span>Tip: Click any class card to instantly filter the student directory below.</span>
-            <span id="classSummaryAttnAlertCount" class="text-rose-600 font-medium"></span>
-          </div>
-        </div>
       </section>
 
       <!-- 5. Split-View Master Directory & Sticky Inspector Panel -->
@@ -1434,16 +1397,16 @@
                     <span>View:</span>
                   </span>
                   <div class="inline-flex rounded-md p-0.5 bg-white border border-slate-200 shadow-2xs" role="group" aria-label="Select cohort view limit">
-                    <button type="button" onclick="setPageSize(10)" id="topPageSize-10" class="pageSizeBtn px-2.5 py-1 rounded text-xs font-semibold transition-all">10</button>
-                    <button type="button" onclick="setPageSize(20)" id="topPageSize-20" class="pageSizeBtn px-2.5 py-1 rounded text-xs font-semibold transition-all">20</button>
-                    <button type="button" onclick="setPageSize(50)" id="topPageSize-50" class="pageSizeBtn px-2.5 py-1 rounded text-xs font-semibold transition-all">50</button>
-                    <button type="button" onclick="setPageSize(100)" id="topPageSize-100" class="pageSizeBtn px-2.5 py-1 rounded text-xs font-semibold transition-all">100</button>
-                    <button type="button" onclick="setPageSize('all')" id="topPageSize-all" class="pageSizeBtn px-2.5 py-1 rounded text-xs font-semibold transition-all">All</button>
+                    <button type="button" onclick="setPageSize(10)" id="topPageSize-10" class="pageSizeBtn px-2.5 py-1 min-h-[28px] rounded-md text-xs transition-all bg-brand-600 text-white font-bold shadow-2xs" aria-pressed="true">10</button>
+                    <button type="button" onclick="setPageSize(20)" id="topPageSize-20" class="pageSizeBtn px-2.5 py-1 min-h-[28px] rounded-md text-xs transition-all bg-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium" aria-pressed="false">20</button>
+                    <button type="button" onclick="setPageSize(50)" id="topPageSize-50" class="pageSizeBtn px-2.5 py-1 min-h-[28px] rounded-md text-xs transition-all bg-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium" aria-pressed="false">50</button>
+                    <button type="button" onclick="setPageSize(100)" id="topPageSize-100" class="pageSizeBtn px-2.5 py-1 min-h-[28px] rounded-md text-xs transition-all bg-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium" aria-pressed="false">100</button>
+                    <button type="button" onclick="setPageSize('all')" id="topPageSize-all" class="pageSizeBtn px-2.5 py-1 min-h-[28px] rounded-md text-xs transition-all bg-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium" aria-pressed="false">All</button>
                   </div>
                 </div>
 
                 <span class="text-xs font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-200" id="tableFilterCountNotice">
-                  Showing 100 students
+                  Showing 10 students
                 </span>
               </div>
             </div>
@@ -1455,7 +1418,7 @@
               <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center">
                 <div class="sm:col-span-4 relative">
                   <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-sm pointer-events-none">search</span>
-                  <input id="studentSearch" oninput="filterTable()" class="w-full bg-slate-50 text-slate-900 placeholder:text-slate-400 text-xs rounded-lg pl-8 pr-3 py-2 border border-slate-200 focus:border-brand-600 outline-none" placeholder="Search name, roll ID..." type="text" aria-label="Search student roster by name or roll number">
+                  <input id="studentSearch" oninput="filterTable()" class="w-full bg-slate-50 text-slate-900 placeholder:text-slate-400 text-xs rounded-lg pl-8 pr-3 py-2 border border-slate-200 focus:border-brand-600 outline-none" placeholder="Search name, roll ID, section..." type="text" aria-label="Search student roster by name, roll number, or class section">
                 </div>
 
                 <div class="sm:col-span-3">
@@ -3244,8 +3207,6 @@
         if (passEl) passEl.textContent = '0% (0/0)';
         const dimGrid = document.getElementById('radarDimensionGrid');
         if (dimGrid) dimGrid.innerHTML = '<div class="col-span-full py-2 text-slate-400 text-xs">No active telemetry</div>';
-        const secContainer = document.getElementById('classSubjectSummaryContainer');
-        if (secContainer) secContainer.innerHTML = '<div class="col-span-full py-6 text-center text-xs text-slate-400">No student records loaded. Ingest dataset to populate section telemetry.</div>';
         return;
       }
 
@@ -3649,7 +3610,7 @@
       });
     }
 
-    let tablePageSize = 100;
+    let tablePageSize = 10;
     let tableCurrentPage = 1;
 
     function setPageSize(sz) {
