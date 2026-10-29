@@ -48,7 +48,7 @@ Unlike conventional Learning Management Systems (LMS) or static grade sheets tha
 
 - **Name:** CampusIQ (OmniGrad Intelligence Ecosystem).
 - **Emblem & Logo:** Stylized Greek letter `Ω` (Omega) with royal blue background (`#004AC6`) and container accent (`#2563EB`).
-- **Student Developer Attribution:** Ankit Kumar Dubey (Registration Number: `251302058`).
+- **Student Developer Attribution:** Ankit Kumar Dubey.
 - **Tone:** Professional, authoritative, supportive, and academically rigorous.
 
 ## Evidence on Hand

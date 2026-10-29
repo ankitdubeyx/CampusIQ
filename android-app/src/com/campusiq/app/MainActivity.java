@@ -319,8 +319,7 @@ public class MainActivity extends Activity {
                 .setTitle("About CampusIQ")
                 .setMessage("CampusIQ - Student Success & Retention Intelligence System\n\n" +
                         "Student Developer:\n" +
-                        "• Name: Ankit Kumar Dubey\n" +
-                        "• Reg. Number: 251302058\n\n" +
+                        "• Name: Ankit Kumar Dubey\n\n" +
                         "Features:\n" +
                         "• 5 RBAC Portals (Dean, HOD, Batch Head, Mentor, Student)\n" +
                         "• 7-Vector Weighted Student Success Metric\n" +

@@ -3,7 +3,7 @@ set -e
 
 # ==============================================================================
 # CampusIQ - Android APK Build Script
-# Student Developer: Ankit Kumar Dubey (Reg. No: 251302058)
+# Student Developer: Ankit Kumar Dubey
 # ==============================================================================
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
