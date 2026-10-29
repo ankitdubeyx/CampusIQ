@@ -165,7 +165,7 @@
   <!-- 1. MINIMAL TOP NAVIGATION BAR                                            -->
   <!-- ======================================================================= -->
   <header class="w-full bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+    <div class="max-w-[1536px] 2xl:max-w-[1680px] w-full mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
       
       <!-- Brand Logo -->
       <div class="flex items-center gap-3">
@@ -223,7 +223,7 @@
   <!-- ======================================================================= -->
   <!-- 2. MAIN WORKSPACE CANVAS                                                -->
   <!-- ======================================================================= -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 flex flex-col gap-8">
+  <main class="flex-1 max-w-[1536px] 2xl:max-w-[1680px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
 
     <!-- Toast Notification -->
     <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
@@ -1309,48 +1309,107 @@
       </section>
 
       <!-- 4. Management Visual Analytics (Bar Chart & Aggregate Spider) -->
-      <section id="analyticsChartsSection" class="flex flex-col gap-4">
+      <section id="analyticsChartsSection" class="flex flex-col gap-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-200">
           <div>
-            <h2 class="text-lg font-bold text-slate-900">Cohort Benchmarks & Aggregate Spider Radar</h2>
-            <p class="text-xs text-slate-500 mt-0.5">Comparative subject benchmarks and multi-vector distribution.</p>
+            <h2 class="text-lg font-bold text-slate-900">Cohort Benchmarks & Institutional Spider Radar</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Comparative subject benchmarks, dimension telemetry, and class-level performance tracking.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200" id="analyticsCohortBadge">All Cohorts Active</span>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Left: Bar Chart -->
+        <!-- Row A: Two Balanced Visual Charts (Equal Heights, No Gaps) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+          
+          <!-- Left Card: Subject & Class Benchmark Analytics -->
           <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
-                <h3 class="text-sm font-bold text-slate-900">Class Average Scores & Subject Benchmark</h3>
-                <span class="text-xs text-slate-500">Passing Threshold: 60/100</span>
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-brand-600 text-lg">bar_chart</span>
+                  <h3 class="text-sm font-bold text-slate-900">Class Average Scores & Subject Benchmark</h3>
+                </div>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">Passing: 60/100</span>
               </div>
-              <div class="h-64 relative">
+              <div class="h-64 sm:h-72 relative">
                 <canvas id="subjectBenchmarkChart"></canvas>
               </div>
-              <div id="classSubjectSummaryContainer" class="mt-3 pt-3 border-t border-slate-100 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                <!-- Dynamic Summary Pills -->
-              </div>
             </div>
-            <div class="mt-3 pt-2 border-t border-slate-100 text-xs text-slate-400">
-              Department-wide comparative grading metrics
+            
+            <!-- Quick Benchmark Telemetry Strip -->
+            <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div class="flex items-center gap-1.5 text-slate-600" id="benchmarkLeaderSection">
+                <span class="material-symbols-outlined text-sm text-emerald-600">verified</span>
+                <span>Benchmark Pass Rate: <strong class="text-emerald-700 font-bold" id="benchmarkPassRate">--</strong></span>
+              </div>
+              <span class="text-slate-400 text-[11px]">3-Vector Evaluation: Subj • Attn • Endsem</span>
             </div>
           </div>
 
-          <!-- Right: Spider Radar -->
+          <!-- Right Card: Institutional 7-Vector Spider Radar & Core Dimension Telemetry -->
           <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
-                <h3 class="text-sm font-bold text-slate-900">Institutional 7-Vector Spider Radar</h3>
-                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-100" id="spiderCompositeBadge">Balanced Standing</span>
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-indigo-600 text-lg">radar</span>
+                  <h3 class="text-sm font-bold text-slate-900">Institutional 7-Vector Spider Radar</h3>
+                </div>
+                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200" id="spiderCompositeBadge">Composite Index: --/100</span>
               </div>
-              <div class="h-64 relative flex items-center justify-center">
+              <div class="h-64 sm:h-72 relative flex items-center justify-center">
                 <canvas id="managementSpiderChart"></canvas>
               </div>
             </div>
-            <div class="mt-3 pt-2 border-t border-slate-100 text-xs text-slate-400">
-              Evaluated: Academic, Placement, Attendance, Skills, LMS, Engagement, Feedback
+
+            <!-- Dynamic 7-Dimension Telemetry Strip (Fills the previous empty space!) -->
+            <div class="mt-4 pt-3 border-t border-slate-100">
+              <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center justify-between">
+                <span>Accreditation Target Alignment</span>
+                <span class="text-emerald-700 font-bold font-data-mono" id="accreditationTierBadge">Tier-1 NBA/NAAC Ready</span>
+              </div>
+              <div id="radarDimensionGrid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-1.5 text-center text-xs">
+                <!-- Dynamically populated 7 dimension pills -->
+              </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Row B: Dedicated Full-Width Section Directory Container -->
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col gap-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-brand-600 text-lg">meeting_room</span>
+                <h3 class="text-sm font-bold text-slate-900">Class & Section Performance Directory</h3>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-brand-50 text-brand-700 border border-brand-200" id="sectionCountBadge">0 Sections</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">Comparative academic, endsem, and attendance performance across each class cohort. Click any section to filter directory table below.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+                <input type="text" id="sectionSearchInput" oninput="filterSectionCards()" placeholder="Search section..." class="pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500 w-36 sm:w-48">
+              </div>
+              <select id="sectionSortSelect" onchange="sortSectionCards()" class="px-2.5 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500">
+                <option value="name-asc">Section Name (A-Z)</option>
+                <option value="score-desc">Highest Score</option>
+                <option value="attn-asc">Lowest Attendance</option>
+                <option value="risk-desc">Most High Risk</option>
+                <option value="count-desc">Largest Cohort</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Dynamic Class Summary Cards Grid (Cleanly Scrollable, Perfectly Contained) -->
+          <div id="classSubjectSummaryContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2.5 max-h-72 overflow-y-auto pr-1">
+            <!-- Dynamic Summary Pills -->
+          </div>
+
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+            <span>Tip: Click any class card to instantly filter the student directory below.</span>
+            <span id="classSummaryAttnAlertCount" class="text-rose-600 font-medium"></span>
           </div>
         </div>
       </section>
@@ -3159,6 +3218,14 @@
         }
         const badgeEl = document.getElementById('spiderCompositeBadge');
         if (badgeEl) badgeEl.textContent = 'Composite Index: 0/100';
+        const secBadge = document.getElementById('sectionCountBadge');
+        if (secBadge) secBadge.textContent = '0 Sections';
+        const passEl = document.getElementById('benchmarkPassRate');
+        if (passEl) passEl.textContent = '0% (0/0)';
+        const dimGrid = document.getElementById('radarDimensionGrid');
+        if (dimGrid) dimGrid.innerHTML = '<div class="col-span-full py-2 text-slate-400 text-xs">No active telemetry</div>';
+        const secContainer = document.getElementById('classSubjectSummaryContainer');
+        if (secContainer) secContainer.innerHTML = '<div class="col-span-full py-6 text-center text-xs text-slate-400">No student records loaded. Ingest dataset to populate section telemetry.</div>';
         return;
       }
 
@@ -3279,26 +3346,24 @@
         });
       }
 
-      // 4. Populate Class Summary Container below Bar Chart
-      const summaryContainer = document.getElementById('classSubjectSummaryContainer');
-      if (summaryContainer) {
-        summaryContainer.innerHTML = classSummaryData.map(c => `
-          <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between">
-            <div class="flex items-center justify-between">
-              <span class="font-bold text-xs text-slate-900">${c.name}</span>
-              <span class="text-xs text-slate-500 font-semibold">${c.count} students</span>
-            </div>
-            <div class="flex items-center justify-between text-xs mt-1 pt-1 border-t border-slate-200/60">
-              <span class="text-slate-500 font-medium">Subj Avg:</span>
-              <strong class="font-data-mono text-brand-600 font-bold">${c.subjectAvg}/100</strong>
-            </div>
-            <div class="flex items-center justify-between text-xs">
-              <span class="text-slate-500 font-medium">Attn Avg:</span>
-              <strong class="font-data-mono ${c.attnAvg < 75 ? 'text-rose-600 font-bold' : 'text-emerald-700 font-bold'}">${c.attnAvg}%</strong>
-            </div>
-          </div>
-        `).join('');
+      // 4. Store and Render Full-Width Section Directory
+      currentClassSummaryData = classSummaryData;
+      renderSectionCards(classSummaryData);
+
+      const sectionBadge = document.getElementById('sectionCountBadge');
+      if (sectionBadge) sectionBadge.textContent = `${classSummaryData.length} Sections`;
+
+      const alertEl = document.getElementById('classSummaryAttnAlertCount');
+      if (alertEl) {
+        const attnAlerts = classSummaryData.filter(c => c.attnAvg < 75).length;
+        alertEl.textContent = attnAlerts > 0 ? `${attnAlerts} section(s) below 75% attendance threshold` : 'All sections compliant (≥75% attendance)';
       }
+
+      // Compute Benchmark Pass Rate for Left Card
+      const passingCount = studentList.filter(s => (s.analytics?.successScore ?? 0) >= 60).length;
+      const passRate = n > 0 ? Math.round((passingCount / n) * 100) : 0;
+      const passEl = document.getElementById('benchmarkPassRate');
+      if (passEl) passEl.textContent = `${passRate}% (${passingCount}/${n} students)`;
 
       // 5. Spider / Radar Chart for Upper Management (Combined Institutional 7-Vectors)
       const spiderCanvas = document.getElementById('managementSpiderChart');
@@ -3307,18 +3372,42 @@
 
         // Compute institutional average for each of the 7 dimensions
         const avgScores = {
-          academic: Math.round(studentList.reduce((acc, s) => acc + (s.analytics.componentScores?.academic || 75), 0) / n),
-          placement: Math.round(studentList.reduce((acc, s) => acc + (s.analytics.componentScores?.placement || 65), 0) / n),
-          attendance: Math.round(studentList.reduce((acc, s) => acc + (s.analytics.componentScores?.attendance || 80), 0) / n),
-          skills: Math.round(studentList.reduce((acc, s) => acc + (s.analytics.componentScores?.skills || 70), 0) / n),
-          lms: Math.round(studentList.reduce((acc, s) => acc + (s.analytics.componentScores?.lms || 85), 0) / n),
-          engagement: Math.round(studentList.reduce((acc, s) => acc + (s.analytics.componentScores?.engagement || 45), 0) / n),
-          feedback: Math.round(studentList.reduce((acc, s) => acc + (s.analytics.componentScores?.feedback || 65), 0) / n)
+          academic: Math.round(studentList.reduce((acc, s) => acc + (s.analytics?.componentScores?.academic || 75), 0) / n),
+          placement: Math.round(studentList.reduce((acc, s) => acc + (s.analytics?.componentScores?.placement || 65), 0) / n),
+          attendance: Math.round(studentList.reduce((acc, s) => acc + (s.analytics?.componentScores?.attendance || 80), 0) / n),
+          skills: Math.round(studentList.reduce((acc, s) => acc + (s.analytics?.componentScores?.skills || 70), 0) / n),
+          lms: Math.round(studentList.reduce((acc, s) => acc + (s.analytics?.componentScores?.lms || 85), 0) / n),
+          engagement: Math.round(studentList.reduce((acc, s) => acc + (s.analytics?.componentScores?.engagement || 45), 0) / n),
+          feedback: Math.round(studentList.reduce((acc, s) => acc + (s.analytics?.componentScores?.feedback || 65), 0) / n)
         };
 
-        const overallComposite = Math.round(studentList.reduce((acc, s) => acc + s.analytics.successScore, 0) / n);
+        const overallComposite = Math.round(studentList.reduce((acc, s) => acc + (s.analytics?.successScore || 0), 0) / n);
         const badgeEl = document.getElementById('spiderCompositeBadge');
         if (badgeEl) badgeEl.textContent = `Composite Index: ${overallComposite}/100`;
+
+        // Render 7-Dimension Accreditation Matrix below radar (fills previously empty space)
+        const dimensionGrid = document.getElementById('radarDimensionGrid');
+        if (dimensionGrid) {
+          const dims = [
+            { label: 'Academic', weight: '30%', score: avgScores.academic, target: 75 },
+            { label: 'Placement', weight: '20%', score: avgScores.placement, target: 70 },
+            { label: 'Attendance', weight: '15%', score: avgScores.attendance, target: 75 },
+            { label: 'Skills', weight: '15%', score: avgScores.skills, target: 70 },
+            { label: 'LMS', weight: '10%', score: avgScores.lms, target: 80 },
+            { label: 'Campus', weight: '5%', score: avgScores.engagement, target: 50 },
+            { label: 'Feedback', weight: '5%', score: avgScores.feedback, target: 70 }
+          ];
+          dimensionGrid.innerHTML = dims.map(d => {
+            const isExceeding = d.score >= d.target;
+            return `
+              <div class="p-1.5 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between">
+                <span class="text-[10px] text-slate-500 font-medium truncate">${d.label}</span>
+                <span class="text-xs font-bold font-data-mono ${isExceeding ? 'text-emerald-700' : 'text-amber-700'} mt-0.5">${d.score}%</span>
+                <span class="text-[9px] ${isExceeding ? 'text-emerald-600' : 'text-amber-600'} font-semibold">Tgt ${d.target}%</span>
+              </div>
+            `;
+          }).join('');
+        }
 
         spiderChartInstance = new Chart(spiderCanvas.getContext('2d'), {
           type: 'radar',
@@ -3393,6 +3482,79 @@
             }
           }
         });
+      }
+    }
+
+    // Section Directory Helpers
+    let currentClassSummaryData = [];
+
+    function renderSectionCards(data) {
+      const container = document.getElementById('classSubjectSummaryContainer');
+      if (!container) return;
+      if (!data || data.length === 0) {
+        container.innerHTML = '<div class="col-span-full py-8 text-center text-xs text-slate-400">No matching sections found.</div>';
+        return;
+      }
+      container.innerHTML = data.map(c => {
+        const isAttnAlert = c.attnAvg < 75;
+        const hasHighRisk = c.highRiskCount > 0;
+        return `
+          <div onclick="filterTableBySection('${c.name}')" class="p-2.5 rounded-lg bg-slate-50 hover:bg-brand-50/70 border ${isAttnAlert ? 'border-rose-200 bg-rose-50/20' : 'border-slate-200/80'} hover:border-brand-300 transition-all cursor-pointer flex flex-col justify-between group shadow-2xs" title="Click to filter student directory by section ${c.name}">
+            <div class="flex items-center justify-between gap-1">
+              <span class="font-bold text-xs text-slate-900 group-hover:text-brand-600 transition-colors truncate">${c.name}</span>
+              <span class="text-[10px] text-slate-500 font-semibold shrink-0">${c.count} st</span>
+            </div>
+            <div class="flex items-center justify-between text-[11px] mt-1.5 pt-1 border-t border-slate-200/60 font-data-mono">
+              <span class="text-slate-400 font-normal">Subj</span>
+              <strong class="text-brand-600 font-bold">${c.subjectAvg}</strong>
+            </div>
+            <div class="flex items-center justify-between text-[11px] font-data-mono">
+              <span class="text-slate-400 font-normal">Attn</span>
+              <strong class="${isAttnAlert ? 'text-rose-600 font-bold' : 'text-emerald-700 font-bold'}">${c.attnAvg}%</strong>
+            </div>
+            ${hasHighRisk ? `<div class="mt-1 text-[9px] font-bold text-rose-700 bg-rose-100 rounded px-1 py-0.2 text-center truncate">${c.highRiskCount} High Risk</div>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterSectionCards() {
+      const searchVal = (document.getElementById('sectionSearchInput')?.value || '').toLowerCase().trim();
+      if (!searchVal) {
+        sortSectionCards();
+        return;
+      }
+      const filtered = currentClassSummaryData.filter(c => c.name.toLowerCase().includes(searchVal));
+      renderSectionCards(filtered);
+    }
+
+    function sortSectionCards() {
+      const sortMode = document.getElementById('sectionSortSelect')?.value || 'name-asc';
+      const searchVal = (document.getElementById('sectionSearchInput')?.value || '').toLowerCase().trim();
+      let list = [...currentClassSummaryData];
+      if (searchVal) {
+        list = list.filter(c => c.name.toLowerCase().includes(searchVal));
+      }
+      list.sort((a, b) => {
+        if (sortMode === 'score-desc') return b.subjectAvg - a.subjectAvg;
+        if (sortMode === 'attn-asc') return a.attnAvg - b.attnAvg;
+        if (sortMode === 'risk-desc') return b.highRiskCount - a.highRiskCount;
+        if (sortMode === 'count-desc') return b.count - a.count;
+        return a.name.localeCompare(b.name);
+      });
+      renderSectionCards(list);
+    }
+
+    function filterTableBySection(sectionName) {
+      const search = document.getElementById('studentSearch');
+      if (search) search.value = sectionName;
+      filterTable();
+      showToast(`Filtered student directory by section: ${sectionName}`, 'filter_alt');
+      const target = document.getElementById('directorySection');
+      if (target) {
+        const yOffset = -70;
+        const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
       }
     }
 
