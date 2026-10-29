@@ -2518,47 +2518,85 @@
 
     // Update top KPI cards and quadrant counts
     function updateKpis(apiResponse) {
-      const total = apiResponse.totalStudentsInDb !== undefined ? apiResponse.totalStudentsInDb : (apiResponse.totalStudents !== undefined ? apiResponse.totalStudents : students.length);
-      const riskSummary = apiResponse.riskSummary || { high: 0, medium: 0, low: 0 };
+      // Role Cohort Count: strictly the students in the active role's purview (e.g. 279 for CSE HOD, 48 for Mentor, 2000 for Campus Dean)
+      const roleCohortCount = (students && students.length !== undefined) 
+        ? students.length 
+        : (apiResponse?.filteredCount !== undefined ? apiResponse.filteredCount : 0);
       
-      const highRiskCount = total > 0 ? (riskSummary.high !== undefined ? riskSummary.high : students.filter(s => s.analytics?.riskFlag === 'High').length) : 0;
-      const highRiskRate = total > 0 ? ((highRiskCount / total) * 100).toFixed(1) : '0.0';
+      const totalDbCount = apiResponse?.totalStudentsInDb !== undefined 
+        ? apiResponse.totalStudentsInDb 
+        : (apiResponse?.totalStudents !== undefined ? apiResponse.totalStudents : roleCohortCount);
 
-      const placementReadyCount = total > 0 ? students.filter(s => (s.categories?.placement?.mockInterviewScore || 0) >= 60).length : 0;
-      const placementReadyRate = total > 0 ? ((placementReadyCount / total) * 100).toFixed(1) : '0.0';
+      // Risk counts and rates relative to THIS active role's cohort
+      const highRiskCount = roleCohortCount > 0 
+        ? students.filter(s => s.analytics?.riskFlag === 'High' || s.predictedRiskLevel === 'High').length 
+        : 0;
+      const highRiskRate = roleCohortCount > 0 
+        ? ((highRiskCount / roleCohortCount) * 100).toFixed(1) 
+        : '0.0';
 
-      const avgSuccess = total > 0 ? (students.reduce((acc, s) => acc + (s.analytics?.successScore || 0), 0) / total).toFixed(1) : '0';
+      const placementReadyCount = roleCohortCount > 0 
+        ? students.filter(s => (s.categories?.placement?.mockInterviewScore || 0) >= 60).length 
+        : 0;
+      const placementReadyRate = roleCohortCount > 0 
+        ? ((placementReadyCount / roleCohortCount) * 100).toFixed(1) 
+        : '0.0';
 
-      // DOM Updates
+      const avgSuccess = roleCohortCount > 0 
+        ? (students.reduce((acc, s) => acc + (s.analytics?.successScore || s.overallSuccessScore || 0), 0) / roleCohortCount).toFixed(1) 
+        : '0';
+
+      // 1. Total Cohort Card (Role-scoped student count)
       const totalEl = document.getElementById('kpiTotalCount') || document.getElementById('kpiTotalStudents');
-      if (totalEl) totalEl.textContent = total;
+      if (totalEl) totalEl.textContent = roleCohortCount.toLocaleString();
 
+      const cohortLabelEl = document.getElementById('kpiActiveCohortName');
+      if (cohortLabelEl) {
+        const role = activeRoleInfo?.role || 'Active';
+        if (roleCohortCount === totalDbCount || role.toLowerCase() === 'dean') {
+          cohortLabelEl.textContent = `All Campus (${totalDbCount.toLocaleString()} Students)`;
+        } else {
+          cohortLabelEl.textContent = `${role} Scope (${roleCohortCount} of ${totalDbCount.toLocaleString()} Campus)`;
+        }
+      }
+
+      // 2. High Risk Card
       const hrRateEl = document.getElementById('kpiHighRiskRate');
       if (hrRateEl) hrRateEl.textContent = `${highRiskRate}%`;
       const hrCountEl = document.getElementById('kpiHighRiskCount');
-      if (hrCountEl) hrCountEl.textContent = `${highRiskCount} Flagged High Risk`;
+      if (hrCountEl) {
+        if (roleCohortCount === totalDbCount) {
+          hrCountEl.textContent = `${highRiskCount} Flagged High Risk`;
+        } else {
+          hrCountEl.textContent = `${highRiskCount} of ${roleCohortCount} Flagged High Risk`;
+        }
+      }
       const hrBarEl = document.getElementById('kpiHighRiskBar');
       if (hrBarEl) hrBarEl.style.width = `${highRiskRate}%`;
 
+      // 3. Placement Ready Card
       const plReadyEl = document.getElementById('kpiPlacementReady');
       if (plReadyEl) plReadyEl.textContent = `${placementReadyRate}%`;
       const plCountEl = document.getElementById('kpiPlacementCount');
-      if (plCountEl) plCountEl.textContent = `${placementReadyCount} Verified`;
+      if (plCountEl) {
+        plCountEl.textContent = `${placementReadyCount} of ${roleCohortCount} Verified`;
+      }
       const plBarEl = document.getElementById('kpiPlacementBar');
       if (plBarEl) plBarEl.style.width = `${placementReadyRate}%`;
 
+      // 4. Success Score Card
       const avgScoreEl = document.getElementById('kpiAvgSuccessScore');
       if (avgScoreEl) avgScoreEl.innerHTML = `${avgSuccess} <span class="text-xs font-normal text-slate-400">/ 100</span>`;
       const avgBarEl = document.getElementById('kpiAvgScoreBar');
-      if (avgBarEl) avgBarEl.style.width = `${total > 0 ? Math.min(100, parseFloat(avgSuccess)) : 0}%`;
+      if (avgBarEl) avgBarEl.style.width = `${roleCohortCount > 0 ? Math.min(100, parseFloat(avgSuccess)) : 0}%`;
 
-      // Persona & Quadrant counts
-      const p1Count = total > 0 ? students.filter(s => s.persona === 'High Academic / Low Placement').length : 0;
-      const p2Count = total > 0 ? students.filter(s => s.persona === 'Low Attendance / High Skills').length : 0;
-      const p3Count = total > 0 ? students.filter(s => s.persona === 'Average All-Rounders').length : 0;
+      // Persona & Quadrant counts (strictly role-scoped)
+      const p1Count = roleCohortCount > 0 ? students.filter(s => s.persona === 'High Academic / Low Placement').length : 0;
+      const p2Count = roleCohortCount > 0 ? students.filter(s => s.persona === 'Low Attendance / High Skills').length : 0;
+      const p3Count = roleCohortCount > 0 ? students.filter(s => s.persona === 'Average All-Rounders').length : 0;
 
       const qAll = document.getElementById('quadCountAll');
-      if (qAll) qAll.textContent = total;
+      if (qAll) qAll.textContent = roleCohortCount.toLocaleString();
       const qP1 = document.getElementById('quadCountP1');
       if (qP1) qP1.textContent = p1Count;
       const qP2 = document.getElementById('quadCountP2');
@@ -2608,26 +2646,14 @@
         return;
       }
 
-      const roleSelect = document.getElementById('roleLoginSelect');
-      const selectedRole = roleSelect ? roleSelect.value : 'admin';
+      const role = activeRoleInfo?.role || 'Campus';
+      const roleName = activeRoleInfo?.name || '';
+      let scopeLabel = `${role} Scope (${studentList.length} Students)`;
+      let scopeSub = activeRoleInfo?.subtitle || `Evaluating students in active ${role} scope.`;
 
-      let scopeLabel = `All School (${studentList.length} Students)`;
-      let scopeSub = 'Evaluating complete student cohort across all campus departments.';
-
-      if (selectedRole === 'hod') {
-        scopeLabel = 'HOD Scope (CSE Department)';
-        scopeSub = 'Top and intervention students restricted to Computer Science & Engineering.';
-      } else if (selectedRole === 'hod-it') {
-        scopeLabel = 'HOD Scope (IT Department)';
-        scopeSub = 'Top and intervention students restricted to Information Technology.';
-      } else if (selectedRole && selectedRole.startsWith('batch')) {
-        const batchYear = selectedRole.includes('2022') ? '2022-2026' : '2021-2025';
-        scopeLabel = `Batch Head Scope (${batchYear})`;
-        scopeSub = `Top and intervention students restricted to Class of ${batchYear}.`;
-      } else if (selectedRole && selectedRole.startsWith('mentor')) {
-        const sectionName = selectedRole.includes('itb') ? 'IT-B' : 'CSE-A';
-        scopeLabel = `Mentor Scope (Section ${sectionName})`;
-        scopeSub = `Class advisory analysis restricted to mentees in Section ${sectionName}.`;
+      if (role.toLowerCase() === 'dean' && (!roleName || roleName.toLowerCase().includes('all') || studentList.length >= 2000)) {
+        scopeLabel = `All Campus (${studentList.length} Students)`;
+        scopeSub = 'Evaluating complete student cohort across all campus departments.';
       }
 
       if (scopeBadge) scopeBadge.textContent = scopeLabel;

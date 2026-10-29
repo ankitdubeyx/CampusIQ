@@ -79,7 +79,19 @@ function saveStudentsToFile(data) {
  * Helper function to load student data from the JSON file or /tmp fallback
  */
 function loadStudents() {
-  // 1. Check if temporary writable storage has a persisted uploaded dataset
+  // 1. Primary: Load from standard DATA_FILE
+  try {
+    if (fs.existsSync(DATA_FILE)) {
+      const rawData = fs.readFileSync(DATA_FILE, 'utf-8');
+      rawStudents = JSON.parse(rawData);
+      console.log(`[Database] Loaded ${rawStudents.length} students from primary database (${DATA_FILE})`);
+      return;
+    }
+  } catch (err) {
+    console.warn(`[Database Warning] Failed to load from ${DATA_FILE} (${err.message}). Checking /tmp fallback...`);
+  }
+
+  // 2. Secondary fallback: Check /tmp storage (for AWS Lambda / Vercel read-only runtimes)
   try {
     if (fs.existsSync(TMP_DATA_FILE)) {
       const tmpData = fs.readFileSync(TMP_DATA_FILE, 'utf-8');
@@ -88,19 +100,7 @@ function loadStudents() {
       return;
     }
   } catch (e) {
-    // Continue to standard file
-  }
-
-  // 2. Load from standard DATA_FILE
-  try {
-    if (fs.existsSync(DATA_FILE)) {
-      const rawData = fs.readFileSync(DATA_FILE, 'utf-8');
-      rawStudents = JSON.parse(rawData);
-      console.log(`[Database] Loaded ${rawStudents.length} students from ${DATA_FILE}`);
-      return;
-    }
-  } catch (err) {
-    console.error('[Database Error] Failed to load students.json:', err.message);
+    // No data in tmp
   }
 
   rawStudents = [];
