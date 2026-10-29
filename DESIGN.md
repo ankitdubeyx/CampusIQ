@@ -18,6 +18,12 @@ colors:
   status-warning-subtle: "#fef3c7"
   status-success: "#059669"
   status-success-subtle: "#ecfdf5"
+  dark-canvas: "#0b0f19"
+  dark-surface: "#111827"
+  dark-surface-elevated: "#161f30"
+  dark-surface-subtle: "#141e33"
+  dark-border: "#1e293b"
+  dark-border-strong: "#334155"
 typography:
   family: "Figtree, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
   body:
