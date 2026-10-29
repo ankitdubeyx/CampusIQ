@@ -76,37 +76,14 @@ function saveStudentsToFile(data) {
 }
 
 /**
- * Helper function to load student data from the JSON file or /tmp fallback
+ * Helper function to initialize student data (always initializes clean with empty state)
  */
 function loadStudents() {
-  // 1. Primary: Load from standard DATA_FILE
-  try {
-    if (fs.existsSync(DATA_FILE)) {
-      const rawData = fs.readFileSync(DATA_FILE, 'utf-8');
-      rawStudents = JSON.parse(rawData);
-      console.log(`[Database] Loaded ${rawStudents.length} students from primary database (${DATA_FILE})`);
-      return;
-    }
-  } catch (err) {
-    console.warn(`[Database Warning] Failed to load from ${DATA_FILE} (${err.message}). Checking /tmp fallback...`);
-  }
-
-  // 2. Secondary fallback: Check /tmp storage (for AWS Lambda / Vercel read-only runtimes)
-  try {
-    if (fs.existsSync(TMP_DATA_FILE)) {
-      const tmpData = fs.readFileSync(TMP_DATA_FILE, 'utf-8');
-      rawStudents = JSON.parse(tmpData);
-      console.log(`[Database] Loaded ${rawStudents.length} students from /tmp fallback (${TMP_DATA_FILE})`);
-      return;
-    }
-  } catch (e) {
-    // No data in tmp
-  }
-
   rawStudents = [];
+  console.log('[Database] Initialized in clean 0-student state (awaiting dataset upload)');
 }
 
-// Initial load
+// Initial clean start
 loadStudents();
 
 // ------------------------------------------------------------------------------
@@ -998,11 +975,8 @@ app.post('/api/upload', (req, res) => {
 
     const normalized = parseAndNormalizeDataset(inputData, fileType);
     
-    // In-memory update ALWAYS happens first!
+    // In-memory update ALWAYS happens first! (Non-persistent session state)
     rawStudents = normalized;
-
-    // Persist to storage (safe for read-only serverless filesystems like /var/task)
-    saveStudentsToFile(normalized);
 
     const enriched = getEnrichedStudents();
     const hierarchy = extractHierarchy(enriched);
@@ -1056,7 +1030,6 @@ app.post('/api/load-sample', (req, res) => {
     if (fs.existsSync(samplePath)) {
       const sampleData = JSON.parse(fs.readFileSync(samplePath, 'utf-8'));
       rawStudents = sampleData.map((s, i) => normalizeStudentRecord(s, i + 1));
-      saveStudentsToFile(rawStudents);
       const enriched = getEnrichedStudents();
       const hierarchy = extractHierarchy(enriched);
       return res.json({

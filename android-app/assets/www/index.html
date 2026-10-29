@@ -4590,46 +4590,95 @@
       }, 1400);
     }
 
-    // Auto-init on page load
-    document.addEventListener('DOMContentLoaded', async () => {
+    // =======================================================================
+    // CACHE PURGE & ZERO-STATE INITIALIZATION
+    // =======================================================================
+    // Explicitly purge any existing cached dataset keys from localStorage, sessionStorage & IndexedDB
+    function clearClientDatasetCache() {
       try {
-        const res = await fetch('/api/students');
-        const json = await res.json();
-        const loadedStudents = json.data || [];
+        if (typeof window !== 'undefined') {
+          const datasetKeys = [
+            'campusiq_students',
+            'campusiq_hierarchy',
+            'campusiq_dataset',
+            'student_dataset',
+            'students_data',
+            'campusiq_cache',
+            'uploaded_students',
+            'campusiq_role',
+            'activeRole'
+          ];
+          datasetKeys.forEach(k => {
+            try { localStorage.removeItem(k); } catch (e) {}
+            try { sessionStorage.removeItem(k); } catch (e) {}
+          });
 
-        if (loadedStudents.length === 0) {
-          // No dataset in database -> Stage 1 Upload Gate is mandatory
-          students = [];
-          showUploadView();
-          return;
-        }
+          // Thorough scrub of any keys containing campusiq, dataset, or student
+          try {
+            Object.keys(localStorage || {}).forEach(k => {
+              const lk = k.toLowerCase();
+              if (lk.includes('campusiq') || lk.includes('dataset') || lk.includes('student')) {
+                localStorage.removeItem(k);
+              }
+            });
+          } catch (e) {}
 
-        students = loadedStudents;
-        currentFiltered = [...students];
+          try {
+            Object.keys(sessionStorage || {}).forEach(k => {
+              const lk = k.toLowerCase();
+              if (lk.includes('campusiq') || lk.includes('dataset') || lk.includes('student')) {
+                sessionStorage.removeItem(k);
+              }
+            });
+          } catch (e) {}
 
-        // Fetch extracted hierarchy
-        try {
-          const hRes = await fetch('/api/hierarchy');
-          const hJson = await hRes.json();
-          currentHierarchy = hJson.hierarchy || extractHierarchyClient(students);
-        } catch (e) {
-          currentHierarchy = extractHierarchyClient(students);
-        }
-
-        await loadStudentDirectory();
-
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('step') === 'upload') {
-          showUploadView();
-        } else if (params.get('step') === 'roles' || !params.has('role')) {
-          showRoleLandingView();
-        } else {
-          initRoleFromUrl();
+          // Delete IndexedDB databases if registered
+          if (window.indexedDB && window.indexedDB.databases) {
+            window.indexedDB.databases().then(dbs => {
+              (dbs || []).forEach(db => {
+                if (db.name && (db.name.toLowerCase().includes('campusiq') || db.name.toLowerCase().includes('student') || db.name.toLowerCase().includes('dataset'))) {
+                  try { window.indexedDB.deleteDatabase(db.name); } catch (e) {}
+                }
+              });
+            }).catch(() => {});
+          }
         }
       } catch (err) {
-        console.error('Initialization error:', err);
-        showUploadView();
+        console.warn('[Cache Cleanup Warning]', err);
       }
+    }
+
+    // Execute cache cleanup immediately on script evaluation
+    clearClientDatasetCache();
+
+    // Auto-init on page load / refresh: Always starts in clean 0-state with Upload Gate
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Explicitly clear all storage keys to prevent loading old cached deployments
+      clearClientDatasetCache();
+
+      // 2. Initialize in-memory variables to strict empty/null state
+      students = [];
+      currentFiltered = [];
+      currentHierarchy = null;
+      activeStudentId = null;
+      activeRoleInfo = { role: 'Administrator', name: '', subtitle: '' };
+
+      // 3. Reset server session memory so no previous session data lingers
+      fetch('/api/reset', { method: 'POST' }).catch(() => {});
+
+      // 4. Reset URL query string so old role/dashboard links do not bypass upload screen
+      if (window.location.search && !window.location.search.includes('step=upload')) {
+        window.history.replaceState({}, '', '/?step=upload');
+      }
+
+      // 5. Reset UI components and counters to 0
+      updateKpis({ totalStudentsInDb: 0, riskSummary: { high: 0, medium: 0, low: 0 }, data: [] });
+      populateDepartmentDropdown([]);
+      renderTable([]);
+      clearStudentInspector();
+
+      // 6. ALWAYS show the Dataset Upload screen (Stage 1 Upload Gate) first
+      showUploadView();
     });
   </script>
 
