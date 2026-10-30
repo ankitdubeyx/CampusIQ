@@ -32,6 +32,18 @@ const {
   normalizeStudentRecord,
   extractHierarchy
 } = require('./utils/dataParser');
+const {
+  SUPPORTED_LANGUAGES,
+  translateInterventionNotice
+} = require('./utils/translator');
+const {
+  dispatchNoticeEmail,
+  getDispatchHistory,
+  generateMailtoUri
+} = require('./utils/emailGateway');
+const {
+  simulateStudentTrajectory
+} = require('./utils/simulator');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -1051,6 +1063,163 @@ app.post('/api/load-sample', (req, res) => {
     }
   } catch (err) {
     return res.status(500).json({ success: false, error: `Failed to load sample: ${err.message}` });
+  }
+});
+
+/**
+ * GET /api/languages
+ * Returns list of supported regional languages for intervention notice translation & TTS
+ */
+app.get('/api/languages', (req, res) => {
+  res.json({
+    success: true,
+    languages: SUPPORTED_LANGUAGES
+  });
+});
+
+/**
+ * POST /api/translate-notice
+ * Translates an intervention remediation notice into regional Indian languages
+ * with Gemini AI when configured, or authentic institutional native templates.
+ */
+app.post('/api/translate-notice', async (req, res) => {
+  try {
+    const { text, studentId, studentName } = req.body;
+    const targetLang = req.body.targetLanguage || req.body.language || 'en';
+    let studentInfo = studentName ? { name: studentName } : {};
+
+    if (studentId) {
+      const found = rawStudents.find(s => s.id.toUpperCase() === String(studentId).toUpperCase());
+      if (found) {
+        studentInfo = { ...enrichStudent(found), ...(studentName ? { name: studentName } : {}) };
+      }
+    }
+
+    const result = await translateInterventionNotice(text, targetLang, studentInfo);
+    res.json(result);
+  } catch (err) {
+    console.error('[Translation API Error]', err);
+    res.status(500).json({
+      success: false,
+      error: `Failed to translate notice: ${err.message}`
+    });
+  }
+});
+
+/**
+ * POST /api/send-email
+ * Dispatches formal intervention notices via institutional email gateway
+ * with delivery receipt and compliance audit tracking.
+ */
+app.post('/api/send-email', async (req, res) => {
+  try {
+    const {
+      studentId,
+      studentName,
+      toEmail,
+      parentEmail,
+      advisorEmail,
+      subject,
+      body,
+      language
+    } = req.body;
+
+    const receipt = await dispatchNoticeEmail({
+      studentId,
+      studentName,
+      toEmail,
+      parentEmail,
+      advisorEmail,
+      subject,
+      body,
+      language
+    });
+
+    console.log(`[Email Gateway] Notice dispatched for ${studentName} (${studentId}) to ${receipt.recipients.length} recipients. TxId: ${receipt.transactionId}`);
+
+    res.json(receipt);
+  } catch (err) {
+    console.error('[Email Dispatch Error]', err);
+    res.status(500).json({
+      success: false,
+      error: `Failed to dispatch notice email: ${err.message}`
+    });
+  }
+});
+
+/**
+ * GET /api/email-dispatches
+ * Returns recent dispatch transactions logged during this session
+ */
+app.get('/api/email-dispatches', (req, res) => {
+  const limit = parseInt(req.query.limit, 10) || 20;
+  res.json({
+    success: true,
+    dispatches: getDispatchHistory(limit)
+  });
+});
+
+/**
+ * POST /api/simulate-what-if
+ * Calculates real-time projected trajectories, success scores, and risk flags
+ * based on advisor scenario slider adjustments.
+ */
+app.post('/api/simulate-what-if', (req, res) => {
+  try {
+    const {
+      studentId,
+      student,
+      studentName,
+      projectedAttendance,
+      projectedEndsem,
+      projectedPlacement,
+      projectedSkills,
+      projectedBacklogs
+    } = req.body;
+
+    let enriched = student;
+    if (!enriched && studentId) {
+      const found = rawStudents.find(s => s.id.toUpperCase() === String(studentId).toUpperCase());
+      if (found) {
+        enriched = enrichStudent(found);
+      }
+    }
+    if (!enriched) {
+      enriched = enrichStudent({
+        id: studentId || 'STU001',
+        name: studentName || 'Student',
+        department: 'Computer Science & Engineering',
+        class: 'Section A',
+        categories: {
+          academic: { cgpa: 7.5, semester: 6, backlogs: 0, exam_scores: { midsem: 72, endsem: 75 } },
+          attendance: { classes: 78, labs: 80, overall: 79 },
+          placement: { mockInterviewScore: 65 },
+          skills: { codingAssessmentScore: 60 },
+          lms: { assignmentsSubmittedOnTimePercentage: 80 },
+          engagement: { hackathonsParticipated: 1, hackathonWins: 0, clubsOrActivities: [] },
+          feedback: { strengths: ['Consistent lab performance'], areasForImprovement: [] }
+        }
+      });
+    }
+
+    const simulation = simulateStudentTrajectory(enriched, {
+      projectedAttendance,
+      projectedEndsem,
+      projectedPlacement,
+      projectedSkills,
+      projectedBacklogs
+    });
+
+    res.json({
+      success: true,
+      simulation
+    });
+  } catch (err) {
+    console.error('[What-If Simulation Error]', err);
+    res.status(500).json({
+      success: false,
+      error: `Failed to run what-if simulation: ${err.message}`
+    });
   }
 });
 
