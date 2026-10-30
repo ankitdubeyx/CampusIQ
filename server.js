@@ -44,6 +44,9 @@ const {
 const {
   simulateStudentTrajectory
 } = require('./utils/simulator');
+const {
+  processAdvisorChat
+} = require('./utils/geminiChat');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -1219,6 +1222,39 @@ app.post('/api/simulate-what-if', (req, res) => {
     res.status(500).json({
       success: false,
       error: `Failed to run what-if simulation: ${err.message}`
+    });
+  }
+});
+
+/**
+ * POST /api/chat
+ * Real-time conversational AI advisor powered by Gemini 2.5 Flash
+ * with live institutional telemetry context injection.
+ */
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { message, history = [], activeStudentId, activeStudent, apiKey } = req.body;
+    const enrichedCohort = getEnrichedStudents();
+
+    let targetActiveStudent = activeStudent;
+    if (!targetActiveStudent && activeStudentId) {
+      targetActiveStudent = enrichedCohort.find(s => s.id.toUpperCase() === String(activeStudentId).toUpperCase());
+    }
+
+    const result = await processAdvisorChat({
+      message,
+      history,
+      activeStudent: targetActiveStudent,
+      students: enrichedCohort,
+      apiKey
+    });
+
+    res.json(result);
+  } catch (err) {
+    console.error('[Advisor Chat API Error]', err);
+    res.status(500).json({
+      success: false,
+      reply: `I encountered an unexpected issue while analyzing campus telemetry: ${err.message}`
     });
   }
 });
