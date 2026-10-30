@@ -94,7 +94,7 @@ async function callGeminiChatAPI({ apiKey, message, history = [], systemPrompt, 
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 8000); // 8-second timeout
+      const timeout = setTimeout(() => controller.abort(), 15000); // 15-second timeout for serverless stability
 
       const res = await fetch(endpoint, {
         method: 'POST',
@@ -135,12 +135,118 @@ async function callGeminiChatAPI({ apiKey, message, history = [], systemPrompt, 
 }
 
 /**
+ * Safe Arithmetic & Expression Evaluator
+ * Allows the advisor to solve mathematical and analytical queries directly
+ */
+function tryEvaluateArithmetic(text) {
+  if (!text) return null;
+  let clean = text.trim();
+  clean = clean.replace(/^(what\s+is|calculate|solve|add|sum|evaluate|compute)\s+/i, '').trim();
+  clean = clean.replace(/\?+$/, '').trim();
+
+  let expr = clean
+    .replace(/\bplus\b/gi, '+')
+    .replace(/\bminus\b/gi, '-')
+    .replace(/\btimes\b/gi, '*')
+    .replace(/\bmultiplied\s+by\b/gi, '*')
+    .replace(/\bdivided\s+by\b/gi, '/');
+
+  expr = expr.replace(/(\d+(?:\.\d+)?)\s*%\s*(?:of\s*)?(\d+(?:\.\d+)?)/gi, '($1/100)*$2');
+  expr = expr.replace(/(\d+(?:\.\d+)?)\s*%/g, '($1/100)');
+  expr = expr.replace(/,/g, '').replace(/[xX]/g, '*').replace(/\^/g, '**').trim();
+
+  if (/^[\d\s\+\-\*\/\.\(\)]+$/.test(expr) && /\d/.test(expr)) {
+    try {
+      const val = Function(`"use strict"; return (${expr})`)();
+      if (typeof val === 'number' && !isNaN(val) && isFinite(val)) {
+        return {
+          expression: clean,
+          result: val,
+          formattedResult: Number.isInteger(val) ? val.toLocaleString() : Number(val.toFixed(4)).toLocaleString()
+        };
+      }
+    } catch (e) {}
+  }
+  return null;
+}
+
+/**
  * Intelligent Local Institutional Analytical Inference Engine
  * Generates accurate, data-grounded responses when API key is offline
  */
 function localAnalyticalAdvisorResponse(message, students, activeStudent) {
-  const q = (message || '').toLowerCase();
+  const q = (message || '').toLowerCase().trim();
   const total = students.length;
+
+  // A. Check for Arithmetic / Mathematical inquiries
+  const mathCalc = tryEvaluateArithmetic(message);
+  if (mathCalc) {
+    return `### 🧮 Mathematical Calculation
+
+$$${mathCalc.expression} = \\mathbf{${mathCalc.formattedResult}}$$
+
+* **Input Expression**: \`${mathCalc.expression}\`
+* **Computed Result**: **${mathCalc.formattedResult}**
+
+---
+
+💡 **CampusIQ AI Advisor Note**:
+I can solve general calculations and arithmetic for your academic planning. My primary specialization is **institutional retention intelligence, early-warning attendance diagnostics, and GPA What-If forecasting** for campus leadership.
+
+${total === 0 ? '⚠️ *The institutional telemetry database currently has **0 student records loaded**. You can load the sample cohort or upload a CSV to activate live student risk diagnostics.*' : `📊 *Currently monitoring **${total} students** across accredited departments.*`}`;
+  }
+
+  // B. Check for System Inquiries (Developer / Architecture / Formula)
+  if (q.includes('who developed') || q.includes('who made') || q.includes('who created') || q.includes('author') || q.includes('creator')) {
+    return `### CampusIQ System Architecture & Attribution
+
+CampusIQ was architected and developed by **Ankit Kumar Dubey** as an enterprise-grade Student Success, Early-Warning Retention, and Explainable Intelligence System.
+
+* **Frontend**: Responsive Single-Page Application (HTML5, Tailwind CSS, Chart.js)
+* **Backend**: Express.js REST API with Google Gemini 3.5 AI integration
+* **Mobile**: Native-wrapped Offline-first Android APK (classes.dex)
+* **Core Mission**: Proactively identifying students at risk of academic failure or debarment before semester examinations.`;
+  }
+
+  if (q.includes('formula') || q.includes('how is score') || q.includes('how is success score') || q.includes('weights')) {
+    return `### CampusIQ Student Success Score Formulation
+
+The **Student Success Score (0 – 100)** is computed using a weighted composite formula across 7 telemetry pillars:
+
+| Pillar | Weight | Metric Measured |
+| :--- | :---: | :--- |
+| **Academic Performance** | **30%** | CGPA, Midsem & Internal exam scores |
+| **Placement Readiness** | **20%** | Mock interviews, technical tests, HR rounds |
+| **Attendance Compliance** | **15%** | Class presence (statutory 75% cutoff threshold) |
+| **Technical Skills** | **15%** | Coding assessments, LeetCode, certifications |
+| **LMS Engagement** | **10%** | Portal login frequency, timely assignment submissions |
+| **Campus Engagement** | **5%** | Hackathons, collegiate activities, student clubs |
+| **Faculty Feedback** | **5%** | Subject mentor & lab instructor qualitative reviews |
+
+#### Statutory Risk Tier Assignment:
+* 🔴 **High Risk**: Success Score < 50 OR Placement Score < 40
+* 🟡 **Medium Risk**: Success Score < 70 OR Placement Score < 60 OR Attendance < 75%
+* 🟢 **Low Risk / Honors**: Success Score ≥ 70 AND Placement Score ≥ 60 AND Attendance ≥ 75%`;
+  }
+
+  // C. Greetings
+  if (q === 'hi' || q === 'hello' || q === 'hey' || q === 'greetings') {
+    return `### Welcome to CampusIQ AI Advisor
+
+Hello! I am your Official Academic Advisor & Institutional Retention AI.
+
+${total === 0 ? `Our active telemetry database currently shows **0 students loaded** (awaiting dataset ingestion).
+
+To begin real-time performance diagnosis, identify students requiring mandatory attendance remediation, model "What-If" scenarios, or draft formal academic communications, please provide your student dataset:
+1. Upload your student performance CSV/dataset, or
+2. Request to load the reference cohort (**"Load Default 50 Student Cohort"**).` : `I am currently monitoring **${total} students** across active departments. 
+
+How can I assist you today? You can ask:
+* *"Who are the top 5 students needing attendance remediation in CSE?"*
+* *"Show students with high coding scores but low attendance"*
+* *"Draft an encouraging note for Rohan"*
+* *"What happens if attendance drops by 10%?"*`}`;
+  }
 
   if (total === 0) {
     return `### Institutional Database Notice\n\nThe student telemetry database currently contains **0 records** (awaiting dataset ingestion).\n\nTo activate real-time advisory intelligence:\n1. Upload a student dataset file (**CSV** or **JSON**) using the Stage 1 Upload Gate, or\n2. Click **"Load Default 50 Student Cohort"** on the upload screen.\n\nOnce loaded, I will provide instant retention diagnostics, risk identification, and custom remediation drafts for any student or department!`;

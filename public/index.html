@@ -6676,10 +6676,49 @@ Authorized by: Department Head & Mentorship Advisory Council`;
       // Horizontal dividers
       html = html.replace(/^---$/gim, '<hr class="border-t border-slate-200 my-2">');
 
+      // Action buttons
+      html = html.replace(/\[ACTION:LOAD_SAMPLE\]/g, '<div class="my-2"><button type="button" onclick="if(typeof loadSampleDataset===\'function\'){loadSampleDataset();}else{showToast(\'Loading sample...\',\'sync\');}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs transition-all shadow-xs cursor-pointer"><span class="material-symbols-outlined text-xs">database</span> Load Default 50 Student Cohort</button></div>');
+
       // Line breaks
       html = html.replace(/\n/g, '<br>');
 
       return html;
+    }
+
+    /**
+     * Safe Arithmetic & Expression Evaluator
+     * Allows the client advisor to solve mathematical queries directly
+     */
+    function tryEvaluateClientArithmetic(text) {
+      if (!text) return null;
+      let clean = text.trim();
+      clean = clean.replace(/^(what\s+is|calculate|solve|add|sum|evaluate|compute)\s+/i, '').trim();
+      clean = clean.replace(/\?+$/, '').trim();
+
+      let expr = clean
+        .replace(/\bplus\b/gi, '+')
+        .replace(/\bminus\b/gi, '-')
+        .replace(/\btimes\b/gi, '*')
+        .replace(/\bmultiplied\s+by\b/gi, '*')
+        .replace(/\bdivided\s+by\b/gi, '/');
+
+      expr = expr.replace(/(\d+(?:\.\d+)?)\s*%\s*(?:of\s*)?(\d+(?:\.\d+)?)/gi, '($1/100)*$2');
+      expr = expr.replace(/(\d+(?:\.\d+)?)\s*%/g, '($1/100)');
+      expr = expr.replace(/,/g, '').replace(/[xX]/g, '*').replace(/\^/g, '**').trim();
+
+      if (/^[\d\s\+\-\*\/\.\(\)]+$/.test(expr) && /\d/.test(expr)) {
+        try {
+          const val = Function(`"use strict"; return (${expr})`)();
+          if (typeof val === 'number' && !isNaN(val) && isFinite(val)) {
+            return {
+              expression: clean,
+              result: val,
+              formattedResult: Number.isInteger(val) ? val.toLocaleString() : Number(val.toFixed(4)).toLocaleString()
+            };
+          }
+        } catch (e) {}
+      }
+      return null;
     }
 
     /**
@@ -6688,12 +6727,96 @@ Authorized by: Department Head & Mentorship Advisory Council`;
      * is temporarily unreachable, ensuring ZERO chat disruption for advisors.
      */
     function generateClientSideAdvisorResponse(message, cohort, activeStudent) {
-      const q = (message || '').toLowerCase();
+      const q = (message || '').toLowerCase().trim();
       const studentsList = Array.isArray(cohort) ? cohort : [];
       const total = studentsList.length;
 
+      // A. Check for Arithmetic / Mathematical inquiries
+      const mathCalc = tryEvaluateClientArithmetic(message);
+      if (mathCalc) {
+        return `### 🧮 Mathematical Calculation
+
+$$${mathCalc.expression} = \\mathbf{${mathCalc.formattedResult}}$$
+
+* **Input Expression**: \`${mathCalc.expression}\`
+* **Computed Result**: **${mathCalc.formattedResult}**
+
+---
+
+💡 **CampusIQ AI Advisor Note**:
+I can solve general calculations and arithmetic for your academic planning. My primary specialization is **institutional retention intelligence, early-warning attendance diagnostics, and GPA What-If forecasting** for campus leadership.
+
+${total === 0 ? '⚠️ *The institutional telemetry database currently has **0 student records loaded**. Click below or upload a CSV to activate live student risk diagnostics.*\n\n[ACTION:LOAD_SAMPLE]' : `📊 *Currently monitoring **${total} students** across accredited departments.*`}`;
+      }
+
+      // B. Load Sample Cohort Command
+      if (q.includes('load sample') || q.includes('load data') || q.includes('load cohort') || q.includes('load default')) {
+        setTimeout(() => {
+          if (typeof loadSampleDataset === 'function') loadSampleDataset();
+        }, 300);
+        return `### 🚀 Loading 50-Student Reference Cohort...
+
+Initiating dataset ingestion for the reference engineering cohort across **4 departments** (Computer Science, IT, ECE, Data Science & AI).
+
+All retention risk scores, attendance percentages, and mentor allocations are being dynamically computed into your dashboard!`;
+      }
+
+      // C. System Inquiries (Developer / Architecture / Formula)
+      if (q.includes('who developed') || q.includes('who made') || q.includes('who created') || q.includes('author') || q.includes('creator')) {
+        return `### CampusIQ System Architecture & Attribution
+
+CampusIQ was architected and developed by **Ankit Kumar Dubey** as an enterprise-grade Student Success, Early-Warning Retention, and Explainable Intelligence System.
+
+* **Frontend**: Responsive Single-Page Application (HTML5, Tailwind CSS, Chart.js)
+* **Backend**: Express.js REST API with Google Gemini 3.5 AI integration
+* **Mobile**: Native-wrapped Offline-first Android APK (classes.dex)
+* **Core Mission**: Proactively identifying students at risk of academic failure or debarment before semester examinations.`;
+      }
+
+      if (q.includes('formula') || q.includes('how is score') || q.includes('how is success score') || q.includes('weights')) {
+        return `### CampusIQ Student Success Score Formulation
+
+The **Student Success Score (0 – 100)** is computed using a weighted composite formula across 7 telemetry pillars:
+
+| Pillar | Weight | Metric Measured |
+| :--- | :---: | :--- |
+| **Academic Performance** | **30%** | CGPA, Midsem & Internal exam scores |
+| **Placement Readiness** | **20%** | Mock interviews, technical tests, HR rounds |
+| **Attendance Compliance** | **15%** | Class presence (statutory 75% cutoff threshold) |
+| **Technical Skills** | **15%** | Coding assessments, LeetCode, certifications |
+| **LMS Engagement** | **10%** | Portal login frequency, timely assignment submissions |
+| **Campus Engagement** | **5%** | Hackathons, collegiate activities, student clubs |
+| **Faculty Feedback** | **5%** | Subject mentor & lab instructor qualitative reviews |
+
+#### Statutory Risk Tier Assignment:
+* 🔴 **High Risk**: Success Score < 50 OR Placement Score < 40
+* 🟡 **Medium Risk**: Success Score < 70 OR Placement Score < 60 OR Attendance < 75%
+* 🟢 **Low Risk / Honors**: Success Score ≥ 70 AND Placement Score ≥ 60 AND Attendance ≥ 75%`;
+      }
+
+      // D. Greetings
+      if (q === 'hi' || q === 'hello' || q === 'hey' || q === 'greetings') {
+        return `### Welcome to CampusIQ AI Advisor
+
+Hello! I am your Official Academic Advisor & Institutional Retention AI.
+
+${total === 0 ? `Our active telemetry database currently shows **0 students loaded** (awaiting dataset ingestion).
+
+To begin real-time performance diagnosis, identify students requiring mandatory attendance remediation, model "What-If" scenarios, or draft formal academic communications, please provide your student dataset:
+1. Upload your student performance CSV/dataset, or
+2. Click below to load the reference cohort immediately:
+
+[ACTION:LOAD_SAMPLE]` : `I am currently monitoring **${total} students** across active departments. 
+
+How can I assist you today? You can ask:
+* *"Who are the top 5 students needing attendance remediation in CSE?"*
+* *"Show students with high coding scores but low attendance"*
+* *"Draft an encouraging note for Rohan"*
+* *"What happens if attendance drops by 10%?"*`}`;
+      }
+
       if (total === 0) {
-        return `### Institutional Database Notice\n\nThe student telemetry database currently contains **0 records** (awaiting dataset ingestion).\n\nTo activate real-time advisory intelligence:\n1. Upload a student dataset file (**CSV** or **JSON**) using the Stage 1 Upload Gate, or\n2. Click **"Load Default 50 Student Cohort"** on the upload screen.\n\nOnce loaded, I will provide instant retention diagnostics, risk identification, and custom remediation drafts for any student or department!`;
+        return `### Institutional Database Notice\n\nThe student telemetry database currently contains **0 records** (awaiting dataset ingestion).\n\nTo activate real-time advisory intelligence:\n1. Upload a student dataset file (**CSV** or **JSON**) using the Stage 1 Upload Gate, or\n2. Click the button below to load the default 50-student engineering cohort:\n\n[ACTION:LOAD_SAMPLE]\n\nOnce loaded, I will provide instant retention diagnostics, risk identification, and custom remediation drafts for any student or department!`;
       }
 
       // 1. Check if user is asking for an encouraging note / email draft for a specific or active student
