@@ -61,12 +61,12 @@ ${activeStudentSummary}`;
 }
 
 /**
- * Calls Google Gemini API (gemini-2.5-flash / gemini-2.0-flash)
+ * Calls Google Gemini API (gemini-3.5-flash-lite / gemini-3.5-flash)
  */
 async function callGeminiChatAPI({ apiKey, message, history = [], systemPrompt, contextSnippet }) {
   if (!apiKey) return null;
 
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  const candidateModels = ['gemini-3.5-flash-lite', 'gemini-3.5-flash'];
 
   // Format multi-turn contents
   const contents = [];
@@ -90,39 +90,45 @@ async function callGeminiChatAPI({ apiKey, message, history = [], systemPrompt, 
     parts: [{ text: message }]
   });
 
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 9000); // 9-second timeout
+  for (const model of candidateModels) {
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000); // 8-second timeout
 
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      signal: controller.signal,
-      body: JSON.stringify({
-        systemInstruction: {
-          parts: [{ text: fullSystemInstruction }]
-        },
-        contents,
-        generationConfig: {
-          temperature: 0.3,
-          maxOutputTokens: 1000
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          systemInstruction: {
+            parts: [{ text: fullSystemInstruction }]
+          },
+          contents,
+          generationConfig: {
+            temperature: 0.3,
+            maxOutputTokens: 1000
+          }
+        })
+      });
+
+      clearTimeout(timeout);
+
+      if (res.ok) {
+        const data = await res.json();
+        const candidate = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (candidate && candidate.trim().length > 5) {
+          return {
+            reply: candidate.trim(),
+            model: `Google Gemini (${model})`
+          };
         }
-      })
-    });
-
-    clearTimeout(timeout);
-
-    if (res.ok) {
-      const data = await res.json();
-      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (reply && reply.trim().length > 10) {
-        return reply.trim();
+      } else {
+        console.warn(`[Gemini Chat API: ${model}] HTTP ${res.status}`);
       }
-    } else {
-      console.warn(`[Gemini Chat API] HTTP ${res.status}:`, await res.text().catch(() => ''));
+    } catch (err) {
+      console.warn(`[Gemini Chat API: ${model}]`, err.message);
     }
-  } catch (err) {
-    console.warn('[Gemini Chat API Connection Error]', err.message);
   }
 
   return null;
@@ -348,12 +354,12 @@ Tone: Authoritative, empathetic, highly data-grounded, structured with markdown 
       contextSnippet
     });
 
-    if (geminiReply) {
+    if (geminiReply && geminiReply.reply) {
       return {
         success: true,
-        reply: geminiReply,
-        provider: 'gemini-2.5-flash',
-        model: 'Gemini 2.5 Flash'
+        reply: geminiReply.reply,
+        provider: 'gemini',
+        model: geminiReply.model || 'Google Gemini'
       };
     }
   }

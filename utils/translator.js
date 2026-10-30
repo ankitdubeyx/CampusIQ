@@ -90,7 +90,7 @@ async function callGeminiTranslation(text, targetLangObj, studentInfo) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return null;
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  const candidateModels = ['gemini-3.5-flash-lite', 'gemini-3.5-flash'];
   const systemPrompt = `You are the official Academic Advisory AI of a premier accredited Indian University.
 Translate the following Student Academic & Retention Intervention Notice into ${targetLangObj.name} (${targetLangObj.nativeName}).
 Guidelines:
@@ -99,44 +99,45 @@ Guidelines:
 3. Preserve the exact structured sections: Header, Telemetry Breakdown, 3-Step Actionable Recovery Protocol, and Authorization Footer.
 4. Output ONLY the translated notice text without conversational introductory phrases, disclaimers, or markdown fences.`;
 
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 7000); // 7s timeout
+  for (const model of candidateModels) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
 
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      signal: controller.signal,
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              { text: systemPrompt },
-              { text: `Original Notice to Translate:\n\n${text}` }
-            ]
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                { text: systemPrompt },
+                { text: `Original Notice to Translate:\n\n${text}` }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.2,
+            maxOutputTokens: 1200
           }
-        ],
-        generationConfig: {
-          temperature: 0.2,
-          maxOutputTokens: 1200
+        })
+      });
+
+      clearTimeout(timeout);
+      if (res.ok) {
+        const data = await res.json();
+        const candidate = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (candidate && candidate.trim().length > 50) {
+          return candidate.trim();
         }
-      })
-    });
-
-    clearTimeout(timeout);
-    if (!res.ok) {
-      console.warn(`[Gemini API] Translation request returned HTTP ${res.status}`);
-      return null;
+      }
+    } catch (err) {
+      console.warn(`[Gemini Translator: ${model}]`, err.message);
     }
-
-    const data = await res.json();
-    const candidate = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (candidate && candidate.trim().length > 100) {
-      return candidate.trim();
-    }
-  } catch (err) {
-    console.warn('[Gemini API Translation Fallback]', err.message);
   }
+
   return null;
 }
 

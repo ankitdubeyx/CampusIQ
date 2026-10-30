@@ -22,6 +22,24 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+
+// Load environment variables from local .env file if present
+try {
+  const envPath = path.join(__dirname, '.env');
+  if (fs.existsSync(envPath)) {
+    const lines = fs.readFileSync(envPath, 'utf8').split('\n');
+    lines.forEach(line => {
+      const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+      if (match) {
+        let val = (match[2] || '').trim();
+        if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+          val = val.slice(1, -1);
+        }
+        if (!process.env[match[1]]) process.env[match[1]] = val;
+      }
+    });
+  }
+} catch (e) {}
 const {
   calculateStudentSuccessScore,
   assignRiskFlag,
