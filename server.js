@@ -135,6 +135,17 @@ app.use(express.text({ limit: '10mb', type: ['text/csv', 'text/plain'] }));
 // Serve static assets from 'public' directory (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Normalize request URL for serverless environments (e.g. Vercel)
+app.use((req, res, next) => {
+  if (req.url && !req.url.startsWith('/api') && req.url !== '/' && !req.url.startsWith('/login') && !req.url.startsWith('/dashboard') && !req.url.startsWith('/public')) {
+    const apiRoutes = ['/chat', '/students', '/analytics', '/translate-notice', '/send-email', '/simulate-what-if', '/languages', '/email-dispatches', '/personas', '/hierarchy', '/load-sample', '/reset', '/upload'];
+    if (apiRoutes.some(r => req.url.startsWith(r))) {
+      req.url = '/api' + req.url;
+    }
+  }
+  next();
+});
+
 // Simple logging middleware to print requests to the console
 app.use((req, res, next) => {
   console.log(`[${new Date().toLocaleTimeString()}] ${req.method} ${req.originalUrl}`);
@@ -1343,7 +1354,7 @@ app.use((err, req, res, next) => {
 // ------------------------------------------------------------------------------
 // Start the Server
 // ------------------------------------------------------------------------------
-if (process.env.NODE_ENV !== 'test') {
+if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`\n=============================================================`);
     console.log(` Student Analytics Dashboard:  http://localhost:${PORT}`);
