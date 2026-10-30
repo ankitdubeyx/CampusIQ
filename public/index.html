@@ -733,7 +733,7 @@
           </div>
         </div>
         <div class="flex items-center gap-2 w-full sm:w-auto flex-wrap justify-end">
-          <button type="button" onclick="showDashboardView('role=dean')" class="min-h-[38px] px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer active:scale-95" title="Exit to Executive Dean Dashboard (View all students)">
+          <button type="button" onclick="showDashboardView('?role=dean')" class="min-h-[38px] px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer active:scale-95" title="Exit to Executive Dean Dashboard (View all students)">
             <span class="material-symbols-outlined text-sm">dashboard</span>
             <span>Exit to Executive Dashboard</span>
           </button>
@@ -2360,28 +2360,79 @@
       window.history.pushState({}, '', '/?step=upload');
     }
 
-    function showRoleLandingView() {
-      if (!students || students.length === 0) {
+    async function showRoleLandingView() {
+      // If hierarchy is not yet cached or empty, pre-fetch hierarchy or students from server
+      if (!currentHierarchy || currentHierarchy.totalStudents === 0 || !students || students.length === 0) {
+        try {
+          const res = await fetch('/api/hierarchy');
+          if (res.ok) {
+            const hData = await res.json();
+            if (hData.hierarchy && hData.hierarchy.totalStudents > 0) {
+              currentHierarchy = hData.hierarchy;
+            }
+          }
+          if (!currentHierarchy || currentHierarchy.totalStudents === 0) {
+            const sRes = await fetch('/api/students');
+            if (sRes.ok) {
+              const sData = await sRes.json();
+              const sList = sData.data || sData.students || [];
+              if (sList.length > 0) {
+                students = sList;
+                currentHierarchy = extractHierarchyClient(sList);
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('Failed to pre-fetch hierarchy for role landing:', e);
+        }
+      }
+
+      if (!currentHierarchy || currentHierarchy.totalStudents === 0) {
         showToast('Please upload a dataset or load the sample data first.', 'info');
         showUploadView();
         return;
       }
+
+      // Hide student personal view if open
+      const sView = document.getElementById('studentPersonalView');
+      if (sView) { sView.classList.add('hidden'); sView.classList.remove('flex'); }
+
       setView('roles');
       renderRoleLanding(currentHierarchy);
       window.history.pushState({}, '', '/?step=roles');
     }
 
-    function showDashboardView(queryParams = '') {
-      if (!students || students.length === 0) {
-        showToast('Please upload a dataset first.', 'info');
-        showUploadView();
-        return;
+    async function showDashboardView(queryParams = '') {
+      let q = (queryParams || '').trim();
+      if (q && !q.startsWith('?')) {
+        q = '?' + q;
       }
+      if (!q) {
+        q = '?role=dean';
+      }
+      currentRoleParams = q;
+
+      if (q.includes('role=dean') || !q.includes('role=')) {
+        activeRoleInfo = {
+          role: 'Dean',
+          name: 'Institutional Executive',
+          subtitle: 'Institutional Executive Oversight • All Schools'
+        };
+      }
+
+      // Hide student personal view if active, unhide standard overview
+      const sView = document.getElementById('studentPersonalView');
+      const oView = document.getElementById('overviewSection');
+      const dBanner = document.getElementById('dashboardActiveRoleBanner');
+      if (sView) { sView.classList.add('hidden'); sView.classList.remove('flex'); }
+      if (oView) { oView.classList.remove('hidden'); }
+      if (dBanner) { dBanner.classList.remove('hidden'); }
+
       setView('dashboard');
-      currentRoleParams = queryParams;
-      const newUrl = queryParams ? `/?${queryParams.replace(/^\?/, '')}` : '/?role=dean';
+      const newUrl = `/${q}`;
       window.history.pushState({}, '', newUrl);
-      fetchStudents();
+
+      await fetchStudents();
     }
 
     /**
@@ -2912,7 +2963,8 @@
     // Fetch live students from Express backend
     async function fetchStudents() {
       try {
-        const endpoint = `/api/students${currentRoleParams}`;
+        const query = currentRoleParams ? (currentRoleParams.startsWith('?') ? currentRoleParams : '?' + currentRoleParams) : '';
+        const endpoint = `/api/students${query}`;
         const res = await fetch(endpoint);
         if (!res.ok) throw new Error(`HTTP error ${res.status}`);
         const json = await res.json();
@@ -2928,6 +2980,15 @@
           if (dBanner) { dBanner.classList.add('hidden'); } // Hide Dean header when viewing personal student portal
           renderStudentPortal(rec);
           updateDashboardBanner({ filteredCount: 1 });
+
+          // Ensure student switcher dropdown is populated with all records
+          loadStudentDirectory().then(() => {
+            const swSelect = document.getElementById('stuPortalSwitcherSelect');
+            if (swSelect && rec.studentDetails?.id) {
+              swSelect.value = rec.studentDetails.id;
+            }
+          });
+
           showToast(`Logged in as ${rec.studentDetails.name} (Confidential View)`);
           return;
         }
@@ -2975,10 +3036,16 @@
       }
     }
 
-    // Switch active student in personal view
-    function switchStudentView(studentId) {
+    // Switch active student in personal record view
+    async function switchStudentRecord(studentId) {
       if (!studentId) return;
       currentRoleParams = `?role=student&id=${encodeURIComponent(studentId)}`;
+      activeRoleInfo = {
+        role: 'Student',
+        name: studentId,
+        subtitle: 'Confidential Single Record'
+      };
+
       const roleSelect = document.getElementById('roleLoginSelect');
       if (roleSelect) roleSelect.value = `student-${studentId.toLowerCase()}`;
       
@@ -2989,13 +3056,18 @@
       if (bannerUser) bannerUser.textContent = `Student ${studentId}`;
       if (roleScopeBadge) roleScopeBadge.textContent = `Student: ${studentId}`;
 
-      const newUrl = `${window.location.pathname}?role=student&id=${encodeURIComponent(studentId)}`;
+      const newUrl = `/?role=student&id=${encodeURIComponent(studentId)}`;
       window.history.pushState({ path: newUrl }, '', newUrl);
 
-      fetchStudents();
-    }
+      await fetchStudents();
 
-    // Load student directory to populate all 50 students in header & portal dropdowns
+      const swSelect = document.getElementById('stuPortalSwitcherSelect');
+      if (swSelect) swSelect.value = studentId;
+    }
+    window.switchStudentRecord = switchStudentRecord;
+    window.switchStudentView = switchStudentRecord;
+
+    // Load student directory to populate all students in header & portal dropdowns
     async function loadStudentDirectory() {
       try {
         let res = await fetch('/api/students/directory');
@@ -3004,9 +3076,18 @@
         const dirList = json.students || json.data || [];
         if (!dirList || dirList.length === 0) return;
 
+        // Cache dirList into students and hierarchy if currently empty
+        if (!students || students.length === 0) {
+          students = [...dirList];
+        }
+        if (!currentHierarchy) {
+          currentHierarchy = extractHierarchyClient(dirList);
+        }
+
         // 1. Populate stuPortalSwitcherSelect
         const swSelect = document.getElementById('stuPortalSwitcherSelect');
         if (swSelect) {
+          const currentVal = swSelect.value;
           swSelect.innerHTML = '';
           dirList.forEach(s => {
             const opt = document.createElement('option');
@@ -3015,9 +3096,14 @@
             const isAlert = s.attendanceRiskAlert !== undefined ? s.attendanceRiskAlert : (classAttn < 75);
             const tag = isAlert ? '⚠️ Attendance Alert' : `${s.riskFlag || 'Normal'} Risk`;
             const cgpa = s.cgpa !== undefined ? s.cgpa : (s.categories ? s.categories.academic.cgpa : 8.0);
-            opt.textContent = `${s.id} • ${s.name} (${s.department} • Class ${s.class || 'A'} • Cumulative GPA: ${cgpa} • ${tag})`;
+            opt.textContent = `${s.id} • ${s.name} (${s.department} • Class ${s.class || 'A'} • CGPA: ${cgpa} • ${tag})`;
             swSelect.appendChild(opt);
           });
+          if (activeRoleInfo && activeRoleInfo.role === 'Student' && activeRoleInfo.name) {
+            swSelect.value = activeRoleInfo.name;
+          } else if (currentVal) {
+            swSelect.value = currentVal;
+          }
         }
 
         // 2. Populate header roleLoginSelect optgroup
@@ -3038,6 +3124,7 @@
         console.error('Failed to load student directory for dropdowns:', err);
       }
     }
+    window.loadStudentDirectory = loadStudentDirectory;
 
     // Render Student Portal View (when logged in as Student)
     function renderStudentPortal(rec) {
@@ -3218,7 +3305,15 @@
 
       // Sync dropdown selector to this student
       const swSelect = document.getElementById('stuPortalSwitcherSelect');
-      if (swSelect) swSelect.value = details.id;
+      if (swSelect) {
+        if (swSelect.options.length === 0) {
+          loadStudentDirectory().then(() => {
+            if (swSelect) swSelect.value = details.id;
+          });
+        } else {
+          swSelect.value = details.id;
+        }
+      }
     }
 
     // Update top KPI cards and quadrant counts
@@ -5262,6 +5357,16 @@
 
     // Quick filter by risk
     function filterByRisk(riskLevel) {
+      const sView = document.getElementById('studentPersonalView');
+      const oView = document.getElementById('overviewSection');
+      if (sView && !sView.classList.contains('hidden')) {
+        sView.classList.add('hidden');
+        sView.classList.remove('flex');
+        if (oView) oView.classList.remove('hidden');
+        const dBanner = document.getElementById('dashboardActiveRoleBanner');
+        if (dBanner) dBanner.classList.remove('hidden');
+      }
+      setView('dashboard');
       const riskSelect = document.getElementById('riskFilter');
       if (riskSelect) riskSelect.value = riskLevel;
       filterTable();
@@ -6095,6 +6200,9 @@
     window.loginFromLandingAsBatchHead = loginFromLandingAsBatchHead;
     window.loginFromLandingAsMentor = loginFromLandingAsMentor;
     window.loginFromLandingAsStudent = loginFromLandingAsStudent;
+    window.switchStudentRecord = switchStudentRecord;
+    window.switchStudentView = switchStudentRecord;
+    window.loadStudentDirectory = loadStudentDirectory;
     window.updateHodCardPreview = updateHodCardPreview;
     window.updateBatchCardPreview = updateBatchCardPreview;
     window.updateMentorCardPreview = updateMentorCardPreview;
