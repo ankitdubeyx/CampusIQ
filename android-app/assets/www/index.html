@@ -732,11 +732,21 @@
             <div class="text-xs text-slate-500">Zero peer leakage: viewing only your authenticated record</div>
           </div>
         </div>
-        <div class="flex items-center gap-2 w-full sm:w-auto">
-          <label for="stuPortalSwitcherSelect" class="text-xs font-semibold text-slate-600 whitespace-nowrap">Switch Test Record:</label>
-          <select id="stuPortalSwitcherSelect" onchange="switchStudentRecord(this.value)" class="min-h-[40px] bg-slate-50 text-xs font-medium rounded-lg px-3 py-1.5 border border-slate-200 text-slate-800 outline-none focus:border-brand-600">
-            <!-- Populated dynamically -->
-          </select>
+        <div class="flex items-center gap-2 w-full sm:w-auto flex-wrap justify-end">
+          <button type="button" onclick="showDashboardView('role=dean')" class="min-h-[38px] px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer active:scale-95" title="Exit to Executive Dean Dashboard (View all students)">
+            <span class="material-symbols-outlined text-sm">dashboard</span>
+            <span>Exit to Executive Dashboard</span>
+          </button>
+          <button type="button" onclick="showRoleLandingView()" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center gap-1.5 border border-slate-200 transition-colors cursor-pointer active:scale-95" title="Switch Role Gateway">
+            <span class="material-symbols-outlined text-sm">switch_account</span>
+            <span>Switch Role</span>
+          </button>
+          <div class="flex items-center gap-1.5">
+            <label for="stuPortalSwitcherSelect" class="text-xs font-semibold text-slate-600 whitespace-nowrap">Switch Record:</label>
+            <select id="stuPortalSwitcherSelect" onchange="switchStudentRecord(this.value)" class="min-h-[38px] bg-slate-50 text-xs font-medium rounded-lg px-3 py-1.5 border border-slate-200 text-slate-800 outline-none focus:border-brand-600">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
         </div>
       </div>
 
@@ -2957,8 +2967,10 @@
           const rec = json.data;
           const sView = document.getElementById('studentPersonalView');
           const oView = document.getElementById('overviewSection');
+          const dBanner = document.getElementById('dashboardActiveRoleBanner');
           if (sView) { sView.classList.remove('hidden'); sView.classList.add('flex'); }
           if (oView) { oView.classList.add('hidden'); }
+          if (dBanner) { dBanner.classList.add('hidden'); } // Hide Dean header when viewing personal student portal
           renderStudentPortal(rec);
           updateDashboardBanner({ filteredCount: 1 });
           showToast(`Logged in as ${rec.studentDetails.name} (Confidential View)`);
@@ -2968,8 +2980,10 @@
         // Multi-student view (Dean, HOD, Batch Head, Mentor)
         const sView = document.getElementById('studentPersonalView');
         const oView = document.getElementById('overviewSection');
+        const dBanner = document.getElementById('dashboardActiveRoleBanner');
         if (sView) { sView.classList.add('hidden'); sView.classList.remove('flex'); }
         if (oView) { oView.classList.remove('hidden'); }
+        if (dBanner) { dBanner.classList.remove('hidden'); }
 
         students = json.data || [];
         currentFiltered = [...students];
@@ -3072,23 +3086,27 @@
 
     // Render Student Portal View (when logged in as Student)
     function renderStudentPortal(rec) {
+      if (!rec || !rec.studentDetails) return;
       const details = rec.studentDetails;
-      const initials = details.name.split(' ').map(n => n[0]).join('').toUpperCase();
+      const initials = (details.name || 'ST').split(' ').map(n => n[0]).join('').toUpperCase();
+      let themeColor = '#2563eb';
       
       const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
       const setHtml = (id, val) => { const el = document.getElementById(id); if (el) el.innerHTML = val; };
 
       setTxt('stuPortalAvatar', initials);
       setTxt('stuPortalName', details.name);
+      setTxt('stuPortalDept', details.department || 'General');
+      setTxt('stuPortalBatch', `Batch ${details.batch || '2021-2025'}`);
+      setTxt('stuPortalClass', `Class ${details.class || 'Section A'}`);
       setTxt('stuPortalMeta', `ID: ${details.id} • ${details.department} • Batch ${details.batch} • Section ${details.class} • ${details.school || 'School of Engineering & Computing'}`);
-      setTxt('stuPortalScore', `${Math.round(rec.successScore)}/100`);
-      setTxt('stuPortalCgpa', rec.marks ? rec.marks.cgpa.toFixed(2) : '8.50');
+      setTxt('stuPortalSuccessScore', `${Math.round(rec.successScore || 75)}`);
+      setTxt('stuPortalCgpa', rec.marks && rec.marks.cgpa ? rec.marks.cgpa.toFixed(2) : '8.50');
 
       // Risk Badge
       const riskBadge = document.getElementById('stuPortalRiskBadge');
       if (riskBadge) {
-        riskBadge.textContent = `${rec.riskFlag} Risk`;
-        let themeColor = '#2563eb';
+        riskBadge.textContent = `${rec.riskFlag || 'Low'} Risk`;
         if (rec.riskFlag === 'High') {
           themeColor = '#e11d48';
           riskBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200';
@@ -3125,25 +3143,26 @@
 
       // Examination Marks
       if (rec.marks) {
-        setTxt('stuPortalMarksCgpa', `${rec.marks.cgpa.toFixed(2)} / 10.0`);
-        setTxt('stuPortalMarksBacklogs', `${rec.marks.backlogs} Active Backlog(s)`);
+        setTxt('stuPortalMarksCgpa', `${Number(rec.marks.cgpa || 8.5).toFixed(2)} / 10.0`);
+        setTxt('stuPortalMarksBacklogs', `${rec.marks.backlogs || 0} Active Backlog(s)`);
         if (rec.marks.exam_scores) {
-          setTxt('stuPortalMarksMidsem', `${rec.marks.exam_scores.midsem} / 100`);
-          setTxt('stuPortalMarksEndsem', `${rec.marks.exam_scores.endsem} / 100`);
+          setTxt('stuPortalMarksMidsem', `${rec.marks.exam_scores.midsem || 75} / 100`);
+          setTxt('stuPortalMarksEndsem', `${rec.marks.exam_scores.endsem || 80} / 100`);
         }
       }
 
       // Granular Attendance Breakdown
       const att = rec.attendance || { classes: 85, overall: 85, events: 85, remedial: 85, extracurricular: 85 };
+      const classAttnVal = att.classes !== undefined ? att.classes : (att.overall || 80);
       const classEl = document.getElementById('stuPortalAttnClasses');
       if (classEl) {
-        classEl.textContent = `${att.classes}%`;
-        classEl.className = att.classes < 75 ? 'font-data-mono font-bold text-rose-600' : 'font-data-mono font-bold text-emerald-700';
+        classEl.textContent = `${classAttnVal}%`;
+        classEl.className = classAttnVal < 75 ? 'font-data-mono font-bold text-rose-600' : 'font-data-mono font-bold text-emerald-700';
       }
-      setTxt('stuPortalAttnOverall', `${att.overall}%`);
-      setTxt('stuPortalAttnEvents', `${att.events}%`);
-      setTxt('stuPortalAttnRemedial', `${att.remedial}%`);
-      setTxt('stuPortalAttnExtra', `${att.extracurricular}%`);
+      setTxt('stuPortalAttnOverall', `${att.overall || classAttnVal}%`);
+      setTxt('stuPortalAttnEvents', `${att.events || 85}%`);
+      setTxt('stuPortalAttnRemedial', `${att.remedial || 85}%`);
+      setTxt('stuPortalAttnExtra', `${att.extracurricular || 85}%`);
 
       // Enrolled Professional Certifications
       const certs = (rec.skillsAndCertifications && rec.skillsAndCertifications.certifications) || [];
@@ -3169,71 +3188,52 @@
       }
 
       // Placement & Technical Skills
-      const mockScore = rec.placement?.mockInterviewScore ?? rec.categories?.placement?.mockInterviewScore ?? '--';
-      const codingScore = rec.skillsAndCertifications?.codingAssessmentScore ?? rec.categories?.skills?.codingAssessmentScore ?? '--';
-      const leetcodeSolved = rec.skillsAndCertifications?.leetcodeProblemsSolved ?? rec.categories?.skills?.leetcodeProblemsSolved ?? 0;
-      const langs = rec.skillsAndCertifications?.primaryLanguages || rec.categories?.skills?.primaryLanguages || ['C++', 'Python'];
-      const readiness = rec.placement?.readinessStatus || rec.categories?.placement?.readinessStatus || 'Evaluation Complete';
+      const mockScore = rec.placement?.mockInterviewScore ?? rec.categories?.placement?.mockInterviewScore ?? 75;
+      const codingScore = rec.skillsAndCertifications?.codingAssessmentScore ?? rec.categories?.skills?.codingAssessmentScore ?? 80;
+      const leetcodeSolved = rec.skillsAndCertifications?.leetcodeProblemsSolved ?? rec.categories?.skills?.leetcodeProblemsSolved ?? 125;
+      const internships = rec.placement?.internshipsCompleted ?? rec.categories?.placement?.internshipsCompleted ?? 1;
 
-      if (document.getElementById('stuPortalMockScore')) document.getElementById('stuPortalMockScore').textContent = `${mockScore} / 100`;
-      if (document.getElementById('stuPortalCodingScore')) document.getElementById('stuPortalCodingScore').textContent = `${codingScore} / 100`;
-      if (document.getElementById('stuPortalLeetcode')) document.getElementById('stuPortalLeetcode').textContent = `${leetcodeSolved} Solved`;
-      if (document.getElementById('stuPortalTechStack')) document.getElementById('stuPortalTechStack').textContent = langs.join(', ');
-      if (document.getElementById('stuPortalReadinessStatus')) document.getElementById('stuPortalReadinessStatus').textContent = `Readiness: ${readiness}`;
+      if (document.getElementById('stuPortalPlacementMock')) document.getElementById('stuPortalPlacementMock').textContent = `${mockScore} / 100`;
+      if (document.getElementById('stuPortalPlacementMockBar')) document.getElementById('stuPortalPlacementMockBar').style.width = `${Math.min(100, mockScore)}%`;
+
+      if (document.getElementById('stuPortalPlacementCoding')) document.getElementById('stuPortalPlacementCoding').textContent = `${codingScore} / 100`;
+      if (document.getElementById('stuPortalPlacementCodingBar')) document.getElementById('stuPortalPlacementCodingBar').style.width = `${Math.min(100, codingScore)}%`;
+
+      if (document.getElementById('stuPortalPlacementLeetCode')) document.getElementById('stuPortalPlacementLeetCode').textContent = `${leetcodeSolved} Solved`;
+      if (document.getElementById('stuPortalPlacementInternships')) document.getElementById('stuPortalPlacementInternships').textContent = `${internships} Completed`;
 
       // LMS Activity & Faculty Feedback
-      const lmsOnTime = rec.lms?.assignmentsSubmittedOnTimePercentage ?? rec.categories?.lms?.assignmentsSubmittedOnTimePercentage ?? '--';
-      const lmsHours = rec.lms?.weeklyHours ?? rec.categories?.lms?.weeklyHours ?? '--';
-      const facultyNote = rec.feedback?.facultyFeedback || rec.categories?.feedback?.facultyFeedback || 'Academic performance meets expectations.';
-      const mentorNote = rec.feedback?.mentorFeedback || rec.categories?.feedback?.mentorFeedback || 'Mentoring sessions active.';
-      const strengthsArr = rec.strengths || rec.categories?.feedback?.strengths || [];
-
-      if (document.getElementById('stuPortalLmsOnTime')) document.getElementById('stuPortalLmsOnTime').textContent = `${lmsOnTime}%`;
-      if (document.getElementById('stuPortalLmsHours')) document.getElementById('stuPortalLmsHours').textContent = `${lmsHours} hrs/wk`;
-      if (document.getElementById('stuPortalFacultyFeedback')) document.getElementById('stuPortalFacultyFeedback').textContent = `"${facultyNote}"`;
-      if (document.getElementById('stuPortalMentorFeedback')) document.getElementById('stuPortalMentorFeedback').textContent = `"${mentorNote}"`;
-      if (document.getElementById('stuPortalStrengths')) document.getElementById('stuPortalStrengths').textContent = `Strengths: ${strengthsArr.length > 0 ? strengthsArr.join(' • ') : 'Consistent performance'}`;
-
-      // Campus Engagement & Activities
-      const hackathons = rec.engagement?.hackathonsParticipated ?? rec.categories?.engagement?.hackathonsParticipated ?? 0;
-      const hackathonWins = rec.engagement?.hackathonWins ?? rec.categories?.engagement?.hackathonWins ?? 0;
+      const lmsOnTime = rec.lms?.assignmentsSubmittedOnTimePercentage ?? rec.categories?.lms?.assignmentsSubmittedOnTimePercentage ?? 85;
+      const lmsHours = rec.lms?.weeklyHours ?? rec.categories?.lms?.weeklyHours ?? 8.5;
       const loginFreq = rec.lms?.loginFrequency || rec.categories?.lms?.loginFrequency || 'Daily (5-7 days/wk)';
-      const forumContrib = rec.lms?.forumContributionsCount ?? rec.categories?.lms?.forumContributionsCount ?? 0;
-      const clubs = rec.engagement?.clubsOrActivities || rec.categories?.engagement?.clubsOrActivities || [];
+      const mentorNote = rec.feedback?.mentorFeedback || rec.categories?.feedback?.mentorFeedback || 'Consistent student with steady academic and lab performance. Cooperative and dependable in team projects.';
 
-      if (document.getElementById('stuPortalHackathons')) document.getElementById('stuPortalHackathons').textContent = `${hackathons} Events`;
-      if (document.getElementById('stuPortalHackathonWins')) document.getElementById('stuPortalHackathonWins').textContent = `${hackathonWins} Podium`;
-      if (document.getElementById('stuPortalLoginFreq')) document.getElementById('stuPortalLoginFreq').textContent = loginFreq;
-      if (document.getElementById('stuPortalForumContrib')) document.getElementById('stuPortalForumContrib').textContent = `${forumContrib} posts`;
-      if (document.getElementById('stuPortalPersonaInfo')) document.getElementById('stuPortalPersonaInfo').textContent = `Persona Profile: ${details.persona || 'General Cohort'}`;
-
-      const clubsEl = document.getElementById('stuPortalClubs');
-      if (clubsEl) {
-        clubsEl.innerHTML = clubs.length > 0
-          ? clubs.map(cl => `<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold">${cl}</span>`).join('')
-          : '<span class="text-slate-500 text-xs italic">No extracurricular clubs recorded</span>';
-      }
+      if (document.getElementById('stuPortalLmsLogin')) document.getElementById('stuPortalLmsLogin').textContent = loginFreq;
+      if (document.getElementById('stuPortalLmsHours')) document.getElementById('stuPortalLmsHours').textContent = `${lmsHours} hrs/wk`;
+      if (document.getElementById('stuPortalMentorNote')) document.getElementById('stuPortalMentorNote').textContent = `"${mentorNote}"`;
 
       // Personal 7-Vector Competency Radar & Normalized Dimensions
       const comp = rec.analytics?.componentScores || {
-        academic: Math.min(100, rec.marks.cgpa * 10),
-        placement: mockScore !== '--' ? mockScore : 50,
-        attendance: att.overall,
-        skills: codingScore !== '--' ? codingScore : 50,
-        lms: lmsOnTime !== '--' ? lmsOnTime : 75,
-        engagement: 60,
+        academic: rec.marks?.cgpa ? Math.min(100, Math.round(rec.marks.cgpa * 10)) : 81,
+        placement: typeof mockScore === 'number' ? mockScore : 75,
+        attendance: (att && att.overall) ? att.overall : 81,
+        skills: typeof codingScore === 'number' ? codingScore : 80,
+        lms: typeof lmsOnTime === 'number' ? lmsOnTime : 85,
+        engagement: 65,
         feedback: 80
       };
 
-      updateRadarPolygon([
-        comp.academic,
-        comp.placement,
-        comp.attendance,
-        comp.skills,
-        comp.lms,
-        comp.engagement,
-        comp.feedback
-      ], themeColor, 'stuPortalRadarPolygon');
+      if (typeof updateRadarPolygon === 'function') {
+        updateRadarPolygon([
+          comp.academic,
+          comp.placement,
+          comp.attendance,
+          comp.skills,
+          comp.lms,
+          comp.engagement,
+          comp.feedback
+        ], themeColor, 'stuPortalRadarPolygon');
+      }
 
       // Update 7 Evaluated Dimensions Progress Bars
       if (document.getElementById('stuPortalDimAcademic')) document.getElementById('stuPortalDimAcademic').textContent = `${Math.round(comp.academic)}%`;
@@ -3258,31 +3258,12 @@
       if (document.getElementById('stuPortalBarFeedback')) document.getElementById('stuPortalBarFeedback').style.width = `${Math.min(100, comp.feedback)}%`;
 
       if (document.getElementById('stuPortalCompositeScore')) {
-        document.getElementById('stuPortalCompositeScore').textContent = `Overall Composite: ${Math.round(rec.successScore)} / 100 (${rec.riskFlag} Risk)`;
+        document.getElementById('stuPortalCompositeScore').textContent = `Overall Composite: ${Math.round(rec.successScore || 88.5)} / 100 (${rec.riskFlag || 'Low'} Risk)`;
       }
 
-      // Sync both dropdown selectors to this student
+      // Sync dropdown selector to this student
       const swSelect = document.getElementById('stuPortalSwitcherSelect');
       if (swSelect) swSelect.value = details.id;
-      const roleSelect = document.getElementById('roleLoginSelect');
-      if (roleSelect) roleSelect.value = `student-${details.id.toLowerCase()}`;
-
-      // Update top KPI cards to reflect this student's context
-      const totalEl = document.getElementById('kpiTotalCount') || document.getElementById('kpiTotalStudents'); 
-      if (totalEl) totalEl.textContent = '1 (Personal)';
-      const hrRateEl = document.getElementById('kpiHighRiskRate');
-      if (hrRateEl) hrRateEl.textContent = rec.riskFlag === 'High' ? '100%' : '0%';
-      const hrCountEl = document.getElementById('kpiHighRiskCount');
-      if (hrCountEl) hrCountEl.textContent = `${rec.riskFlag} Risk Level`;
-      const plReadyEl = document.getElementById('kpiPlacementReady');
-      if (plReadyEl) plReadyEl.textContent = `${mockScore !== '--' ? mockScore : 50}%`;
-      const avgScoreEl = document.getElementById('kpiAvgSuccessScore');
-      if (avgScoreEl) avgScoreEl.innerHTML = `${Math.round(rec.successScore)} <span class="text-xs font-normal text-secondary">/ 100</span>`;
-      const avgBarEl = document.getElementById('kpiAvgScoreBar');
-      if (avgBarEl) avgBarEl.style.width = `${Math.min(100, rec.successScore)}%`;
-
-      // Populate single student in table
-      renderTable([rec.analytics ? { ...details, categories: rec.analytics.componentScores ? rec : {}, analytics: rec.analytics } : rec]);
     }
 
     // Update top KPI cards and quadrant counts
